@@ -7,7 +7,6 @@
 
   <link rel="icon" type="image/png" href="assets/image/favicon.png">
 
-  <!-- Шрифты: Chakra Petch, Exo 2 и Roboto Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -16,7 +15,6 @@
 </head>
 <body>
 
-  <!-- Загрузочный экран -->
   <div id="dnp-loader" class="dnp-loader">
     <div class="dnp-loader-bg" id="loader-bg"></div>
     <div class="dnp-loader-scan"></div>
@@ -44,7 +42,6 @@
     <div class="dnp-loader-wipe" id="loader-wipe"></div>
   </div>
 
-  <!-- Основной интерфейс КПК -->
   <div class="dnp-pda" id="dnp-pda">
     <div class="dnp-scan"></div>
 
@@ -60,7 +57,6 @@
 
     <div class="dnp-layout" id="dnp-layout">
       
-      <!-- Сайдбар навигации (всегда открыт) -->
       <aside class="dnp-sidebar" id="dnp-sidebar" aria-label="Навигация КПК">
         <div class="dnp-sidebar-title">
           <div class="dnp-sidebar-title-left">
@@ -70,7 +66,6 @@
         </div>
 
         <div class="dnp-sidebar-body" id="dnp-sidebar-body">
-          <!-- 01 УСТАВ -->
           <details class="dnp-nav-group" open>
             <summary>
               <span class="dnp-num">01</span>
@@ -88,27 +83,23 @@
             </div>
           </details>
 
-          <!-- 02 БАЗА ДАННЫХ (с неяркой припиской SYNC) -->
           <button class="dnp-nav-root-btn" type="button" data-screen="database">
             <span class="dnp-num">02</span>
             <b>База данных</b>
             <em class="dnp-menu-tag">SYNC</em>
           </button>
 
-          <!-- 03 КОРНИ -->
           <button class="dnp-nav-root-btn" type="button" data-screen="roots">
             <span class="dnp-num">03</span>
             <b>Корни Deinopidae</b>
           </button>
 
-          <!-- 04 ВЕРБОВКА -->
           <button class="dnp-locked-main" type="button" disabled>
             <span class="dnp-num">04</span>
             <b>Вербовка</b>
             <em>LOCK</em>
           </button>
 
-          <!-- Статус КПК внизу меню -->
           <div class="dnp-terminal-note">
             <span>PDA-LINK: ONLINE // SYS.V-4</span>
             <span>LOCAL NET: STABLE</span>
@@ -120,7 +111,6 @@
 
       <main class="dnp-main">
         
-        <!-- РАЗДЕЛ 1: ОСНОВА -->
         <section class="dnp-screen is-visible" data-screen-panel="ustav-01">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 01</p>
@@ -160,7 +150,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 2: ПРАВИЛА -->
         <section class="dnp-screen" data-screen-panel="ustav-02">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 02</p>
@@ -214,7 +203,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 3: ПОВЫШЕНИЯ И НОРМА -->
         <section class="dnp-screen" data-screen-panel="ustav-03">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 03</p>
@@ -315,7 +303,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 4: ПРОВЕРКИ И ЛЕКЦИИ -->
         <section class="dnp-screen" data-screen-panel="ustav-04">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 04</p>
@@ -362,7 +349,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 5: АКТИВНОСТИ -->
         <section class="dnp-screen" data-screen-panel="ustav-05">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 05</p>
@@ -475,7 +461,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 6: ПРОЧЕЕ -->
         <section class="dnp-screen" data-screen-panel="ustav-06">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 06</p>
@@ -503,7 +488,6 @@
           </div>
         </section>
 
-        <!-- РАЗДЕЛ 7: КОНЕЦ -->
         <section class="dnp-screen" data-screen-panel="ustav-07">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 07</p>
@@ -531,9 +515,6 @@
           </div>
         </section>
 
-        <!-- ========================================================
-             ВКЛАДКА: БАЗА ДАННЫХ (НОВЫЙ ЧИСТЫЙ ДИЗАЙН)
-             ======================================================== -->
         <section class="dnp-screen" data-screen-panel="database">
           <div class="dnp-screen-head">
             <p>DATABASE NODE // SYSTEM INDEX</p>
@@ -543,19 +524,16 @@
 
           <div class="dnp-screen-content dnp-db-layout">
             
-            <!-- 1. ПОИСК В САМОМ ВЕРХУ (БЕЗ КАТЕГОРИЙ И БЕЗ ПОДСКАЗКИ) -->
             <div class="dnp-db-top-search">
               <div class="dnp-search-input-box">
                 <span class="dnp-search-icon">🔍</span>
-                <input type="text" id="dnp-db-search" placeholder="Поиск по уставу, БРУД, таблице, документам..." autocomplete="off">
+                <input type="text" id="dnp-db-search" autocomplete="off">
                 <button type="button" id="dnp-search-clear" class="dnp-search-clear-btn" title="Очистить поиск">✕</button>
               </div>
 
-              <!-- Выпадающий контейнер с плавно выезжающими результатами -->
               <div class="dnp-search-results" id="dnp-search-results"></div>
             </div>
 
-            <!-- 2. РЕЕСТР СОСТАВА -->
             <article class="dnp-module dnp-roster-module">
               <div class="dnp-module-title">
                 <span>02.1</span>
@@ -565,18 +543,16 @@
 
               <div class="dnp-employee-lookup-box">
                 <div class="dnp-lookup-bar">
-                  <input type="text" id="dnp-employee-input" placeholder="Введите никнейм или позывной сотрудника..." autocomplete="off">
+                  <input type="text" id="dnp-employee-input" autocomplete="off">
                   <button type="button" id="dnp-employee-btn" class="dnp-action" style="margin: 0;">НАЙТИ</button>
                 </div>
 
-                <!-- Карточка вывода с полупрозрачным логотипом-аватаром -->
                 <div class="dnp-employee-card-result" id="dnp-employee-card">
                   <span class="dnp-muted">Введите позывной для выгрузки дела из реестра комплекса.</span>
                 </div>
               </div>
             </article>
 
-            <!-- 3. ОФИЦИАЛЬНЫЕ РЕСУРСЫ СНИЗУ (СДЕРЖАННОЕ ОФОРМЛЕНИЕ) -->
             <div class="dnp-resources-footer-block">
               <div class="dnp-resources-header">
                 <span>СИСТЕМНЫЕ ССЫЛКИ И ДОКУМЕНТАЦИЯ</span>
@@ -629,7 +605,6 @@
           </div>
         </section>
 
-        <!-- СТРАНИЦА: КОРНИ DEINOPIDAE -->
         <section class="dnp-screen" data-screen-panel="roots">
           <div class="dnp-screen-head dnp-corrupt-head">
             <p>ARCHIVE NODE // [SECTOR-02_CORRUPTED]</p>
@@ -701,7 +676,6 @@
           </div>
         </section>
 
-        <!-- ВЕРБОВКА -->
         <section class="dnp-screen" data-screen-panel="verbovka-info-1">
           <div class="dnp-screen-head">
             <p>RECRUITMENT NODE / INFO 01</p>

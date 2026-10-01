@@ -1,5 +1,4 @@
 (function () {
-  // === 1. ЗАГРУЗЧИК В СТИЛЕ ENDFIELD ===
   var loader = document.getElementById("dnp-loader");
   var loaderBar = document.getElementById("loader-bar");
   var loaderPercent = document.getElementById("loader-percent");
@@ -130,7 +129,6 @@
     requestAnimationFrame(renderLoader);
   }
 
-  // === 2. ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ ===
   var root = document.getElementById("dnp-pda");
   if (!root) return;
 
@@ -239,7 +237,6 @@
     openScreen(firstButton.getAttribute("data-screen"));
   }
 
-  // === 3. КОРНИ: ПАРАЛЛАКС ИЗОБРАЖЕНИЯ И ТЕКСТА ПО МЫШИ ===
   var corruptModule = document.getElementById("corrupt-module");
   var corruptImg = document.getElementById("corrupt-img");
   var ghostTitle = document.getElementById("ghost-title");
@@ -276,11 +273,7 @@
     });
   }
 
-  // =========================================================
-  // 4. ИНДЕКС УНИВЕРСАЛЬНОГО ПОИСКА КПК
-  // =========================================================
   var searchIndex = [
-    // РАЗДЕЛ 1: ОСНОВА
     {
       title: "Раздел 1 — Основа",
       subtitle: "О предприятии Deinopidae, цели, задачи комплекса",
@@ -297,8 +290,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_OSNOVA_DOC_ID/edit#heading=h.section1"
     },
-
-    // РАЗДЕЛ 2: ПРАВИЛА
     {
       title: "Раздел 2 — Правила",
       subtitle: "Основной перечень правил, КВР, виды наказаний",
@@ -315,8 +306,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_RULES_DOC_ID/edit#heading=h.section2"
     },
-
-    // РАЗДЕЛ 3: ПОВЫШЕНИЯ И НОРМА
     {
       title: "Раздел 3 — Повышения и норма",
       subtitle: "Еженедельная норма по рангам, звания (Курсант - Главный инженер)",
@@ -333,8 +322,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_PROMOTIONS_DOC_ID/edit#heading=h.section3"
     },
-
-    // РАЗДЕЛ 4: ПРОВЕРКИ И ЛЕКЦИИ
     {
       title: "Раздел 4 — Проверки и Лекции",
       subtitle: "Проверки C/B/A, лекции ПО, СО, МП, регламент пинга офицера",
@@ -351,8 +338,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_EXAMS_DOC_ID/edit#heading=h.section4"
     },
-
-    // РАЗДЕЛ 5: АКТИВНОСТИ
     {
       title: "Раздел 5 — Активности",
       subtitle: "Уровни активности 0/1/2, шкала прогрессии, правила сгорания",
@@ -369,8 +354,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_ACTIVITIES_DOC_ID/edit#heading=h.section5"
     },
-
-    // РАЗДЕЛ 6: ПРОЧЕЕ
     {
       title: "Раздел 6 — Прочее",
       subtitle: "Проведение мероприятий (5 и 7 звания)",
@@ -387,8 +370,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_MISC_DOC_ID/edit#heading=h.section6"
     },
-
-    // РАЗДЕЛ 7: КОНЕЦ
     {
       title: "Раздел 7 — Конец",
       subtitle: "Заключение, авторы и первоиздатели устава",
@@ -405,8 +386,6 @@
       type: "external",
       url: "https://docs.google.com/document/d/BURD_FINAL_DOC_ID/edit#heading=h.section7"
     },
-
-    // ДОКУМЕНТЫ
     {
       title: "Таблица личного состава и нормы",
       subtitle: "Google Таблица: часы, звания, выговоры и состав отдела",
@@ -449,7 +428,6 @@
     }
   ];
 
-  // === 5. ЛОГИКА ЖИВОГО ПОИСКА БЕЗ КАТЕГОРИЙ И ПОДСКАЗОК ===
   var searchInput = document.getElementById("dnp-db-search");
   var searchClear = document.getElementById("dnp-search-clear");
   var searchResults = document.getElementById("dnp-search-results");
@@ -488,7 +466,6 @@
         if (res.badge.indexOf("БРУД") !== -1) extraClass = "is-brud";
         if (res.badge.indexOf("GOOGLE") !== -1) extraClass = "is-doc";
 
-        // Задержка анимации для каскадного выезда
         var delay = (index * 0.03).toFixed(2);
 
         html += '<div class="dnp-search-item ' + extraClass + '" style="animation-delay: ' + delay + 's;" data-type="' + res.type + '" data-target="' + (res.target || '') + '" data-url="' + (res.url || '') + '">';
@@ -532,9 +509,6 @@
     });
   }
 
-  // =========================================================
-  // 6. РЕЕСТР СОСТАВА (С КАРТИНКОЙ СТАФФА)
-  // =========================================================
   var employeeInput = document.getElementById("dnp-employee-input");
   var employeeBtn = document.getElementById("dnp-employee-btn");
   var employeeCard = document.getElementById("dnp-employee-card");
