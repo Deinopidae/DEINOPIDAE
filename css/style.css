@@ -295,6 +295,14 @@ html, body {
   padding: 16px 0;
   flex-grow: 1;
   align-items: start;
+  transition: grid-template-columns 0.3s ease, max-width 0.3s ease, width 0.3s ease;
+}
+
+/* Режим широкой консоли: навигация компактно уходит влево */
+.dnp-layout.is-terminal-mode {
+  grid-template-columns: 210px minmax(0, 1fr);
+  max-width: 1420px;
+  width: 96%;
 }
 
 .dnp-main {
@@ -313,6 +321,7 @@ html, body {
   background: var(--panel);
   box-shadow: inset 3px 0 0 rgba(138, 160, 168, .28);
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .dnp-sidebar-title {
@@ -429,7 +438,7 @@ html, body {
 .dnp-screen-content.dnp-no-flicker { animation: smoothFadeIn 0.15s ease both; }
 
 /* ========================================================
-   ТЕРМИНАЛ БАЗЫ ДАННЫХ (АВТОНОМНЫЙ ЧЕРНЫЙ ЭКРАН CMD)
+   ТЕРМИНАЛ: ЧИСТЫЙ МОНОХРОМНЫЙ CMD
    ======================================================== */
 .dnp-terminal-screen {
   grid-column: 2;
@@ -437,10 +446,10 @@ html, body {
   display: flex !important;
   flex-direction: column;
   width: 100%;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 110px);
   background: #000000 !important;
-  border: 1px solid #222a30;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.95);
+  border: 1px solid #1a1e22;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.95);
   position: relative;
   overflow: hidden;
 }
@@ -450,47 +459,43 @@ html, body {
 }
 
 .dnp-term-window {
+  --term-color: #d8dde0; /* Белый спокойный тон по умолчанию */
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: 580px;
+  min-height: 560px;
   background: #000000;
-  color: #cfd8dc;
+  color: var(--term-color);
   font-family: "Roboto Mono", monospace;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.45;
   user-select: text;
 }
 
 .dnp-term-topbar {
-  background: #101416;
-  border-bottom: 2px solid #222d32;
-  padding: 6px 14px;
+  background: #0a0c0e;
+  border-bottom: 1px solid #1c2226;
+  padding: 7px 14px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  color: #cfd8dc;
+  color: #a0aab0;
   font-family: "Roboto Mono", monospace;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 .dnp-term-top-title {
   color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .dnp-term-body {
-  padding: 18px 20px;
+  padding: 16px 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   background: #000000;
   overflow-y: auto;
   cursor: text;
@@ -499,95 +504,78 @@ html, body {
 .dnp-term-boot {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .dnp-term-line {
   word-break: break-word;
   white-space: pre-wrap;
+  color: var(--term-color);
 }
 
 .dnp-term-line.term-sub {
-  color: #8fa3ad;
+  color: #7b8890;
   font-size: 12px;
 }
 
 .dnp-term-line.term-progress {
-  color: #e0e6e8;
+  color: var(--term-color);
   font-weight: 700;
-  font-size: 13px;
-}
-
-.dnp-term-line.term-sys {
-  color: #90a4ae;
-}
-
-.dnp-term-line.term-tip {
-  color: #b0bec5;
 }
 
 .dnp-term-ascii {
-  margin: 12px 0 6px 0;
-  color: #d1d8dc;
+  margin: 10px 0;
+  color: var(--term-color);
   font-family: monospace;
-  font-size: 10px;
+  font-size: 9.5px;
   line-height: 1.05;
   font-weight: 700;
   user-select: none;
   overflow-x: auto;
+  white-space: pre;
 }
 
 .dnp-term-output {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 4px;
 }
 
 .dnp-term-cmd-echo {
-  color: #00f0ff;
+  color: var(--term-color);
   margin-top: 8px;
   font-weight: 700;
 }
 
 .dnp-term-resp-line {
-  color: #cfd8dc;
-}
-
-.dnp-term-resp-line.is-err {
-  color: #e57373;
-}
-
-.dnp-term-resp-line.is-tip {
-  color: #81c784;
-}
-
-.dnp-term-resp-line.is-sec {
-  color: #ffb74d;
+  color: var(--term-color);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .dnp-term-link {
-  color: #00f0ff;
+  color: var(--term-color);
   text-decoration: underline;
   cursor: pointer;
   margin-left: 6px;
 }
 
 .dnp-term-link:hover {
-  color: #ffffff;
+  filter: brightness(1.3);
 }
 
 .dnp-term-prompt-line {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
-.dnp-term-prompt {
-  color: #00f0ff;
+.dnp-term-cursor {
+  color: var(--term-color);
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
+  animation: termBlink 1s step-end infinite;
   user-select: none;
 }
 
@@ -596,19 +584,12 @@ html, body {
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: var(--term-color);
   font-family: "Roboto Mono", monospace;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   padding: 0;
-  caret-color: transparent; /* Скрываем нативный курсор, используем свой */
-}
-
-.dnp-term-cursor {
-  color: #00f0ff;
-  font-weight: 700;
-  animation: termBlink 1s step-end infinite;
-  user-select: none;
+  caret-color: transparent;
 }
 
 @keyframes termBlink {
@@ -1223,46 +1204,32 @@ html, body {
   display: inline-block;
 }
 
-.dnp-task-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 10px;
-  padding: 0 14px 14px 14px;
-}
-
-.dnp-task-card {
-  background: var(--panel-2);
-  border: 1px solid rgba(138, 160, 168, 0.18);
-  border-left: 3px solid var(--line);
-  padding: 10px 12px;
-}
-
-.dnp-task-card b {
-  display: flex;
-  justify-content: space-between;
+.dnp-action {
+  display: inline-flex;
+  margin: 0 12px 12px;
+  min-height: 34px;
   align-items: center;
-  margin-bottom: 6px;
-  font: 800 13px "Exo 2", sans-serif;
+  justify-content: center;
+  padding: 7px 11px;
+  border: 1px solid rgba(138, 160, 168, .34);
+  background: rgba(12, 18, 22, .94);
   color: var(--text);
+  font: 800 11.5px "Roboto Mono", monospace;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all .2s ease;
 }
 
-.dnp-task-card b em {
-  font: normal 700 11px "Roboto Mono", monospace;
-  color: var(--ok);
-}
-
-.dnp-task-card p {
-  padding: 0;
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #c4ccd0;
+.dnp-action:hover {
+  border-color: rgba(138, 160, 168, .54);
 }
 
 @media (max-width: 850px) {
-  .dnp-layout {
+  .dnp-layout,
+  .dnp-layout.is-terminal-mode {
     grid-template-columns: 1fr;
     padding: 10px;
+    width: 100%;
   }
   
   .dnp-sidebar {

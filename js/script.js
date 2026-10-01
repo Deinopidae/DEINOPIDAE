@@ -130,6 +130,7 @@
   }
 
   var root = document.getElementById("dnp-pda");
+  var layout = document.getElementById("dnp-layout");
   if (!root) return;
 
   var buttons = root.querySelectorAll("[data-screen]");
@@ -158,6 +159,15 @@
     var currentPanel = root.querySelector(".dnp-screen.is-visible");
     var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
     if (!targetPanel) return;
+
+    // Сдвиг навигации влево и расширение рабочей области при открытии базы данных
+    if (layout) {
+      if (name === "database") {
+        layout.classList.add("is-terminal-mode");
+      } else {
+        layout.classList.remove("is-terminal-mode");
+      }
+    }
 
     if (currentPanel && currentPanel !== targetPanel) {
       isTransitioning = true;
@@ -289,13 +299,12 @@
   }
 
   // =========================================================
-  // КОМАНДНАЯ СТРОКА: БАЗА ДАННЫХ И ТЕРМИНАЛ DEINOPIDAE
+  // ТЕРМИНАЛ: ЧИСТЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС
   // =========================================================
+  var termWindow = document.getElementById("term-window");
   var termBody = document.getElementById("term-body");
   var termTopTitle = document.getElementById("term-top-title");
   var termProgressLine = document.getElementById("term-progress-line");
-  var termMsgSys = document.getElementById("term-msg-sys");
-  var termMsgTip = document.getElementById("term-msg-tip");
   var termAscii = document.getElementById("term-ascii");
   var termOutput = document.getElementById("term-output");
   var termPromptLine = document.getElementById("term-prompt-line");
@@ -304,20 +313,39 @@
   var brudUrl = "https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing";
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
+  // Пользовательский ASCII-логотип Deinopidae
   var asciiLogo = [
-    "             /\\                                  /\\",
-    "            /  \\                                /  \\",
-    "           / /\\ \\                              / /\\ \\",
-    "          / /  \\ \\       DEINOPIDAE           / /  \\ \\",
-    "         / / /\\ \\ \\      INDUSTRIES          / / /\\ \\ \\",
-    "        / / /  \\ \\ \\                        / / /  \\ \\ \\",
-    "       / / / /\\ \\ \\ \\     [S.E. CORE]      / / / /\\ \\ \\ \\",
-    "      / / / /__\\ \\ \\ \\                    / / / /__\\ \\ \\ \\",
-    "     / / /   ||   \\ \\ \\                  / / /   ||   \\ \\ \\",
-    "    / / /====||====\\ \\ \\                / / /====||====\\ \\ \\",
-    "   /        [||]        \\              /        [||]        \\",
-    "  /__________||__________\\            /__________||__________\\",
-    "            [||]                                [||]"
+    "    @@                                                        @@    ",
+    "     @                                                         %     ",
+    "      %   @@ @@@ @@%@@@@@@ %@ @@@@@@@@@@@ @@ @@@@@@@@@@@@ @%@@@@@@@@@@          ",
+    "       %   @@@@@%@ @@@@@@@ @%@@  @   @ @@@@ @@ @@@@@@@@@@@ @@@@@@@@@            ",
+    "            @@@@@@@  @@@@@ @@@@@                 @@ @@@@ @@@ @@@@@@             ",
+    "              @@@@@@%  @@@@@@@@ @@@@         @@@@@@@@@@@@ @@@@ @@@   %          ",
+    "           @   @@@@@@@%@@@@@@@@@@@@@%       @@@@@@ @@ @ @@@@@@ @@   @           ",
+    "            @   @@@%%@%@@@@@   @@@@@    @@@@@@@@@@@@ @@@@@@%@@@@   @            ",
+    "             @   @@@% @@ @@@@@ @@@@@        @@@@@@@@@@ @%@@ @ @                 ",
+    "              %   %@@@@@@@ @@@@%@@@@@       @@@@@@  %@@@%@@@@@                  ",
+    "                    @@@@ @@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@                   ",
+    "                      @ %@%@% %@@   @%      @@ %@%%%%%%   @                     ",
+    "                                                                                ",
+    "        @@@@@@@ @@@@@@ @@ @@@  @@ @@@@@@@@ @@@@@@@@@ @@@@@@%  @@@   @@@@@@       ",
+    "        @@   @@@@@@@@  @@ @@@@%@@ @@    @@ @@@@@@@@@ @@   @@ @@ @@  @@@@@       ",
+    "        @@   @@ @@     @@ @@ @@@@ @@@  @@@ @@@@  @@@ @@  @@@@@@@@@@ @@           ",
+    "        @@@@@@  @@@@@@ @@ @@   @@  @@@@@@  @@    @@@ @@@@@@ @@   @@@@@@@@@       ",
+    "                                                                                ",
+    "              @    @%     @     @@    @     @    @@    @    @     @             ",
+    "                          @   @@@@@@@@@@  @@@@ @@@                              ",
+    "                           @   @%@@@@      @@@@@@   @                           ",
+    "                            @   @ @@@@ @  @@@@@@                                ",
+    "                             %   @ @@@    @@ @@                                 ",
+    "                                  %@@@@   @@@                                   ",
+    "                                   @@@@ @@                                      ",
+    "                                 %   @ @@@@                                     ",
+    "                                 @   @@@@                                       ",
+    "                                  @   @@   @                                    ",
+    "                                   %                                            ",
+    "                                                                                ",
+    "                                       @@                                       "
   ].join("\n");
 
   var employeeDb = {
@@ -335,14 +363,14 @@
       "РАЗДЕЛ 2: Правила (КВР, Свод законов, виды наказаний: Устный, Икоку, Кенсэки)",
       "РАЗДЕЛ 3: Повышения (Звания: Курсант -> Главный инженер, потолок рангов)",
       "РАЗДЕЛ 4: Норма (Еженедельная норма: Кадет, C, B, A ранги)",
-      "РАЗДЕЛ 5: Задания (РП-задачи для проверки рангов: WHEEL, POWER, LIGHT и др.)",
+      "РАЗДЕЛ 5: Задания (Архив задач для проверки РП-уровня)",
       "РАЗДЕЛ 6: Проверки и Лекции (Экзамены C/B/A, лекции ПО/СО/МП)",
       "РАЗДЕЛ 7: Активности (Шкала прогрессии, сброс очков по понедельникам)",
       "РАЗДЕЛ 8: Прочее (Проведение мероприятий: 5 и 7 звания)",
       "РАЗДЕЛ 9: Конец (Заключение, первоиздатель Wewewewestrelok)"
     ],
     "бруд": [
-      "БРУД // Документ: " + brudUrl,
+      "БРУД // Ссылка: " + brudUrl,
       "01. Положения и регламент предприятия Deinopidae",
       "02. Квалификационные требования и должностные инструкции",
       "03. Журнал внеурочной деятельности и отписка-нормы"
@@ -359,12 +387,6 @@
       "B RANK: Посетить 2 МП. На выбор: Наиграть 3 часа / 3 Оборудования",
       "A RANK: Посетить 2 МП. На выбор: Наиграть 2 часа / 2 Оборудования",
       "ШТРАФ: Невыполнение без отписки в 'Отписка-нормы' = 1 Кенсэки"
-    ],
-    "задания": [
-      "Кадет: TASK 01 [WHEEL] (колесо тележки), TASK 02 [LOCKS] (замки шкафчиков)",
-      "C ранг: TASK 01 [POWER] (пробки в щитке), TASK 02 [HVAC] (вентиляция), TASK 03 [ALARM] (тревога), TASK 04 [GLASS] (бронестекло)",
-      "B ранг: TASK 01 [LIGHT] (прожектор), TASK 02 [LIFT] (подвесная система), TASK 03 [HAZMAT] (комбинезон), TASK 04 [WIRES] (кабель), TASK 05 [GATES] (гермоворота), TASK 06 [SEAL] (герметизация)",
-      "A ранг: TASK 01 [MILITARY], TASK 02 [AUTOMATION], TASK 03 [BIOMECH], TASK 04 [EXOSKELETON]"
     ],
     "активности": [
       "LVL 0: Базовый (разблокирует C rank)",
@@ -383,6 +405,22 @@
     ]
   };
 
+  var virtualFiles = {
+    "ustav.txt": "DEINOPIDAE INDUSTRIES // СВОД УСТАВА\nЦель предприятия: разработка, снабжение, техподдержка департамента S.E.\nСоблюдение правил КВР, игровых регламентов и субординации обязательно.",
+    "rules.txt": "ПРАВИЛА И САНКЦИИ:\n1. Устный выговор (фиксация мелких нарушений)\n2. Икоку (2 устных = 1 икоку)\n3. Кенсэки (2 икоку = 1 кенсэки). 3 кенсэки = увольнение.",
+    "quota.txt": "ЕЖЕНЕДЕЛЬНАЯ НОРМА:\nКадет: 4 МП (4ч / 5 оборуд)\nC Rank: 3 МП (3ч / 4 оборуд)\nB Rank: 2 МП (3ч / 3 оборуд)\nA Rank: 2 МП (2ч / 2 оборуд)",
+    "brud.txt": "БРУД: " + brudUrl,
+    "secret.log": "19██.04.12: Аварийная изоляция нижнего инженерного крыла.\nПроизошло несанкционированное повреждение инфо-ядра. Уровень доступа: 4."
+  };
+
+  var envVars = {
+    "OS": "Deinopidae Embedded Terminal [Version 4.10.88]",
+    "SECTOR": "ARACHNA // DEINOPIDAE NODE",
+    "TERMINAL_ID": "SE-DNP-CLI-02",
+    "STATUS": "SYNC_ACTIVE",
+    "USER": "OPERATOR"
+  };
+
   var termLoaded = false;
   var termBooting = false;
   var termStep = 0;
@@ -398,10 +436,8 @@
     termBooting = true;
     termStep = 0;
 
-    termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT   読み込み中. . . 待って下さい";
+    termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT";
     termProgressLine.textContent = "▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]";
-    termMsgSys.style.display = "none";
-    termMsgTip.style.display = "none";
     termAscii.style.display = "none";
     termPromptLine.style.display = "none";
 
@@ -417,13 +453,6 @@
     str += "]";
 
     termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
-
-    if (termStep === 3) {
-      termMsgSys.style.display = "block";
-    }
-    if (termStep === 6) {
-      termMsgTip.style.display = "block";
-    }
 
     if (termStep >= 10) {
       finishTerminalBoot();
@@ -441,8 +470,6 @@
 
     termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
     termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "D HELP" FOR SEE HELP';
-    termMsgSys.style.display = "block";
-    termMsgTip.style.display = "block";
 
     termAscii.textContent = asciiLogo;
     termAscii.style.display = "block";
@@ -470,12 +497,32 @@
     }
   }
 
-  function printLine(text, className) {
+  function printLine(text) {
     var div = document.createElement("div");
-    div.className = "dnp-term-resp-line " + (className || "");
+    div.className = "dnp-term-resp-line";
     div.innerHTML = text;
     termOutput.appendChild(div);
     scrollTerm();
+  }
+
+  function setColor(arg) {
+    var code = (arg || "").toUpperCase().trim();
+    var colorMap = {
+      "0F": "#ffffff", "WHITE": "#ffffff", "DEFAULT": "#d8dde0", "RESET": "#d8dde0",
+      "0A": "#4af626", "GREEN": "#4af626",
+      "0B": "#00f0ff", "CYAN": "#00f0ff",
+      "0C": "#ff5252", "RED": "#ff5252",
+      "0E": "#ffd700", "YELLOW": "#ffd700", "AMBER": "#ffb300",
+      "09": "#64b5f6", "BLUE": "#64b5f6",
+      "07": "#8e999f", "GRAY": "#8e999f"
+    };
+
+    if (colorMap[code]) {
+      termWindow.style.setProperty("--term-color", colorMap[code]);
+      printLine("[SYS] Консольный цвет изменен: " + code);
+    } else {
+      printLine("[SYS] Недопустимый цвет. Доступно: WHITE, GREEN, AMBER, CYAN, RED, GRAY, DEFAULT (или 0A, 0B, 0C, 0F)");
+    }
   }
 
   function executeCommand(raw) {
@@ -485,7 +532,7 @@
     cmdHistory.push(cmd);
     cmdHistoryIndex = cmdHistory.length;
 
-    printLine("DNP:\\&gt; " + cmd, "dnp-term-cmd-echo");
+    printLine(cmd);
 
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
@@ -501,13 +548,20 @@
         printLine("  D HELP                      - Вызов списка команд");
         printLine("  D DIR [директория]          - Просмотр содержимого директорий");
         printLine("  D FIND \"слово\" [директория]  - Поиск данных по реестру и уставу");
-        printLine("  D STAFF &lt;никнейм&gt;           - Личное дело и досье сотрудника");
-        printLine("  D OPEN &lt;раздел / ссылка&gt;    - Быстрый переход по узлам системы");
+        printLine("  D STAFF <никнейм>           - Личное дело и досье сотрудника");
+        printLine("  D OPEN <раздел / ссылка>    - Быстрый переход по узлам системы");
         printLine("  D TABLE                     - Прямой доступ к таблице состава");
         printLine("  D BRUD                      - Доступ к главному регламенту БРУД");
-        printLine("  ECHO &lt;текст&gt;                - Вывод текста в консоль");
-        printLine("  CLS / CLEAR                 - Очистить терминал");
-        printLine("[TIP] Попробуйте написать: D DIR Устав или D STAFF EGORIK0130", "is-tip");
+        printLine("=== [СЛУЖЕБНЫЕ УТИЛИТЫ CMD] ===");
+        printLine("  TREE                        - Древовидная структура разделов комплекса");
+        printLine("  TYPE <файл>                 - Просмотр текстовых файлов (ustav.txt, rules.txt...)");
+        printLine("  COLOR <код/цвет>            - Изменение цвета текста (WHITE, GREEN, AMBER, CYAN, RED)");
+        printLine("  HOSTNAME / WHOAMI           - Сетевой узел и идентификатор оператора");
+        printLine("  SYSTEMINFO                  - Технические спецификации терминала");
+        printLine("  SET                         - Переменные среды окружения");
+        printLine("  DATE / TIME                 - Системное время комплекса");
+        printLine("  ECHO <текст>                - Вывод текста в строку");
+        printLine("  CLS                         - Очистить терминал");
         return;
       }
 
@@ -519,21 +573,20 @@
           printLine("  • БРУД         - Ссылки и разделы базового регламента");
           printLine("  • ЗВАНИЯ       - Квалификационные уровни и ранги");
           printLine("  • НОРМА        - Норматив часов и оборудования");
-          printLine("  • ЗАДАНИЯ      - Список РП-квестов для повышений");
           printLine("  • АКТИВНОСТИ   - Баллы и прогрессия уровней");
           printLine("  • ДОКУМЕНТЫ    - Внеурочки, соглашение, справочники");
-          printLine("[TIP] Используйте: D DIR <название_директории>", "is-tip");
+          printLine("[TIP] Используйте: D DIR <название>");
           return;
         }
 
         if (directories[dirTarget]) {
           printLine("[SYS] СОДЕРЖИМОЕ ДИРЕКТОРИИ [" + dirTarget.toUpperCase() + "]:");
           directories[dirTarget].forEach(function (row) {
-            printLine("  &gt; " + row);
+            printLine("  > " + row);
           });
         } else {
-          printLine("[SYS] ERROR: Директория '" + dirTarget + "' не найдена в файловой системе.", "is-err");
-          printLine("[TIP] Введите D DIR для списка всех доступных каталогов.", "is-tip");
+          printLine("[SYS] ERROR: Директория '" + dirTarget + "' не найдена.");
+          printLine("[TIP] Введите D DIR для списка всех доступных каталогов.");
         }
         return;
       }
@@ -543,8 +596,8 @@
         var scope = (arg2 || "").toLowerCase();
 
         if (!query) {
-          printLine("[SYS] ERROR: Не указана фраза для поиска.", "is-err");
-          printLine("[TIP] Синтаксис: D FIND \"фраза\" или D FIND \"фраза\" \"директория\"", "is-tip");
+          printLine("[SYS] ERROR: Не указана фраза для поиска.");
+          printLine("[TIP] Синтаксис: D FIND \"фраза\" или D FIND \"фраза\" \"директория\"");
           return;
         }
 
@@ -560,7 +613,6 @@
           });
         });
 
-        // Поиск по сотрудникам
         Object.keys(employeeDb).forEach(function (k) {
           if (scope && scope !== "состав" && scope !== "сотрудники") return;
           var emp = employeeDb[k];
@@ -574,9 +626,9 @@
           matches.forEach(function (m) {
             printLine("  • " + m);
           });
-          printLine("[SYS] Найдено совпадений: " + matches.length);
+          printLine("[SYS] Найдено записей: " + matches.length);
         } else {
-          printLine("[SYS] ERROR: По запросу \"" + query + "\" данных не обнаружено.", "is-err");
+          printLine("[SYS] ERROR: По запросу \"" + query + "\" совпадений нет.");
         }
         return;
       }
@@ -584,8 +636,8 @@
       if (sub === "STAFF") {
         var nick = (arg1 || "").toLowerCase();
         if (!nick) {
-          printLine("[SYS] ERROR: Укажите никнейм сотрудника.", "is-err");
-          printLine("[TIP] Пример: D STAFF EGORIK0130", "is-tip");
+          printLine("[SYS] ERROR: Укажите никнейм сотрудника.");
+          printLine("[TIP] Пример: D STAFF EGORIK0130");
           return;
         }
 
@@ -600,23 +652,23 @@
           printLine("  СТАТУС ДОПУСКА  : " + person.status);
           printLine("==================================================");
         } else {
-          printLine("[SYS] Позывной '" + nick + "' отсутствует в локальном кэше.", "is-err");
+          printLine("[SYS] Позывной '" + nick + "' отсутствует в локальном кэше.");
           printLine("Данные обновляются из таблицы: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ GOOGLE ТАБЛИЦУ ↗</span>");
         }
         return;
       }
 
       if (sub === "TABLE") {
-        printLine("[SYS] Запрос доступа к ведомости личного состава...");
+        printLine("[SYS] Запрос ведомости личного состава...");
         window.open(sheetsUrl, "_blank");
-        printLine("[SYS] Таблица открыта в новом окне браузера.");
+        printLine("[SYS] Таблица открыта в отдельном окне браузера.");
         return;
       }
 
       if (sub === "BRUD") {
-        printLine("[SYS] Запрос прямого доступа к регламенту БРУД...");
+        printLine("[SYS] Запрос главного регламента БРУД...");
         window.open(brudUrl, "_blank");
-        printLine("[SYS] Документ БРУД открыт в новом окне браузера.");
+        printLine("[SYS] Документ БРУД открыт в отдельном окне браузера.");
         return;
       }
 
@@ -648,14 +700,14 @@
             openScreen(dest);
           }
         } else {
-          printLine("[SYS] ERROR: Узел '" + targetNode + "' не опознан.", "is-err");
-          printLine("[TIP] Используйте: D OPEN 1 .. 9, D OPEN КОРНИ, D OPEN ТАБЛИЦА", "is-tip");
+          printLine("[SYS] ERROR: Узел '" + targetNode + "' не опознан.");
+          printLine("[TIP] Используйте: D OPEN 1 .. 9, D OPEN КОРНИ, D OPEN ТАБЛИЦА");
         }
         return;
       }
 
-      printLine("[SYS] Unknown command: D " + sub, "is-err");
-      printLine("[TIP] Введите \"D HELP\" для справки.", "is-tip");
+      printLine("[SYS] Unknown command: D " + sub);
+      printLine("[TIP] Введите \"D HELP\" для справки.");
       return;
     }
 
@@ -664,22 +716,22 @@
       var secSub = (parts[1] || "").toUpperCase();
 
       if (!secSub || secSub === "HELP") {
-        printLine("[SYS] ACCESS GRANTED: BLACK-OPS PROTOCOL INITIALIZED", "is-sec");
-        printLine("  J ARCHIVE                   - Протокол инцидента 19██.04.12", "is-sec");
-        printLine("  J ROOTS                     - Аварийный переход в поврежденный сектор", "is-sec");
-        printLine("  J SECTOR                    - Диагностика целостности ядра 0x88F0A2", "is-sec");
-        printLine("  J OVERRIDE                  - Сброс прав доступа комплекса", "is-sec");
+        printLine("[SYS] PROTOCOL J INITIALIZED:");
+        printLine("  J ARCHIVE                   - Протокол инцидента 19██.04.12");
+        printLine("  J ROOTS                     - Переход в поврежденный сектор");
+        printLine("  J SECTOR                    - Диагностика целостности ядра 0x88F0A2");
+        printLine("  J OVERRIDE                  - Сброс прав доступа комплекса");
         return;
       }
 
       if (secSub === "ROOTS") {
-        printLine("[SYS] ПЕРЕНАПРАВЛЕНИЕ В АРХИВНЫЙ УЗЕЛ...", "is-sec");
+        printLine("[SYS] ПЕРЕНАПРАВЛЕНИЕ В АРХИВНЫЙ УЗЕЛ...");
         openScreen("roots");
         return;
       }
 
       if (secSub === "ARCHIVE") {
-        printLine("[SYS] РАСШИФРОВКА ОСТАТОЧНЫХ ЛОГОВ...", "is-sec");
+        printLine("[SYS] РАСШИФРОВКА ОСТАТОЧНЫХ ЛОГОВ:");
         printLine("ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR");
         printLine("MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY");
         printLine("ВНИМАНИЕ: Заражение информационного ядра ███████ подтверждено.");
@@ -687,25 +739,119 @@
       }
 
       if (secSub === "SECTOR") {
-        printLine("[SYS] ДИАГНОСТИКА СЕКТОРА 02:", "is-sec");
-        printLine("  ЦЕЛОСТНОСТЬ ХЭША: ПРОВАЛЕНО (FAIL: 0x88F0A2)");
+        printLine("[SYS] ДИАГНОСТИКА СЕКТОРА 02:");
+        printLine("  ЦЕЛОСТНОСТЬ ХЭША: FAIL (0x88F0A2)");
         printLine("  СТАТУС ИЗОЛЯЦИИ : АКТИВЕН // УРОВЕНЬ ЗАЩИТЫ 4");
         return;
       }
 
       if (secSub === "OVERRIDE") {
-        printLine("[SYS] ВЫПОЛНЕНИЕ АВАРИЙНОГО ПЕРЕОПРЕДЕЛЕНИЯ ПРАВ...", "is-sec");
-        printLine("[SYS] WARNING: Несанкционированный доступ зафиксирован в журнале аналитиков.", "is-err");
+        printLine("[SYS] ВЫПОЛНЕНИЕ АВАРИЙНОГО ПЕРЕОПРЕДЕЛЕНИЯ ПРАВ...");
+        printLine("[SYS] WARNING: Зафиксирован несанкционированный доступ.");
         return;
       }
 
-      printLine("[SYS] Security Command J " + secSub + " rejected.", "is-err");
+      printLine("[SYS] Security Command J " + secSub + " rejected.");
       return;
     }
 
-    // 3. Стандартные команды без префикса
+    // 3. Стандартные системные команды CMD
     if (first === "HELP") {
       executeCommand("D HELP");
+      return;
+    }
+
+    if (first === "COLOR") {
+      setColor(parts[1]);
+      return;
+    }
+
+    if (first === "TREE") {
+      printLine("DEINOPIDAE:\\");
+      printLine("├── 01_USTAV");
+      printLine("│   ├── 01_osnova.dat");
+      printLine("│   ├── 02_rules.dat");
+      printLine("│   ├── 03_promotions.dat");
+      printLine("│   ├── 04_quota.dat");
+      printLine("│   ├── 05_tasks.dat");
+      printLine("│   ├── 06_exams_lectures.dat");
+      printLine("│   ├── 07_activities.dat");
+      printLine("│   ├── 08_misc.dat");
+      printLine("│   └── 09_final.dat");
+      printLine("├── 02_DATABASE");
+      printLine("│   ├── staff_registry.db");
+      printLine("│   └── external_links.cfg");
+      printLine("├── 03_ROOTS [DAMAGED]");
+      printLine("│   └── sector_02.corrupt");
+      printLine("└── 04_RECRUITMENT [LOCKED]");
+      return;
+    }
+
+    if (first === "TYPE") {
+      var fileName = (parts[1] || "").toLowerCase();
+      if (!fileName) {
+        printLine("[SYS] Синтаксис: TYPE <имя_файла>");
+        printLine("[SYS] Доступные файлы: ustav.txt, rules.txt, quota.txt, brud.txt, secret.log");
+        return;
+      }
+      if (virtualFiles[fileName]) {
+        printLine(virtualFiles[fileName]);
+      } else {
+        printLine("[SYS] Файл не найден: " + fileName);
+      }
+      return;
+    }
+
+    if (first === "HOSTNAME") {
+      printLine("SE-DNP-NODE04-COMPLEX");
+      return;
+    }
+
+    if (first === "WHOAMI") {
+      printLine("deinopidae\\guest_operator");
+      return;
+    }
+
+    if (first === "SYSTEMINFO") {
+      printLine("Название ОС:                 DEINOPIDAE EMBEDDED OS");
+      printLine("Версия ОС:                   4.10.88 Build 2026");
+      printLine("Производитель системы:       Arachna S.E. Department");
+      printLine("Тип системы:                 x64-based PDA Terminal");
+      printLine("Сетевой адаптер:             Local Link: Stable (Sync: 97%)");
+      printLine("Температура ядра:            36°C");
+      return;
+    }
+
+    if (first === "SET") {
+      Object.keys(envVars).forEach(function (k) {
+        printLine(k + "=" + envVars[k]);
+      });
+      return;
+    }
+
+    if (first === "TITLE") {
+      var newTitle = cmd.substring(5).trim();
+      if (newTitle) {
+        termTopTitle.textContent = newTitle;
+        printLine("[SYS] Заголовок окна обновлен.");
+      } else {
+        printLine("[SYS] Укажите заголовок: TITLE <текст>");
+      }
+      return;
+    }
+
+    if (first === "VER") {
+      printLine("Deinopidae Terminal OS [Версия 4.10.88 - 2026]");
+      return;
+    }
+
+    if (first === "DATE") {
+      printLine("Текущая дата: " + new Date().toLocaleDateString());
+      return;
+    }
+
+    if (first === "TIME") {
+      printLine("Текущее время: " + new Date().toLocaleTimeString());
       return;
     }
 
@@ -730,20 +876,8 @@
       return;
     }
 
-    if (first === "STATUS") {
-      printLine("[SYS] TERMINAL STATUS: ONLINE // SYS.V-4");
-      printLine("  LOCAL NET: STABLE | SYNC: 97% | CORE TEMP: 36C");
-      return;
-    }
-
-    if (first === "TIME") {
-      printLine("[SYS] ТЕКУЩЕЕ СИСТЕМНОЕ ВРЕМЯ: " + new Date().toLocaleTimeString() + " // " + new Date().toLocaleDateString());
-      return;
-    }
-
-    // Неизвестная команда
-    printLine("[SYS] Unknown command: " + cmd, "is-err");
-    printLine("[TIP] Попробуйте написать \"D HELP\"", "is-tip");
+    printLine("[SYS] Unknown command: " + cmd);
+    printLine("[TIP] Попробуйте написать \"D HELP\"");
   }
 
   if (termInput) {
