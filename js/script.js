@@ -210,6 +210,10 @@
           button.setAttribute("aria-selected", isActive ? "true" : "false");
         });
 
+        if (name === "database") {
+          initTerminalBoot();
+        }
+
         isTransitioning = false;
       }, 240);
     } else {
@@ -228,6 +232,10 @@
         button.classList.toggle("is-active", isActive);
         button.setAttribute("aria-selected", isActive ? "true" : "false");
       });
+
+      if (name === "database") {
+        initTerminalBoot();
+      }
     }
   }
 
@@ -280,289 +288,39 @@
     });
   }
 
+  // =========================================================
+  // КОМАНДНАЯ СТРОКА: БАЗА ДАННЫХ И ТЕРМИНАЛ DEINOPIDAE
+  // =========================================================
+  var termBody = document.getElementById("term-body");
+  var termTopTitle = document.getElementById("term-top-title");
+  var termProgressLine = document.getElementById("term-progress-line");
+  var termMsgSys = document.getElementById("term-msg-sys");
+  var termMsgTip = document.getElementById("term-msg-tip");
+  var termAscii = document.getElementById("term-ascii");
+  var termOutput = document.getElementById("term-output");
+  var termPromptLine = document.getElementById("term-prompt-line");
+  var termInput = document.getElementById("term-input");
+
   var brudUrl = "https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing";
+  var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
-  var searchIndex = [
-    {
-      title: "Раздел 1 — Основа",
-      subtitle: "О предприятии Deinopidae, цели, задачи комплекса",
-      badge: "УСТАВ",
-      keywords: ["основа", "предприятие", "дейнопидае", "задачи", "мерчендайзер", "цели", "поставки", "починка", "арахна"],
-      type: "internal",
-      target: "ustav-01"
-    },
-    {
-      title: "БРУД // Раздел 1 — Основа",
-      subtitle: "Официальный регламент предприятия в БРУД",
-      badge: "БРУД // DOC",
-      keywords: ["основа", "бруд", "документ", "профиль", "предприятие"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 2 — Правила",
-      subtitle: "Основной перечень правил, КВР, виды наказаний",
-      badge: "УСТАВ",
-      keywords: ["правила", "квр", "закон", "discord", "наказания", "устный", "икоку", "кенсэки", "увольнение"],
-      type: "internal",
-      target: "ustav-02"
-    },
-    {
-      title: "БРУД // Раздел 2 — Правила",
-      subtitle: "Развёрнутый свод законов и штрафных санкций в БРУД",
-      badge: "БРУД // DOC",
-      keywords: ["правила", "бруд", "наказания", "санкции", "икоку", "кенсэки"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 3 — Повышения",
-      subtitle: "Звания (Курсант - Главный инженер), требования по часам и дням",
-      badge: "УСТАВ",
-      keywords: ["повышение", "повышения", "звания", "ранг", "курсант", "локализатор", "оператор", "диспетчер", "эксперт", "инспектор", "конструктор", "инженер", "потолок"],
-      type: "internal",
-      target: "ustav-03"
-    },
-    {
-      title: "БРУД // Раздел 3 — Повышения",
-      subtitle: "Порядок присвоения званий и регламент квалификаций в БРУД",
-      badge: "БРУД // DOC",
-      keywords: ["повышения", "бруд", "звания", "кэнсюсей", "сэнкосэй", "тюсэй", "дзёсэй"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 4 — Норма",
-      subtitle: "Еженедельная норма по рангам, отписки",
-      badge: "УСТАВ",
-      keywords: ["норма", "часы", "мп", "мероприятия", "оборудование", "отписка", "отписка-нормы", "кенсэки"],
-      type: "internal",
-      target: "ustav-04"
-    },
-    {
-      title: "БРУД // Раздел 4 — Норма",
-      subtitle: "Официальный регламент выполнения еженедельной нормы",
-      badge: "БРУД // DOC",
-      keywords: ["норма", "отписка", "бруд", "регламент"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 5 — Задания",
-      subtitle: "РП-задания для проверки рангов (Кадет, C, B, A ранг)",
-      badge: "УСТАВ",
-      keywords: ["задания", "квесты", "wheel", "locks", "power", "hvac", "alarm", "glass", "light", "lift", "hazmat", "wires", "gates", "seal", "military", "automation", "biomech", "exoskeleton"],
-      type: "internal",
-      target: "ustav-05"
-    },
-    {
-      title: "БРУД // Раздел 5 — Задания",
-      subtitle: "Реестр и правила выполнения квестов отдела в БРУД",
-      badge: "БРУД // DOC",
-      keywords: ["задания", "квесты", "бруд"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 6 — Проверки и Лекции",
-      subtitle: "Проверки C/B/A, лекции ПО, СО, МП, регламент пинга офицера",
-      badge: "УСТАВ",
-      keywords: ["проверки", "лекции", "экзамен", "тест", "по", "со", "мп", "офицер", "гч", "база", "реактор"],
-      type: "internal",
-      target: "ustav-06"
-    },
-    {
-      title: "БРУД // Раздел 6 — Проверки и Лекции",
-      subtitle: "Материалы для сдачи экзаменов и билеты лекций",
-      badge: "БРУД // DOC",
-      keywords: ["проверки", "лекции", "билеты", "бруд", "материалы", "экзамен"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 7 — Активности",
-      subtitle: "Уровни активности 0/1/2, шкала прогрессии, правила сгорания",
-      badge: "УСТАВ",
-      keywords: ["активность", "активности", "баллы", "очки", "шкала", "уровень", "сброс", "понедельник", "pts"],
-      type: "internal",
-      target: "ustav-07"
-    },
-    {
-      title: "БРУД // Раздел 7 — Активности",
-      subtitle: "Регламент начисления очков активности и премирования",
-      badge: "БРУД // DOC",
-      keywords: ["активности", "очки", "бруд", "рейтинг", "премии"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 8 — Прочее",
-      subtitle: "Проведение мероприятий (5 и 7 звания)",
-      badge: "УСТАВ",
-      keywords: ["прочее", "мероприятия", "мп", "надзор", "полевой", "ведущий"],
-      type: "internal",
-      target: "ustav-08"
-    },
-    {
-      title: "БРУД // Раздел 8 — Прочее",
-      subtitle: "Дополнительные протоколы проведения мероприятий",
-      badge: "БРУД // DOC",
-      keywords: ["прочее", "мероприятия", "бруд", "регламент"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Раздел 9 — Конец",
-      subtitle: "Заключение, авторы и первоиздатели устава",
-      badge: "УСТАВ",
-      keywords: ["конец", "заключение", "wewewewestrelok", "egorik0130", "редактор", "дата"],
-      type: "internal",
-      target: "ustav-09"
-    },
-    {
-      title: "БРУД // Раздел 9 — Конец",
-      subtitle: "Юридический архив утверждения документов в БРУД",
-      badge: "БРУД // DOC",
-      keywords: ["конец", "бруд", "архив"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "БРУД // Официальный документ",
-      subtitle: "Главный свод документов и нормативных положений",
-      badge: "БРУД // DOC",
-      keywords: ["бруд", "главный", "документ", "свод", "положения"],
-      type: "external",
-      url: brudUrl
-    },
-    {
-      title: "Таблица личного состава и нормы",
-      subtitle: "Google Таблица: часы, звания, выговоры и состав отдела",
-      badge: "GOOGLE SHEETS",
-      keywords: ["таблица", "таблицу", "состав", "реестр", "часы", "выговоры", "список"],
-      type: "external",
-      url: "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163"
-    },
-    {
-      title: "Внеурочки: Отдел починки (ПО)",
-      subtitle: "Google Документ: форма и требования к отчетам починки",
-      badge: "GOOGLE DOCS",
-      keywords: ["внеурочки", "по", "починка", "отчет", "форма"],
-      type: "external",
-      url: "https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf"
-    },
-    {
-      title: "Внеурочки: Отдел создания (СО)",
-      subtitle: "Google Документ: форма и требования к отчетам создания",
-      badge: "GOOGLE DOCS",
-      keywords: ["внеурочки", "со", "создание", "отчет", "форма"],
-      type: "external",
-      url: "https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n"
-    },
-    {
-      title: "Пользовательское соглашение",
-      subtitle: "Google Документ: условия и регламент эксплуатации систем",
-      badge: "GOOGLE DOCS",
-      keywords: ["пользовательское", "соглашение", "условия", "регламент"],
-      type: "external",
-      url: "https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf"
-    },
-    {
-      title: "Справочник сотрудника",
-      subtitle: "Google Документ: базовый справочный материал департамента S.E.",
-      badge: "GOOGLE DOCS",
-      keywords: ["справочник", "справки", "информация", "база", "се"],
-      type: "external",
-      url: "https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf"
-    }
-  ];
+  var asciiLogo = [
+    "             /\\                                  /\\",
+    "            /  \\                                /  \\",
+    "           / /\\ \\                              / /\\ \\",
+    "          / /  \\ \\       DEINOPIDAE           / /  \\ \\",
+    "         / / /\\ \\ \\      INDUSTRIES          / / /\\ \\ \\",
+    "        / / /  \\ \\ \\                        / / /  \\ \\ \\",
+    "       / / / /\\ \\ \\ \\     [S.E. CORE]      / / / /\\ \\ \\ \\",
+    "      / / / /__\\ \\ \\ \\                    / / / /__\\ \\ \\ \\",
+    "     / / /   ||   \\ \\ \\                  / / /   ||   \\ \\ \\",
+    "    / / /====||====\\ \\ \\                / / /====||====\\ \\ \\",
+    "   /        [||]        \\              /        [||]        \\",
+    "  /__________||__________\\            /__________||__________\\",
+    "            [||]                                [||]"
+  ].join("\n");
 
-  var searchInput = document.getElementById("dnp-db-search");
-  var searchClear = document.getElementById("dnp-search-clear");
-  var searchResults = document.getElementById("dnp-search-results");
-
-  if (searchInput && searchResults) {
-    function runSearch() {
-      var query = searchInput.value.trim().toLowerCase();
-
-      if (searchClear) {
-        searchClear.style.display = query.length > 0 ? "block" : "none";
-      }
-
-      if (query.length === 0) {
-        searchResults.innerHTML = "";
-        return;
-      }
-
-      var filtered = searchIndex.filter(function (item) {
-        var matchTitle = item.title.toLowerCase().indexOf(query) !== -1;
-        var matchSub = item.subtitle.toLowerCase().indexOf(query) !== -1;
-        var matchKeys = item.keywords.some(function (k) {
-          return k.indexOf(query) !== -1;
-        });
-
-        return matchTitle || matchSub || matchKeys;
-      });
-
-      if (filtered.length === 0) {
-        searchResults.innerHTML = '<div style="padding: 10px 14px; color: var(--muted); font-size: 12px; border: 1px dashed rgba(138,160,168,0.2);">Совпадений не найдено</div>';
-        return;
-      }
-
-      var html = "";
-      filtered.forEach(function (res, index) {
-        var extraClass = "";
-        if (res.badge.indexOf("БРУД") !== -1) extraClass = "is-brud";
-        if (res.badge.indexOf("GOOGLE") !== -1) extraClass = "is-doc";
-
-        var delay = (index * 0.03).toFixed(2);
-
-        html += '<div class="dnp-search-item ' + extraClass + '" style="animation-delay: ' + delay + 's;" data-type="' + res.type + '" data-target="' + (res.target || '') + '" data-url="' + (res.url || '') + '">';
-        html += '  <div class="dnp-search-item-info">';
-        html += '    <b>' + res.title + '</b>';
-        html += '    <span>' + res.subtitle + '</span>';
-        html += '  </div>';
-        html += '  <div class="dnp-search-item-badge">' + res.badge + '</div>';
-        html += '</div>';
-      });
-
-      searchResults.innerHTML = html;
-    }
-
-    searchInput.addEventListener("input", runSearch);
-
-    if (searchClear) {
-      searchClear.addEventListener("click", function () {
-        searchInput.value = "";
-        runSearch();
-        searchInput.focus();
-      });
-    }
-
-    searchResults.addEventListener("click", function (e) {
-      var item = e.target.closest(".dnp-search-item");
-      if (!item) return;
-
-      var type = item.getAttribute("data-type");
-      if (type === "internal") {
-        var screenTarget = item.getAttribute("data-target");
-        if (screenTarget) {
-          openScreen(screenTarget);
-        }
-      } else if (type === "external") {
-        var url = item.getAttribute("data-url");
-        if (url) {
-          window.open(url, "_blank");
-        }
-      }
-    });
-  }
-
-  var employeeInput = document.getElementById("dnp-employee-input");
-  var employeeBtn = document.getElementById("dnp-employee-btn");
-  var employeeCard = document.getElementById("dnp-employee-card");
-
-  var employeeDatabase = {
+  var employeeDb = {
     "xxartemrtxxx": { name: "xxartemrtxxx", rank: "OFFICER", role: "Офицер отдела", hours: "18 ч.", po: 6, so: 4, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
     "egorik0130": { name: "EGORIK0130", rank: "OFFICER", role: "Офицер отдела", hours: "24 ч.", po: 8, so: 5, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
     "ceretow2222": { name: "ceretow2222", rank: "PROFESSOR", role: "Профессор", hours: "14 ч.", po: 4, so: 3, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
@@ -571,55 +329,443 @@
     "kira_ewika": { name: "kira_ewika", rank: "PROFESSOR", role: "Экс-профессор", hours: "—", po: "—", so: "—", ikoku: 1, kenseki: 0, status: "АРХИВ" }
   };
 
-  function lookupEmployee() {
-    if (!employeeInput || !employeeCard) return;
-    var query = employeeInput.value.trim().toLowerCase();
+  var directories = {
+    "устав": [
+      "РАЗДЕЛ 1: Основа (О предприятии, задачи работы)",
+      "РАЗДЕЛ 2: Правила (КВР, Свод законов, виды наказаний: Устный, Икоку, Кенсэки)",
+      "РАЗДЕЛ 3: Повышения (Звания: Курсант -> Главный инженер, потолок рангов)",
+      "РАЗДЕЛ 4: Норма (Еженедельная норма: Кадет, C, B, A ранги)",
+      "РАЗДЕЛ 5: Задания (РП-задачи для проверки рангов: WHEEL, POWER, LIGHT и др.)",
+      "РАЗДЕЛ 6: Проверки и Лекции (Экзамены C/B/A, лекции ПО/СО/МП)",
+      "РАЗДЕЛ 7: Активности (Шкала прогрессии, сброс очков по понедельникам)",
+      "РАЗДЕЛ 8: Прочее (Проведение мероприятий: 5 и 7 звания)",
+      "РАЗДЕЛ 9: Конец (Заключение, первоиздатель Wewewewestrelok)"
+    ],
+    "бруд": [
+      "БРУД // Документ: " + brudUrl,
+      "01. Положения и регламент предприятия Deinopidae",
+      "02. Квалификационные требования и должностные инструкции",
+      "03. Журнал внеурочной деятельности и отписка-нормы"
+    ],
+    "звания": [
+      "Кадет: 1. Курсант (выдается аналитиком), 2. Локализатор (5ч, 1 задание)",
+      "C Rank: 3. Оператор (6ч, 2 задания, 6 дней), 4. Диспетчер (7ч, 2 задания, 8 дней)",
+      "B Rank: 5. Полевой эксперт (8ч, 3 задания, 10 дней), 6. Старший инспектор (9ч, 3 задания, 18 дней)",
+      "A Rank: 7. Ведущий конструктор (9ч, 4 задания, 23 дня), 8. Главный инженер (выдается аналитиком)"
+    ],
+    "норма": [
+      "Кадет: Посетить 4 МП. На выбор: Наиграть 4 часа / 5 Оборудования",
+      "C RANK: Посетить 3 МП. На выбор: Наиграть 3 часа / 4 Оборудования",
+      "B RANK: Посетить 2 МП. На выбор: Наиграть 3 часа / 3 Оборудования",
+      "A RANK: Посетить 2 МП. На выбор: Наиграть 2 часа / 2 Оборудования",
+      "ШТРАФ: Невыполнение без отписки в 'Отписка-нормы' = 1 Кенсэки"
+    ],
+    "задания": [
+      "Кадет: TASK 01 [WHEEL] (колесо тележки), TASK 02 [LOCKS] (замки шкафчиков)",
+      "C ранг: TASK 01 [POWER] (пробки в щитке), TASK 02 [HVAC] (вентиляция), TASK 03 [ALARM] (тревога), TASK 04 [GLASS] (бронестекло)",
+      "B ранг: TASK 01 [LIGHT] (прожектор), TASK 02 [LIFT] (подвесная система), TASK 03 [HAZMAT] (комбинезон), TASK 04 [WIRES] (кабель), TASK 05 [GATES] (гермоворота), TASK 06 [SEAL] (герметизация)",
+      "A ранг: TASK 01 [MILITARY], TASK 02 [AUTOMATION], TASK 03 [BIOMECH], TASK 04 [EXOSKELETON]"
+    ],
+    "активности": [
+      "LVL 0: Базовый (разблокирует C rank)",
+      "LVL 1: Средний (разблокирует B rank, рейтинг, внеурочки)",
+      "LVL 2: Высокий (разблокирует A rank, квесты)",
+      "ПРАВИЛО: Под конец недели (0:00 ПН) при >= 20 очках снимается 20 PTS. При < 20 очках сброс на 1 уровень.",
+      "БАЛЛЫ: Внеурочки (10), Квесты (20), Помощь (10), Рейтинг (10), Отдельное МП (10), Общее МП (20), Лекция (20), Норма (10)"
+    ],
+    "документы": [
+      "Таблица состава: " + sheetsUrl,
+      "БРУД (Регламент): " + brudUrl,
+      "Внеурочки ПО: https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf",
+      "Внеурочки СО: https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n",
+      "Пользовательское соглашение: https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf",
+      "Справочник сотрудника: https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf"
+    ]
+  };
 
-    if (!query) {
-      employeeCard.innerHTML = '<span class="dnp-muted">Введите позывной для выгрузки дела из реестра комплекса.</span>';
+  var termLoaded = false;
+  var termBooting = false;
+  var termStep = 0;
+  var termTimer = null;
+  var cmdHistory = [];
+  var cmdHistoryIndex = -1;
+
+  function initTerminalBoot() {
+    if (termLoaded || termBooting) {
+      if (termInput) termInput.focus();
+      return;
+    }
+    termBooting = true;
+    termStep = 0;
+
+    termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT   読み込み中. . . 待って下さい";
+    termProgressLine.textContent = "▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]";
+    termMsgSys.style.display = "none";
+    termMsgTip.style.display = "none";
+    termAscii.style.display = "none";
+    termPromptLine.style.display = "none";
+
+    runBootStep();
+  }
+
+  function runBootStep() {
+    var totalDots = 20;
+    var filled = Math.min(termStep * 2, totalDots);
+    var str = "[ ";
+    for (var i = 0; i < filled; i++) str += "▉ ";
+    for (var j = filled; j < totalDots; j++) str += "• ";
+    str += "]";
+
+    termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+
+    if (termStep === 3) {
+      termMsgSys.style.display = "block";
+    }
+    if (termStep === 6) {
+      termMsgTip.style.display = "block";
+    }
+
+    if (termStep >= 10) {
+      finishTerminalBoot();
       return;
     }
 
-    var record = employeeDatabase[query];
+    termStep++;
+    termTimer = setTimeout(runBootStep, 240);
+  }
 
-    if (record) {
-      employeeCard.innerHTML = [
-        '<div class="dnp-dossier">',
-        '  <div class="dnp-dossier-avatar">',
-        '    <img src="assets/image/favicon.png" alt="Emblem">',
-        '  </div>',
-        '  <div class="dnp-dossier-grid">',
-        '    <div class="dnp-dossier-cell"><span>ПОЗЫВНОЙ // НИК</span><b>' + record.name + '</b></div>',
-        '    <div class="dnp-dossier-cell"><span>ТЕКУЩЕЕ ЗВАНИЕ</span><b>' + record.rank + ' (' + record.role + ')</b></div>',
-        '    <div class="dnp-dossier-cell"><span>ОТЫГРАНО ЧАСОВ</span><b>' + record.hours + '</b></div>',
-        '    <div class="dnp-dossier-cell"><span>СДАНО ПО / СО</span><b>' + record.po + ' ПО / ' + record.so + ' СО</b></div>',
-        '    <div class="dnp-dossier-cell"><span>ИКОКУ / КЕНСЭКИ</span><b style="color:' + (record.kenseki > 0 ? 'var(--danger)' : 'var(--text)') + ';">' + record.ikoku + ' ИК. / ' + record.kenseki + ' КЕН.</b></div>',
-        '    <div class="dnp-dossier-cell"><span>СТАТУС ДОПУСКА</span><b class="dnp-ok">' + record.status + '</b></div>',
-        '  </div>',
-        '</div>'
-      ].join('');
-    } else {
-      employeeCard.innerHTML = [
-        '<div class="dnp-dossier">',
-        '  <div class="dnp-dossier-avatar">',
-        '    <img src="assets/image/favicon.png" alt="Emblem">',
-        '  </div>',
-        '  <div class="dnp-dossier-grid">',
-        '    <div class="dnp-dossier-cell"><span>ПОЗЫВНОЙ // НИК</span><b>' + employeeInput.value + '</b></div>',
-        '    <div class="dnp-dossier-cell"><span>СТАТУС В БАЗЕ</span><b class="dnp-warn-text">СИНХРОНИЗАЦИЯ С ТАБЛИЦЕЙ</b></div>',
-        '    <div class="dnp-dossier-cell" style="grid-column: 1 / -1;"><span class="dnp-muted">Сотрудник найден в общей ведомости:</span><a class="dnp-action" style="margin: 6px 0 0;" target="_blank" href="https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163">ОТКРЫТЬ В ТАБЛИЦЕ COMPLEX</a></div>',
-        '  </div>',
-        '</div>'
-      ].join('');
+  function finishTerminalBoot() {
+    if (termTimer) clearTimeout(termTimer);
+    termBooting = false;
+    termLoaded = true;
+
+    termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
+    termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "D HELP" FOR SEE HELP';
+    termMsgSys.style.display = "block";
+    termMsgTip.style.display = "block";
+
+    termAscii.textContent = asciiLogo;
+    termAscii.style.display = "block";
+
+    termPromptLine.style.display = "flex";
+    if (termInput) {
+      termInput.focus();
+    }
+    scrollTerm();
+  }
+
+  if (termBody) {
+    termBody.addEventListener("click", function () {
+      if (termBooting) {
+        finishTerminalBoot();
+      } else if (termInput) {
+        termInput.focus();
+      }
+    });
+  }
+
+  function scrollTerm() {
+    if (termBody) {
+      termBody.scrollTop = termBody.scrollHeight;
     }
   }
 
-  if (employeeBtn) {
-    employeeBtn.addEventListener("click", lookupEmployee);
+  function printLine(text, className) {
+    var div = document.createElement("div");
+    div.className = "dnp-term-resp-line " + (className || "");
+    div.innerHTML = text;
+    termOutput.appendChild(div);
+    scrollTerm();
   }
-  if (employeeInput) {
-    employeeInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") lookupEmployee();
+
+  function executeCommand(raw) {
+    var cmd = raw.trim();
+    if (!cmd) return;
+
+    cmdHistory.push(cmd);
+    cmdHistoryIndex = cmdHistory.length;
+
+    printLine("DNP:\\&gt; " + cmd, "dnp-term-cmd-echo");
+
+    var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+    var first = (parts[0] || "").toUpperCase();
+
+    // 1. Префикс D
+    if (first === "D") {
+      var sub = (parts[1] || "").toUpperCase();
+      var arg1 = (parts[2] || "").replace(/^"|"$/g, "");
+      var arg2 = (parts[3] || "").replace(/^"|"$/g, "");
+
+      if (!sub || sub === "HELP") {
+        printLine("=== [DEINOPIDAE OS // КОМАНДЫ БАЗЫ ДАННЫХ] ===");
+        printLine("  D HELP                      - Вызов списка команд");
+        printLine("  D DIR [директория]          - Просмотр содержимого директорий");
+        printLine("  D FIND \"слово\" [директория]  - Поиск данных по реестру и уставу");
+        printLine("  D STAFF &lt;никнейм&gt;           - Личное дело и досье сотрудника");
+        printLine("  D OPEN &lt;раздел / ссылка&gt;    - Быстрый переход по узлам системы");
+        printLine("  D TABLE                     - Прямой доступ к таблице состава");
+        printLine("  D BRUD                      - Доступ к главному регламенту БРУД");
+        printLine("  ECHO &lt;текст&gt;                - Вывод текста в консоль");
+        printLine("  CLS / CLEAR                 - Очистить терминал");
+        printLine("[TIP] Попробуйте написать: D DIR Устав или D STAFF EGORIK0130", "is-tip");
+        return;
+      }
+
+      if (sub === "DIR") {
+        var dirTarget = (arg1 || "").toLowerCase();
+        if (!dirTarget) {
+          printLine("[SYS] ДОСТУПНЫЕ ДИРЕКТОРИИ БАЗЫ ДАННЫХ:");
+          printLine("  • УСТАВ        - Все 9 разделов действующего устава");
+          printLine("  • БРУД         - Ссылки и разделы базового регламента");
+          printLine("  • ЗВАНИЯ       - Квалификационные уровни и ранги");
+          printLine("  • НОРМА        - Норматив часов и оборудования");
+          printLine("  • ЗАДАНИЯ      - Список РП-квестов для повышений");
+          printLine("  • АКТИВНОСТИ   - Баллы и прогрессия уровней");
+          printLine("  • ДОКУМЕНТЫ    - Внеурочки, соглашение, справочники");
+          printLine("[TIP] Используйте: D DIR <название_директории>", "is-tip");
+          return;
+        }
+
+        if (directories[dirTarget]) {
+          printLine("[SYS] СОДЕРЖИМОЕ ДИРЕКТОРИИ [" + dirTarget.toUpperCase() + "]:");
+          directories[dirTarget].forEach(function (row) {
+            printLine("  &gt; " + row);
+          });
+        } else {
+          printLine("[SYS] ERROR: Директория '" + dirTarget + "' не найдена в файловой системе.", "is-err");
+          printLine("[TIP] Введите D DIR для списка всех доступных каталогов.", "is-tip");
+        }
+        return;
+      }
+
+      if (sub === "FIND") {
+        var query = (arg1 || "").toLowerCase();
+        var scope = (arg2 || "").toLowerCase();
+
+        if (!query) {
+          printLine("[SYS] ERROR: Не указана фраза для поиска.", "is-err");
+          printLine("[TIP] Синтаксис: D FIND \"фраза\" или D FIND \"фраза\" \"директория\"", "is-tip");
+          return;
+        }
+
+        printLine("[SYS] СКАНИРОВАНИЕ ИНДЕКСА ПО ЗАПРОСУ: \"" + query + "\"...");
+        var matches = [];
+
+        Object.keys(directories).forEach(function (cat) {
+          if (scope && scope !== cat) return;
+          directories[cat].forEach(function (line) {
+            if (line.toLowerCase().indexOf(query) !== -1) {
+              matches.push("[" + cat.toUpperCase() + "] " + line);
+            }
+          });
+        });
+
+        // Поиск по сотрудникам
+        Object.keys(employeeDb).forEach(function (k) {
+          if (scope && scope !== "состав" && scope !== "сотрудники") return;
+          var emp = employeeDb[k];
+          var rawStr = (emp.name + " " + emp.rank + " " + emp.role + " " + emp.status).toLowerCase();
+          if (rawStr.indexOf(query) !== -1) {
+            matches.push("[СОСТАВ] " + emp.name + " // " + emp.rank + " (" + emp.role + ") - " + emp.status);
+          }
+        });
+
+        if (matches.length > 0) {
+          matches.forEach(function (m) {
+            printLine("  • " + m);
+          });
+          printLine("[SYS] Найдено совпадений: " + matches.length);
+        } else {
+          printLine("[SYS] ERROR: По запросу \"" + query + "\" данных не обнаружено.", "is-err");
+        }
+        return;
+      }
+
+      if (sub === "STAFF") {
+        var nick = (arg1 || "").toLowerCase();
+        if (!nick) {
+          printLine("[SYS] ERROR: Укажите никнейм сотрудника.", "is-err");
+          printLine("[TIP] Пример: D STAFF EGORIK0130", "is-tip");
+          return;
+        }
+
+        var person = employeeDb[nick];
+        if (person) {
+          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // РЕЕСТР COMPLEX] ===");
+          printLine("  ПОЗЫВНОЙ / НИК  : " + person.name);
+          printLine("  ЗВАНИЕ / РОЛЬ   : " + person.rank + " [" + person.role + "]");
+          printLine("  НАИГРАНО ЧАСОВ  : " + person.hours);
+          printLine("  СДАНО ПО / СО   : " + person.po + " ПО / " + person.so + " СО");
+          printLine("  ИКОКУ / КЕНСЭКИ : " + person.ikoku + " ИК. / " + person.kenseki + " КЕН.");
+          printLine("  СТАТУС ДОПУСКА  : " + person.status);
+          printLine("==================================================");
+        } else {
+          printLine("[SYS] Позывной '" + nick + "' отсутствует в локальном кэше.", "is-err");
+          printLine("Данные обновляются из таблицы: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ GOOGLE ТАБЛИЦУ ↗</span>");
+        }
+        return;
+      }
+
+      if (sub === "TABLE") {
+        printLine("[SYS] Запрос доступа к ведомости личного состава...");
+        window.open(sheetsUrl, "_blank");
+        printLine("[SYS] Таблица открыта в новом окне браузера.");
+        return;
+      }
+
+      if (sub === "BRUD") {
+        printLine("[SYS] Запрос прямого доступа к регламенту БРУД...");
+        window.open(brudUrl, "_blank");
+        printLine("[SYS] Документ БРУД открыт в новом окне браузера.");
+        return;
+      }
+
+      if (sub === "OPEN") {
+        var targetNode = (arg1 || "").toLowerCase();
+        var mapping = {
+          "1": "ustav-01", "устав 1": "ustav-01", "основа": "ustav-01",
+          "2": "ustav-02", "устав 2": "ustav-02", "правила": "ustav-02",
+          "3": "ustav-03", "устав 3": "ustav-03", "повышения": "ustav-03",
+          "4": "ustav-04", "устав 4": "ustav-04", "норма": "ustav-04",
+          "5": "ustav-05", "устав 5": "ustav-05", "задания": "ustav-05",
+          "6": "ustav-06", "устав 6": "ustav-06", "проверки": "ustav-06",
+          "7": "ustav-07", "устав 7": "ustav-07", "активности": "ustav-07",
+          "8": "ustav-08", "устав 8": "ustav-08", "прочее": "ustav-08",
+          "9": "ustav-09", "устав 9": "ustav-09", "конец": "ustav-09",
+          "корни": "roots", "roots": "roots", "бруд": "brud", "таблица": "table"
+        };
+
+        if (mapping[targetNode]) {
+          var dest = mapping[targetNode];
+          if (dest === "brud") {
+            window.open(brudUrl, "_blank");
+            printLine("[SYS] Переход к ресурсу БРУД...");
+          } else if (dest === "table") {
+            window.open(sheetsUrl, "_blank");
+            printLine("[SYS] Переход к ведомости Google Таблиц...");
+          } else {
+            printLine("[SYS] Переключение интерфейса на модуль: " + dest.toUpperCase());
+            openScreen(dest);
+          }
+        } else {
+          printLine("[SYS] ERROR: Узел '" + targetNode + "' не опознан.", "is-err");
+          printLine("[TIP] Используйте: D OPEN 1 .. 9, D OPEN КОРНИ, D OPEN ТАБЛИЦА", "is-tip");
+        }
+        return;
+      }
+
+      printLine("[SYS] Unknown command: D " + sub, "is-err");
+      printLine("[TIP] Введите \"D HELP\" для справки.", "is-tip");
+      return;
+    }
+
+    // 2. Секретный префикс J
+    if (first === "J") {
+      var secSub = (parts[1] || "").toUpperCase();
+
+      if (!secSub || secSub === "HELP") {
+        printLine("[SYS] ACCESS GRANTED: BLACK-OPS PROTOCOL INITIALIZED", "is-sec");
+        printLine("  J ARCHIVE                   - Протокол инцидента 19██.04.12", "is-sec");
+        printLine("  J ROOTS                     - Аварийный переход в поврежденный сектор", "is-sec");
+        printLine("  J SECTOR                    - Диагностика целостности ядра 0x88F0A2", "is-sec");
+        printLine("  J OVERRIDE                  - Сброс прав доступа комплекса", "is-sec");
+        return;
+      }
+
+      if (secSub === "ROOTS") {
+        printLine("[SYS] ПЕРЕНАПРАВЛЕНИЕ В АРХИВНЫЙ УЗЕЛ...", "is-sec");
+        openScreen("roots");
+        return;
+      }
+
+      if (secSub === "ARCHIVE") {
+        printLine("[SYS] РАСШИФРОВКА ОСТАТОЧНЫХ ЛОГОВ...", "is-sec");
+        printLine("ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR");
+        printLine("MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY");
+        printLine("ВНИМАНИЕ: Заражение информационного ядра ███████ подтверждено.");
+        return;
+      }
+
+      if (secSub === "SECTOR") {
+        printLine("[SYS] ДИАГНОСТИКА СЕКТОРА 02:", "is-sec");
+        printLine("  ЦЕЛОСТНОСТЬ ХЭША: ПРОВАЛЕНО (FAIL: 0x88F0A2)");
+        printLine("  СТАТУС ИЗОЛЯЦИИ : АКТИВЕН // УРОВЕНЬ ЗАЩИТЫ 4");
+        return;
+      }
+
+      if (secSub === "OVERRIDE") {
+        printLine("[SYS] ВЫПОЛНЕНИЕ АВАРИЙНОГО ПЕРЕОПРЕДЕЛЕНИЯ ПРАВ...", "is-sec");
+        printLine("[SYS] WARNING: Несанкционированный доступ зафиксирован в журнале аналитиков.", "is-err");
+        return;
+      }
+
+      printLine("[SYS] Security Command J " + secSub + " rejected.", "is-err");
+      return;
+    }
+
+    // 3. Стандартные команды без префикса
+    if (first === "HELP") {
+      executeCommand("D HELP");
+      return;
+    }
+
+    if (first === "CLS" || first === "CLEAR") {
+      termOutput.innerHTML = "";
+      return;
+    }
+
+    if (first === "ECHO") {
+      var echoMsg = cmd.substring(4).trim();
+      printLine(echoMsg);
+      return;
+    }
+
+    if (first === "DIR") {
+      executeCommand("D DIR " + (parts.slice(1).join(" ")));
+      return;
+    }
+
+    if (first === "FIND") {
+      executeCommand("D FIND " + (parts.slice(1).join(" ")));
+      return;
+    }
+
+    if (first === "STATUS") {
+      printLine("[SYS] TERMINAL STATUS: ONLINE // SYS.V-4");
+      printLine("  LOCAL NET: STABLE | SYNC: 97% | CORE TEMP: 36C");
+      return;
+    }
+
+    if (first === "TIME") {
+      printLine("[SYS] ТЕКУЩЕЕ СИСТЕМНОЕ ВРЕМЯ: " + new Date().toLocaleTimeString() + " // " + new Date().toLocaleDateString());
+      return;
+    }
+
+    // Неизвестная команда
+    printLine("[SYS] Unknown command: " + cmd, "is-err");
+    printLine("[TIP] Попробуйте написать \"D HELP\"", "is-tip");
+  }
+
+  if (termInput) {
+    termInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        var val = termInput.value;
+        termInput.value = "";
+        executeCommand(val);
+      } else if (e.key === "ArrowUp") {
+        if (cmdHistory.length > 0 && cmdHistoryIndex > 0) {
+          cmdHistoryIndex--;
+          termInput.value = cmdHistory[cmdHistoryIndex];
+        }
+      } else if (e.key === "ArrowDown") {
+        if (cmdHistoryIndex < cmdHistory.length - 1) {
+          cmdHistoryIndex++;
+          termInput.value = cmdHistory[cmdHistoryIndex];
+        } else {
+          cmdHistoryIndex = cmdHistory.length;
+          termInput.value = "";
+        }
+      }
     });
   }
 })();

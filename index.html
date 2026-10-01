@@ -637,107 +637,31 @@
           </div>
         </section>
 
-        <section class="dnp-screen" data-screen-panel="database">
-          <div class="dnp-screen-head">
-            <p>DATABASE NODE // SYSTEM INDEX</p>
-            <h1>База данных</h1>
-            <span class="dnp-ok">INDEX SYNCED</span>
-          </div>
-
-          <div class="dnp-screen-content dnp-db-layout">
+        <!-- ========================================================
+             ПОЛНОСТЬЮ ПЕРЕРАБОТАННЫЙ ТЕРМИНАЛ: БАЗА ДАННЫХ
+             ======================================================== -->
+        <section class="dnp-screen dnp-terminal-screen" data-screen-panel="database">
+          <div class="dnp-term-window">
             
-            <div class="dnp-db-top-search">
-              <div class="dnp-search-field-label">
-                <span>ПОИСК ПО УСТАВУ И ДОКУМЕНТАЦИИ</span>
-                <em>USTAV &amp; DOCS QUERY</em>
-              </div>
-              <div class="dnp-search-input-box">
-                <span class="dnp-search-icon">🔍</span>
-                <input type="text" id="dnp-db-search" placeholder="Поиск по разделам устава, регламентам, правилам и БРУД..." autocomplete="off">
-                <button type="button" id="dnp-search-clear" class="dnp-search-clear-btn" title="Очистить поиск">✕</button>
-              </div>
-
-              <div class="dnp-search-results" id="dnp-search-results"></div>
+            <div class="dnp-term-topbar">
+              <span class="dnp-term-top-title" id="term-top-title">LOADING .  .  . PLEASE WAIT &nbsp;&nbsp; 読み込み中. . . 待って下さい</span>
             </div>
 
-            <article class="dnp-module dnp-roster-module">
-              <div class="dnp-module-title">
-                <span>02.1</span>
-                <b>РЕЕСТР СОСТАВА</b>
-                <em>STAFF LOOKUP</em>
+            <div class="dnp-term-body" id="term-body">
+              <div class="dnp-term-boot" id="term-boot">
+                <div class="dnp-term-line term-sub">▼ LOADING INFORMATION, PRESS LMB TO SKIP</div>
+                <div class="dnp-term-line term-progress" id="term-progress-line">▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]</div>
+                <div class="dnp-term-line term-sys" id="term-msg-sys" style="display:none;">[SYS] (00:00:02) ELAPSED</div>
+                <div class="dnp-term-line term-tip" id="term-msg-tip" style="display:none;">[TIP] Slowness is failure. Type "D HELP" for assistance.</div>
+                <pre class="dnp-term-ascii" id="term-ascii" style="display:none;"></pre>
               </div>
 
-              <div class="dnp-employee-lookup-box">
-                <div class="dnp-search-field-label">
-                  <span>ПОИСК ПО СОТРУДНИКАМ</span>
-                  <em>EMPLOYEE DATABASE</em>
-                </div>
-                <div class="dnp-search-input-box">
-                  <span class="dnp-search-icon">👤</span>
-                  <input type="text" id="dnp-employee-input" placeholder="Поиск сотрудника: введите никнейм или позывной..." autocomplete="off">
-                  <button type="button" id="dnp-employee-btn" class="dnp-action dnp-lookup-submit-btn">НАЙТИ</button>
-                </div>
+              <div class="dnp-term-output" id="term-output"></div>
 
-                <div class="dnp-employee-card-result" id="dnp-employee-card">
-                  <span class="dnp-muted">Введите позывной для выгрузки дела из реестра комплекса.</span>
-                </div>
-              </div>
-            </article>
-
-            <div class="dnp-resources-footer-block">
-              <div class="dnp-resources-header">
-                <span>СИСТЕМНЫЕ ССЫЛКИ И ДОКУМЕНТАЦИЯ</span>
-                <em>DIRECT LINKS</em>
-              </div>
-
-              <div class="dnp-subtle-resource-list">
-                <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing" target="_blank" class="dnp-subtle-card is-brud-highlight">
-                  <div class="dnp-subtle-card-main">
-                    <b>БРУД // БАЗОВЫЙ РЕГЛАМЕНТ УПРАВЛЕНИЯ ДОКУМЕНТАЦИЕЙ</b>
-                    <span>Главный свод документов, положений и нормативно-правовых актов</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
-
-                <a href="https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163" target="_blank" class="dnp-subtle-card">
-                  <div class="dnp-subtle-card-main">
-                    <b>ТАБЛИЦА ЛИЧНОГО СОСТАВА</b>
-                    <span>Основной реестр нормы, часов и баллов активности</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
-
-                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
-                  <div class="dnp-subtle-card-main">
-                    <b>ВНЕУРОЧКИ: ОТДЕЛ ПОЧИНКИ (ПО)</b>
-                    <span>Форма отчёта и порядок проведения ремонтных работ</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
-
-                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n" target="_blank" class="dnp-subtle-card">
-                  <div class="dnp-subtle-card-main">
-                    <b>ВНЕУРОЧКИ: ОТДЕЛ СОЗДАНИЯ (СО)</b>
-                    <span>Форма отчёта создания и конструирования техники</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
-
-                <a href="https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
-                  <div class="dnp-subtle-card-main">
-                    <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>
-                    <span>Регламент работы и правила использования систем</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
-
-                <a href="https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
-                  <div class="dnp-subtle-card-main">
-                    <b>СПРАВОЧНИК СОТРУДНИКА</b>
-                    <span>Базовый информационный свод департамента S.E.</span>
-                  </div>
-                  <em>ОТКРЫТЬ ↗</em>
-                </a>
+              <div class="dnp-term-prompt-line" id="term-prompt-line" style="display:none;">
+                <span class="dnp-term-prompt">DNP:\&gt;</span>
+                <input type="text" id="term-input" class="dnp-term-input" autocomplete="off" spellcheck="false">
+                <span class="dnp-term-cursor">█</span>
               </div>
             </div>
 
