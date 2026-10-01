@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEINOPIDAE / ДЕИНОПИДЫ</title>
+
+  <link rel="icon" type="image/png" href="assets/image/favicon.png">
+
+  <!-- Шрифты: Chakra Petch, Exo 2 и Roboto Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Загрузочный экран -->
+  <div id="dnp-loader" class="dnp-loader">
+    <div class="dnp-loader-bg" id="loader-bg"></div>
+    <div class="dnp-loader-scan"></div>
+
+    <div class="dnp-loader-content" id="loader-content">
+      <div class="dnp-loader-track">
+        <div class="dnp-loader-bar" id="loader-bar"></div>
+      </div>
+
+      <div class="dnp-loader-pin" id="loader-pin">
+        <div class="dnp-loader-num-row">
+          <span class="dnp-loader-tick"></span>
+          <div class="dnp-loader-num"><span id="loader-percent">0</span>%</div>
+        </div>
+        <div class="dnp-loader-sub">
+          <span class="dnp-loader-dots">▪▪</span> Updating...
+        </div>
+      </div>
+
+      <div class="dnp-loader-right">
+        <h1 class="dnp-loader-title">DEINOPIDAE<br>INDUSTRIES</h1>
+      </div>
+    </div>
+
+    <div class="dnp-loader-wipe" id="loader-wipe"></div>
+  </div>
+
+  <!-- Основной интерфейс КПК -->
+  <div class="dnp-pda" id="dnp-pda">
+    <div class="dnp-scan"></div>
+
+    <header class="dnp-topbar">
+      <div class="dnp-brand">
+        <strong>DEINOPIDAE / ДЕИНОПИДЫ</strong>
+        <span>Департамент S.E. · Kurodzakura</span>
+      </div>
+      <div class="dnp-top-meta">
+        <span class="dnp-ok">SYSTEM ONLINE</span>
+      </div>
+    </header>
+
+    <div class="dnp-layout" id="dnp-layout">
+      
+      <!-- Сайдбар навигации (всегда открыт) -->
+      <aside class="dnp-sidebar" id="dnp-sidebar" aria-label="Навигация КПК">
+        <div class="dnp-sidebar-title">
+          <div class="dnp-sidebar-title-left">
+            <span>Навигация</span>
+          </div>
+          <em class="dnp-menu-tag">MENU</em>
+        </div>
+
+        <div class="dnp-sidebar-body" id="dnp-sidebar-body">
+          <!-- 01 УСТАВ -->
+          <details class="dnp-nav-group" open>
+            <summary>
+              <span class="dnp-num">01</span>
+              <b>Устав</b>
+              <em>OPEN</em>
+            </summary>
+            <div class="dnp-subnav">
+              <button class="is-active" type="button" data-screen="ustav-01">Раздел 1 Основа</button>
+              <button type="button" data-screen="ustav-02">Раздел 2 Правила</button>
+              <button type="button" data-screen="ustav-03">Раздел 3 Повышения и норма</button>
+              <button type="button" data-screen="ustav-04">Раздел 4 Проверки и лекции</button>
+              <button type="button" data-screen="ustav-05">Раздел 5 Активности</button>
+              <button type="button" data-screen="ustav-06">Раздел 6 Прочее</button>
+              <button type="button" data-screen="ustav-07">Раздел 7 Конец</button>
+            </div>
+          </details>
+
+          <!-- 02 БАЗА ДАННЫХ (с неяркой припиской SYNC) -->
+          <button class="dnp-nav-root-btn" type="button" data-screen="database">
+            <span class="dnp-num">02</span>
+            <b>База данных</b>
+            <em class="dnp-menu-tag">SYNC</em>
+          </button>
+
+          <!-- 03 КОРНИ -->
+          <button class="dnp-nav-root-btn" type="button" data-screen="roots">
+            <span class="dnp-num">03</span>
+            <b>Корни Deinopidae</b>
+          </button>
+
+          <!-- 04 ВЕРБОВКА -->
+          <button class="dnp-locked-main" type="button" disabled>
+            <span class="dnp-num">04</span>
+            <b>Вербовка</b>
+            <em>LOCK</em>
+          </button>
+
+          <!-- Статус КПК внизу меню -->
+          <div class="dnp-terminal-note">
+            <span>PDA-LINK: ONLINE // SYS.V-4</span>
+            <span>LOCAL NET: STABLE</span>
+            <span>SYNC: 97%</span>
+            <span>CORE TEMP: 36C</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dnp-main">
+        
+        <!-- РАЗДЕЛ 1: ОСНОВА -->
+        <section class="dnp-screen is-visible" data-screen-panel="ustav-01">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 01</p>
+            <h1>Раздел 1 — Основа</h1>
+            <span>INFORMATION</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.1</span>
+                <b>О предприятии</b>
+                <em>PROFILE</em>
+              </div>
+              <p>Deinopidae Industries(Предприятие Дейнопидае) - Одно из четырех направлений научно-исследовательского крыла Арахна. Цель предприятия - оказывать помощь в поставках, разработке, и починки технологий для департамента S.E. - Kurodzakura. Второстепенными целями являются проведение геологоразведочных работ, оказание связи между комплексами, помощь партнерам из Aurum Corporation, и прочее.</p>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.2</span>
+                <b>Приближенные задачи работы в комплексе</b>
+                <em>TASKS</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Налаживание поставок, работа мерчендайзером.</li>
+                <li>Обслуживание любой техники в пределах комплекса.</li>
+                <li>Создание отчетности о показателях в комплексе.</li>
+                <li>Выполнение заказов.</li>
+                <li>Создание технологий и их массового производства.</li>
+              </ul>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 2: ПРАВИЛА -->
+        <section class="dnp-screen" data-screen-panel="ustav-02">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 02</p>
+            <h1>Раздел 2 — Правила</h1>
+            <span>RULES</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>2.1</span>
+                <b>Основной перечень</b>
+                <em>ACTIVE</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Не нарушать КВР.</li>
+                <li>Не нарушать Свод законов.</li>
+                <li>Не нарушать Discord-правила.</li>
+                <li>Не нарушать игровые правила.</li>
+                <li>Не нарушать регламент работы.</li>
+                <li>Не нарушать правила поведения на мероприятиях.</li>
+              </ul>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>2.2</span>
+                <b>Виды наказаний</b>
+                <em>PENALTY</em>
+              </div>
+              <div class="dnp-card-grid">
+                <div>
+                  <b>Устный</b>
+                  <p>Минимальная мера наказания. В основном выдается на мероприятиях, при накоплении двух и более выдается икоку.</p>
+                </div>
+                <div>
+                  <b>Икоку</b>
+                  <p>Средняя мера наказания. Выдается за накопления двух устных, мелкие нарушения и прочее.</p>
+                </div>
+                <div>
+                  <b>Кенсэки</b>
+                  <p>Крайняя мера наказания. Выдается за накопления двух икоку, серьезные нарушения и прочее. Накопление 3 кенсэки приведет к увольнению.</p>
+                </div>
+              </div>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 3: ПОВЫШЕНИЯ И НОРМА -->
+        <section class="dnp-screen" data-screen-panel="ustav-03">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 03</p>
+            <h1>Раздел 3 — Повышения и норма</h1>
+            <span>QUOTA &amp; PROMOTIONS</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>3.1</span>
+                <b>Еженедельная норма</b>
+                <em>REQUIRED</em>
+              </div>
+              <p>Каждый сотрудник отдела Deinopidae обязан выполнить еженедельную норму. В случае не выполнения нормы сотрудник обязан написать причину в канал "Отписка-нормы". Если сотрудник не сделает норму и не напишет отписку ему будет выдано 1 Кенсэки.</p>
+              <ul class="dnp-list">
+                <li><strong>Кадет</strong> — Посетить 4 мероприятия. На выбор дается: Наиграть 4 часа / 5 Оборудования.</li>
+                <li><strong>C RANK</strong> — Посетить 3 мероприятия. На выбор дается: Наиграть 3 часа / 4 Оборудования.</li>
+                <li><strong>B RANK</strong> — Посетить 2 мероприятия. На выбор дается: Наиграть 3 часа / 3 Оборудования.</li>
+                <li><strong>A RANK</strong> — Посетить 2 мероприятия. На выбор дается: Наиграть 2 часа / 2 Оборудования.</li>
+              </ul>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>3.2</span>
+                <b>Повышения</b>
+                <em>PROMOTIONS</em>
+              </div>
+              
+              <div style="padding: 14px;">
+                <div class="dnp-subnav-category">Кадет — Кэнсюсей</div>
+                <div class="dnp-rank-block lr">
+                  <div class="dnp-rank-info">
+                    <b>1. Курсант</b>
+                    <span>Начальное звание, выдается аналитиком.</span>
+                  </div>
+                </div>
+                <div class="dnp-rank-block lr" style="margin-top: 10px;">
+                  <div class="dnp-rank-info">
+                    <b>2. Локализатор</b>
+                    <span>Наиграть 5 часов, выполнить 1 задание своего ранга.</span>
+                  </div>
+                </div>
+
+                <div class="dnp-subnav-category" style="margin-top: 18px;">C RANK — Сэнкосэй</div>
+                <div class="dnp-rank-block mr">
+                  <div class="dnp-rank-info">
+                    <b>3. Оператор</b>
+                    <span>Наиграть 6 часов, выполнить 2 задания своего ранга, быть на звании локализатор 6 дней.</span>
+                  </div>
+                </div>
+                <div class="dnp-rank-block mr" style="margin-top: 10px;">
+                  <div class="dnp-rank-info">
+                    <b>4. Диспетчер</b>
+                    <span>Наиграть 7 часов, выполнить 2 задания своего ранга, быть на звании оператор 8 дней.</span>
+                  </div>
+                </div>
+
+                <div class="dnp-subnav-category" style="margin-top: 18px;">B RANK — Тюсэй</div>
+                <div class="dnp-rank-block jhr">
+                  <div class="dnp-rank-info">
+                    <b>5. Полевой эксперт</b>
+                    <span>Наиграть 8 часов, выполнить 3 задания своего ранга, быть на звании диспетчер 10 дней.</span>
+                  </div>
+                </div>
+                <div class="dnp-rank-block jhr" style="margin-top: 10px;">
+                  <div class="dnp-rank-info">
+                    <b>6. Старший инспектор</b>
+                    <span>Наиграть 9 часов, выполнить 3 задания своего ранга, быть полевым экспертом 18 дней.</span>
+                  </div>
+                </div>
+
+                <div class="dnp-subnav-category" style="margin-top: 18px;">A RANK — Дзёсэй</div>
+                <div class="dnp-rank-block hr">
+                  <div class="dnp-rank-info">
+                    <b>7. Ведущий конструктор</b>
+                    <span>Наиграть 9 часов, выполнить 4 задания своего ранга, быть старшим инспектором 23 дня.</span>
+                  </div>
+                </div>
+                <div class="dnp-rank-block hr" style="margin-top: 10px;">
+                  <div class="dnp-rank-info">
+                    <b>8. Главный инженер</b>
+                    <span>Последнее звание, выдается аналитиком.</span>
+                  </div>
+                </div>
+
+                <p style="margin-top: 16px; border-top: 1px solid rgba(138,160,168,.18); padding-top: 12px; font-size: 12.5px; color: var(--muted);">
+                  <strong>Напоминаем:</strong> Когда сотрудник повышается на 2, 4, 6 звания он упирается в "потолок". Что бы повыситься дальше ему необходимо выполнить требования для каждого ранга.
+                </p>
+              </div>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 4: ПРОВЕРКИ И ЛЕКЦИИ -->
+        <section class="dnp-screen" data-screen-panel="ustav-04">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 04</p>
+            <h1>Раздел 4 — Проверки и Лекции</h1>
+            <span>EXAMS &amp; LECTURES</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>4.1</span>
+                <b>Проверки</b>
+                <em>CHECKS</em>
+              </div>
+              <p>Проверки - требования необходимы для разблокировки следующего ранга. Проводятся проверки в голосовом чате под надзором любого из офицеров отдела. Существует 3 типа.</p>
+              <ul class="dnp-list">
+                <li><strong>C</strong> — Починить три оборудования: на базе се, в тех зоне, в реакторе за 45 минут.</li>
+                <li><strong>B</strong> — Пройти тест на знание устава отдела.</li>
+                <li><strong>A</strong> — Создать оборудование после чего написать внеурочку по его устройству. (Выполняется не за один день и не в гч).</li>
+              </ul>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>4.2</span>
+                <b>Лекции</b>
+                <em>LECTURES</em>
+              </div>
+              <p>Лекции - мероприятия на которых сотрудникам устно пересказывают материал необходимый для повышения на следующий ранг. Существует 3 типа.</p>
+              <ul class="dnp-list">
+                <li>Лекция ПО+внеурочки</li>
+                <li>Лекция СО+внеурочки</li>
+                <li>Лекция МП</li>
+              </ul>
+              <p style="border-top: 1px solid rgba(138,160,168,.15); color: var(--muted); font-size: 12.5px;">
+                Обычно лекции проводятся редко, для проведения лекции необходимо пингануть свободного офицера ОДИН РАЗ. После чего сотрудникам напишут число и время проведения.
+              </p>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 5: АКТИВНОСТИ -->
+        <section class="dnp-screen" data-screen-panel="ustav-05">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 05</p>
+            <h1>Раздел 5 — Активности</h1>
+            <span>ACTIVITIES</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>5.1</span>
+                <b>О системе</b>
+                <em>SYSTEM</em>
+              </div>
+              <p>Активности - Новая система у которой название говорит само за себя. Система тестовая и возможно присутствуют ошибки. Выдаются очки активности почти за любые действия.</p>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>5.2</span>
+                <b>Уровни и механика активности</b>
+                <em>LEVELS</em>
+              </div>
+              
+              <div class="dnp-activity-wrap">
+                <div class="dnp-activity-rules">
+                  <p><strong>Существует 3 уровня активности:</strong></p>
+                  <ul class="dnp-list" style="padding-left: 20px;">
+                    <li><strong>0</strong> — Базовый уровень. Разблокирует повышение на C rank.</li>
+                    <li><strong>1</strong> — Средний уровень. Разблокирует повышение на B rank, рейтинг, внеурочки.</li>
+                    <li><strong>2</strong> — Высокий уровень. Разблокирует повышение на A rank, квесты.</li>
+                  </ul>
+                  <p style="border-top: 1px solid rgba(138,160,168,.15); font-size: 12.5px;">
+                    <strong>Активности работает так:</strong> Если у сотрудника будет от 20 очков под конец недели (0:00 в понедельник) уровень его активности не сбрасывается, <strong>НО снимается 20 очков</strong>.<br>
+                    Если же под конец недели у сотрудника будет менее 20 очков, уровень активности сброситься на один.
+                  </p>
+                </div>
+
+                <div class="dnp-scale-container" aria-label="Шкала активности">
+                  <div class="dnp-scale-title">ШКАЛА ПРОГРЕССИИ</div>
+                  <div class="dnp-scale-axis">
+                    <div class="dnp-scale-node" style="top: 0%;">
+                      <span class="dnp-scale-lvl"></span>
+                      <span class="dnp-scale-line"></span>
+                      <span class="dnp-scale-pts">100 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node is-mid" style="top: 17%;">
+                      <span class="dnp-scale-lvl"></span>
+                      <span class="dnp-scale-line-sub"></span>
+                      <span class="dnp-scale-pts">50 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node" style="top: 34%;">
+                      <span class="dnp-scale-lvl">LVL 2</span>
+                      <span class="dnp-scale-line"></span>
+                      <span class="dnp-scale-pts">100 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node is-mid" style="top: 50%;">
+                      <span class="dnp-scale-lvl"></span>
+                      <span class="dnp-scale-line-sub"></span>
+                      <span class="dnp-scale-pts">50 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node" style="top: 67%;">
+                      <span class="dnp-scale-lvl">LVL 1</span>
+                      <span class="dnp-scale-line"></span>
+                      <span class="dnp-scale-pts">100 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node is-mid" style="top: 83%;">
+                      <span class="dnp-scale-lvl"></span>
+                      <span class="dnp-scale-line-sub"></span>
+                      <span class="dnp-scale-pts">50 PTS</span>
+                    </div>
+
+                    <div class="dnp-scale-node is-base" style="top: 100%;">
+                      <span class="dnp-scale-lvl">LVL 0</span>
+                      <span class="dnp-scale-line"></span>
+                      <span class="dnp-scale-pts">0 PTS</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>5.3</span>
+                <b>Список выдачи активности</b>
+                <em>POINTS</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Внеурочки — <strong>10</strong></li>
+                <li>Квесты — <strong>20</strong></li>
+                <li>Запрос помощи — <strong>10</strong></li>
+                <li>Рейтинг — <strong>10</strong></li>
+                <li>Мероприятия (не фан) в отделе — <strong>10</strong></li>
+                <li>Мероприятия (не фан) общее — <strong>20</strong></li>
+                <li>Лекция — <strong>20</strong></li>
+                <li>Выполнение нормы — <strong>10</strong></li>
+              </ul>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 6: ПРОЧЕЕ -->
+        <section class="dnp-screen" data-screen-panel="ustav-06">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 06</p>
+            <h1>Раздел 6 — Прочее</h1>
+            <span class="dnp-ok">OTHER</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>6.1</span>
+                <b>Проведение мероприятий</b>
+                <em>EVENTS</em>
+              </div>
+              <ul class="dnp-list">
+                <li>С 5 звания Полевой эксперт сотруднику открывается возможность проводить мероприятия с надзором офицера внутри отдела.</li>
+                <li>С 7 звания Ведущий конструктор сотруднику открываться возможность проводить мероприятия без надзора офицера внутри отдела.</li>
+              </ul>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- РАЗДЕЛ 7: КОНЕЦ -->
+        <section class="dnp-screen" data-screen-panel="ustav-07">
+          <div class="dnp-screen-head">
+            <p>USTAV NODE / SECTION 07</p>
+            <h1>Раздел 7 — Конец</h1>
+            <span>FINAL</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>7.1</span>
+                <b>Заключение</b>
+                <em>READ</em>
+              </div>
+              <p>Каждый сотрудник обязан соблюдать устав. <strong>Незнание устава не освобождает от ответственности.</strong></p>
+              <p class="dnp-muted" style="border-top: 1px solid rgba(138,160,168,.15); font-size: 12px; margin-top: 8px;">
+                Первоиздатель: Wewewewestrelok. Редакторы: EGORIK0130 Утверждено: Wewewewestrelok Вступает в силу: 18.06.2026.
+              </p>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             ВКЛАДКА: БАЗА ДАННЫХ (НОВЫЙ ЧИСТЫЙ ДИЗАЙН)
+             ======================================================== -->
+        <section class="dnp-screen" data-screen-panel="database">
+          <div class="dnp-screen-head">
+            <p>DATABASE NODE // SYSTEM INDEX</p>
+            <h1>База данных</h1>
+            <span class="dnp-ok">INDEX SYNCED</span>
+          </div>
+
+          <div class="dnp-screen-content dnp-db-layout">
+            
+            <!-- 1. ПОИСК В САМОМ ВЕРХУ (БЕЗ КАТЕГОРИЙ И БЕЗ ПОДСКАЗКИ) -->
+            <div class="dnp-db-top-search">
+              <div class="dnp-search-input-box">
+                <span class="dnp-search-icon">🔍</span>
+                <input type="text" id="dnp-db-search" placeholder="Поиск по уставу, БРУД, таблице, документам..." autocomplete="off">
+                <button type="button" id="dnp-search-clear" class="dnp-search-clear-btn" title="Очистить поиск">✕</button>
+              </div>
+
+              <!-- Выпадающий контейнер с плавно выезжающими результатами -->
+              <div class="dnp-search-results" id="dnp-search-results"></div>
+            </div>
+
+            <!-- 2. РЕЕСТР СОСТАВА -->
+            <article class="dnp-module dnp-roster-module">
+              <div class="dnp-module-title">
+                <span>02.1</span>
+                <b>РЕЕСТР СОСТАВА</b>
+                <em>STAFF QUERY</em>
+              </div>
+
+              <div class="dnp-employee-lookup-box">
+                <div class="dnp-lookup-bar">
+                  <input type="text" id="dnp-employee-input" placeholder="Введите никнейм или позывной сотрудника..." autocomplete="off">
+                  <button type="button" id="dnp-employee-btn" class="dnp-action" style="margin: 0;">НАЙТИ</button>
+                </div>
+
+                <!-- Карточка вывода с полупрозрачным логотипом-аватаром -->
+                <div class="dnp-employee-card-result" id="dnp-employee-card">
+                  <span class="dnp-muted">Введите позывной для выгрузки дела из реестра комплекса.</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. ОФИЦИАЛЬНЫЕ РЕСУРСЫ СНИЗУ (СДЕРЖАННОЕ ОФОРМЛЕНИЕ) -->
+            <div class="dnp-resources-footer-block">
+              <div class="dnp-resources-header">
+                <span>СИСТЕМНЫЕ ССЫЛКИ И ДОКУМЕНТАЦИЯ</span>
+                <em>DIRECT LINKS</em>
+              </div>
+
+              <div class="dnp-subtle-resource-list">
+                <a href="https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ТАБЛИЦА ЛИЧНОГО СОСТАВА</b>
+                    <span>Основной реестр нормы, часов и баллов активности</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ВНЕУРОЧКИ: ОТДЕЛ ПОЧИНКИ (ПО)</b>
+                    <span>Форма отчёта и порядок проведения ремонтных работ</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ВНЕУРОЧКИ: ОТДЕЛ СОЗДАНИЯ (СО)</b>
+                    <span>Форма отчёта создания и конструирования техники</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>
+                    <span>Регламент работы и правила использования систем</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>СПРАВОЧНИК СОТРУДНИКА</b>
+                    <span>Базовый информационный свод департамента S.E.</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- СТРАНИЦА: КОРНИ DEINOPIDAE -->
+        <section class="dnp-screen" data-screen-panel="roots">
+          <div class="dnp-screen-head dnp-corrupt-head">
+            <p>ARCHIVE NODE // [SECTOR-02_CORRUPTED]</p>
+            <h1 class="dnp-glitch-head" data-text="К̷О̶Р̸Н̷И̶ DEINOPIDAE">К̷О̶Р̸Н̷И̶ DEINOPIDAE</h1>
+            <span class="dnp-danger-text">INTEGRITY FAILURE: 0x88F0A2</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module dnp-corrupt-module" id="corrupt-module">
+              <img src="assets/image/corrupt-glitch.jpg" class="dnp-corrupt-overlay-img" id="corrupt-img" alt="Corrupted Sector Fragment">
+
+              <div class="dnp-ghost-title" id="ghost-title">
+                <span>03.1</span>
+                <b>ИСТОРИЯ ПОДРАЗДЕЛЕНИЯ</b>
+              </div>
+
+              <div class="dnp-module-title">
+                <span>03.1</span>
+                <b>И̷С̶Т̸О̷Р̸И̶Я̶ П̸О̶Д̸Р̶А̶З̶Д̸Е̶Л̸Е̶Н̸И̶Я̶</b>
+                <em class="dnp-corrupt-tag">DAMAGED</em>
+              </div>
+
+              <div class="dnp-corrupt-body">
+                <p class="dnp-corrupt-notice">
+                  [FATAL_ERROR: СЕКТОР ЗАПИСИ ПОВРЕЖДЁН ИЛИ ПЕРЕМЕЩЁН]
+                </p>
+
+                <div class="dnp-broken-field" id="broken-field">
+                  <div class="dnp-slice dnp-slice-1">
+                    <p>
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
+                      <span class="dnp-redact">███████████████</span> 
+                      с последующим заражением информационного ядра 
+                      <span class="dnp-redact">███████</span>.
+                    </p>
+                  </div>
+
+                  <div class="dnp-slice dnp-slice-2" aria-hidden="true">
+                    <p>
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
+                      <span class="dnp-redact">███████████████</span> 
+                      с последующим заражением информационного ядра 
+                      <span class="dnp-redact">███████</span>.
+                    </p>
+                  </div>
+
+                  <div class="dnp-corrupt-log dnp-slice dnp-slice-log">
+                    <span>ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR</span>
+                    <span>MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY</span>
+                    <span>ACCESS DENIED // УРОВЕНЬ ДОСТУПА НЕДОСТАТОЧЕН ДЛЯ ДЕШИФРОВКИ</span>
+                  </div>
+
+                  <div class="dnp-slice dnp-slice-3">
+                    <p>
+                      С̷о̷т̸р̸у̸д̷н̸и̸к̸а̸м̶ ̶к̸а̸т̸е̸г̸о̸р̸и̸ч̸е̸с̸к̸и̶ ̶з̶а̶п̶р̶е̶щ̶е̶н̶о̶ ̶в̶о̶с̶с̶т̶а̶н̶а̶в̶л̶и̶в̶а̶т̶ь̶ ̶д̶а̶н̶н̶ы̶й̶ ̶у̶з̶е̶л̶ ̶б̶е̶з̶ ̶п̸р̶я̶м̶о̶г̶о̶ ̶р̸а̶з̶р̶е̶ш̶е̶н̶и̶я̶ 
+                      <span class="dnp-redact">████████████</span>. 
+                      Остаточные фрагменты протокола перемещены в архив безопасности 
+                      <span class="dnp-redact">██████████</span>.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ВЕРБОВКА -->
+        <section class="dnp-screen" data-screen-panel="verbovka-info-1">
+          <div class="dnp-screen-head">
+            <p>RECRUITMENT NODE / INFO 01</p>
+            <h1>Раздел 1 — Отдел</h1>
+            <span>INFORMATION</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.1</span>
+                <b>О отделе</b>
+                <em>PROFILE</em>
+              </div>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.2</span>
+                <b>Задачи отдела</b>
+                <em>AURUM CORP</em>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer class="dnp-footer">
+      <span>DEINOPIDAE FIELD PDA</span>
+      <a href="https://sites.google.com/view/deinopidae-js/%D1%84%D0%BE%D1%82%D0%BE%D1%87%D0%BA%D0%B8-%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%BA%D0%B0" target="_blank" class="dnp-ok dnp-footer-link">READY</a>
+    </footer>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
