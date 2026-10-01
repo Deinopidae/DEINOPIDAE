@@ -391,19 +391,42 @@ html, body {
   100% { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes fluorescentIgnite {
-  0% { opacity: 0; filter: brightness(0.3); transform: translateY(4px); }
-  12% { opacity: 0.7; filter: brightness(1.2); }
-  22% { opacity: 0.2; }
-  45% { opacity: 0.88; }
-  65% { opacity: 0.5; }
-  85% { opacity: 0.95; }
-  100% { opacity: 1; filter: brightness(1); transform: translateY(0); }
+@keyframes fluorescentBlink1 {
+  0% { opacity: 0; filter: brightness(0.3); }
+  35% { opacity: 0.85; filter: brightness(1.25); }
+  55% { opacity: 0.2; }
+  100% { opacity: 1; filter: brightness(1); }
 }
 
-.dnp-screen.is-visible .dnp-screen-content {
-  animation: fluorescentIgnite 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+@keyframes fluorescentBlink2 {
+  0% { opacity: 0; filter: brightness(0.3); }
+  20% { opacity: 0.75; filter: brightness(1.2); }
+  35% { opacity: 0.15; }
+  55% { opacity: 0.9; filter: brightness(1.15); }
+  72% { opacity: 0.4; }
+  100% { opacity: 1; filter: brightness(1); }
 }
+
+@keyframes fluorescentBlink3 {
+  0% { opacity: 0; filter: brightness(0.3); }
+  14% { opacity: 0.7; filter: brightness(1.3); }
+  24% { opacity: 0.15; }
+  42% { opacity: 0.88; filter: brightness(1.2); }
+  56% { opacity: 0.35; }
+  74% { opacity: 0.95; filter: brightness(1.1); }
+  86% { opacity: 0.7; }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes smoothFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.dnp-screen-content.dnp-flicker-1 { animation: fluorescentBlink1 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.dnp-screen-content.dnp-flicker-2 { animation: fluorescentBlink2 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.dnp-screen-content.dnp-flicker-3 { animation: fluorescentBlink3 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.dnp-screen-content.dnp-no-flicker { animation: smoothFadeIn 0.15s ease both; }
 
 .dnp-db-layout {
   display: flex;
@@ -415,6 +438,35 @@ html, body {
   display: flex;
   flex-direction: column;
   position: relative;
+}
+
+.dnp-search-field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: "Exo 2", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--line);
+  letter-spacing: 0.8px;
+}
+
+.dnp-search-field-label em {
+  font: normal 700 10.5px "Roboto Mono", monospace;
+  color: var(--muted);
+}
+
+.dnp-lookup-submit-btn {
+  margin: 0 !important;
+  min-height: 44px !important;
+  border: none !important;
+  border-left: 1px solid rgba(138, 160, 168, .25) !important;
+  background: rgba(18, 27, 32, .8) !important;
+}
+
+.dnp-subtle-card.is-brud-highlight {
+  border-left: 3px solid var(--ok);
 }
 
 .dnp-search-input-box {
@@ -447,6 +499,10 @@ html, body {
   color: var(--text);
   font-family: "Roboto Mono", monospace;
   font-size: 13.5px;
+}
+
+.dnp-search-input-box input::placeholder {
+  color: rgba(130, 145, 153, 0.55);
 }
 
 .dnp-search-clear-btn {

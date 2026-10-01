@@ -192,9 +192,16 @@
 
         var newContent = targetPanel.querySelector(".dnp-screen-content");
         if (newContent) {
-          newContent.style.animation = "none";
+          newContent.classList.remove("dnp-flicker-1", "dnp-flicker-2", "dnp-flicker-3", "dnp-no-flicker");
           void newContent.offsetWidth;
-          newContent.style.animation = "";
+
+          var willFlicker = Math.random() < 0.6;
+          if (willFlicker) {
+            var blinks = Math.floor(Math.random() * 3) + 1;
+            newContent.classList.add("dnp-flicker-" + blinks);
+          } else {
+            newContent.classList.add("dnp-no-flicker");
+          }
         }
 
         buttons.forEach(function (button) {
@@ -273,6 +280,8 @@
     });
   }
 
+  var brudUrl = "https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing";
+
   var searchIndex = [
     {
       title: "Раздел 1 — Основа",
@@ -288,7 +297,7 @@
       badge: "БРУД // DOC",
       keywords: ["основа", "бруд", "документ", "профиль", "предприятие"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_OSNOVA_DOC_ID/edit#heading=h.section1"
+      url: brudUrl
     },
     {
       title: "Раздел 2 — Правила",
@@ -304,87 +313,127 @@
       badge: "БРУД // DOC",
       keywords: ["правила", "бруд", "наказания", "санкции", "икоку", "кенсэки"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_RULES_DOC_ID/edit#heading=h.section2"
+      url: brudUrl
     },
     {
-      title: "Раздел 3 — Повышения и норма",
-      subtitle: "Еженедельная норма по рангам, звания (Курсант - Главный инженер)",
+      title: "Раздел 3 — Повышения",
+      subtitle: "Звания (Курсант - Главный инженер), требования по часам и дням",
       badge: "УСТАВ",
-      keywords: ["норма", "повышение", "часы", "квесты", "курсант", "локализатор", "оператор", "диспетчер", "эксперт", "инспектор", "конструктор", "инженер", "потолок", "отписка-нормы"],
+      keywords: ["повышение", "повышения", "звания", "ранг", "курсант", "локализатор", "оператор", "диспетчер", "эксперт", "инспектор", "конструктор", "инженер", "потолок"],
       type: "internal",
       target: "ustav-03"
     },
     {
-      title: "БРУД // Раздел 3 — Повышения и норма",
-      subtitle: "Регламент сдачи нормы, отписок и подачи отчётов на звания",
+      title: "БРУД // Раздел 3 — Повышения",
+      subtitle: "Порядок присвоения званий и регламент квалификаций в БРУД",
       badge: "БРУД // DOC",
-      keywords: ["норма", "повышения", "бруд", "звания", "отписка", "кэнсюсей", "сэнкосэй", "тюсэй", "дзёсэй"],
+      keywords: ["повышения", "бруд", "звания", "кэнсюсей", "сэнкосэй", "тюсэй", "дзёсэй"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_PROMOTIONS_DOC_ID/edit#heading=h.section3"
+      url: brudUrl
     },
     {
-      title: "Раздел 4 — Проверки и Лекции",
-      subtitle: "Проверки C/B/A, лекции ПО, СО, МП, регламент пинга офицера",
+      title: "Раздел 4 — Норма",
+      subtitle: "Еженедельная норма по рангам, отписки",
       badge: "УСТАВ",
-      keywords: ["проверки", "лекции", "экзамен", "тест", "по", "со", "мп", "офицер", "гч", "база", "реактор"],
+      keywords: ["норма", "часы", "мп", "мероприятия", "оборудование", "отписка", "отписка-нормы", "кенсэки"],
       type: "internal",
       target: "ustav-04"
     },
     {
-      title: "БРУД // Раздел 4 — Проверки и Лекции",
-      subtitle: "Материалы для сдачи экзаменов и билеты лекций",
+      title: "БРУД // Раздел 4 — Норма",
+      subtitle: "Официальный регламент выполнения еженедельной нормы",
       badge: "БРУД // DOC",
-      keywords: ["проверки", "лекции", "билеты", "бруд", "материалы", "экзамен"],
+      keywords: ["норма", "отписка", "бруд", "регламент"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_EXAMS_DOC_ID/edit#heading=h.section4"
+      url: brudUrl
     },
     {
-      title: "Раздел 5 — Активности",
-      subtitle: "Уровни активности 0/1/2, шкала прогрессии, правила сгорания",
+      title: "Раздел 5 — Задания",
+      subtitle: "РП-задания для проверки рангов (Кадет, C, B, A ранг)",
       badge: "УСТАВ",
-      keywords: ["активность", "активности", "баллы", "очки", "шкала", "уровень", "сброс", "понедельник", "pts"],
+      keywords: ["задания", "квесты", "wheel", "locks", "power", "hvac", "alarm", "glass", "light", "lift", "hazmat", "wires", "gates", "seal", "military", "automation", "biomech", "exoskeleton"],
       type: "internal",
       target: "ustav-05"
     },
     {
-      title: "БРУД // Раздел 5 — Активности",
-      subtitle: "Регламент начисления очков активности и премирования",
+      title: "БРУД // Раздел 5 — Задания",
+      subtitle: "Реестр и правила выполнения квестов отдела в БРУД",
       badge: "БРУД // DOC",
-      keywords: ["активности", "очки", "бруд", "рейтинг", "премии"],
+      keywords: ["задания", "квесты", "бруд"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_ACTIVITIES_DOC_ID/edit#heading=h.section5"
+      url: brudUrl
     },
     {
-      title: "Раздел 6 — Прочее",
-      subtitle: "Проведение мероприятий (5 и 7 звания)",
+      title: "Раздел 6 — Проверки и Лекции",
+      subtitle: "Проверки C/B/A, лекции ПО, СО, МП, регламент пинга офицера",
       badge: "УСТАВ",
-      keywords: ["прочее", "мероприятия", "мп", "надзор", "полевой", "ведущий"],
+      keywords: ["проверки", "лекции", "экзамен", "тест", "по", "со", "мп", "офицер", "гч", "база", "реактор"],
       type: "internal",
       target: "ustav-06"
     },
     {
-      title: "БРУД // Раздел 6 — Прочее",
-      subtitle: "Дополнительные протоколы проведения мероприятий",
+      title: "БРУД // Раздел 6 — Проверки и Лекции",
+      subtitle: "Материалы для сдачи экзаменов и билеты лекций",
       badge: "БРУД // DOC",
-      keywords: ["прочее", "мероприятия", "бруд", "регламент"],
+      keywords: ["проверки", "лекции", "билеты", "бруд", "материалы", "экзамен"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_MISC_DOC_ID/edit#heading=h.section6"
+      url: brudUrl
     },
     {
-      title: "Раздел 7 — Конец",
-      subtitle: "Заключение, авторы и первоиздатели устава",
+      title: "Раздел 7 — Активности",
+      subtitle: "Уровни активности 0/1/2, шкала прогрессии, правила сгорания",
       badge: "УСТАВ",
-      keywords: ["конец", "заключение", "wewewewestrelok", "egorik0130", "редактор", "дата"],
+      keywords: ["активность", "активности", "баллы", "очки", "шкала", "уровень", "сброс", "понедельник", "pts"],
       type: "internal",
       target: "ustav-07"
     },
     {
-      title: "БРУД // Раздел 7 — Конец",
+      title: "БРУД // Раздел 7 — Активности",
+      subtitle: "Регламент начисления очков активности и премирования",
+      badge: "БРУД // DOC",
+      keywords: ["активности", "очки", "бруд", "рейтинг", "премии"],
+      type: "external",
+      url: brudUrl
+    },
+    {
+      title: "Раздел 8 — Прочее",
+      subtitle: "Проведение мероприятий (5 и 7 звания)",
+      badge: "УСТАВ",
+      keywords: ["прочее", "мероприятия", "мп", "надзор", "полевой", "ведущий"],
+      type: "internal",
+      target: "ustav-08"
+    },
+    {
+      title: "БРУД // Раздел 8 — Прочее",
+      subtitle: "Дополнительные протоколы проведения мероприятий",
+      badge: "БРУД // DOC",
+      keywords: ["прочее", "мероприятия", "бруд", "регламент"],
+      type: "external",
+      url: brudUrl
+    },
+    {
+      title: "Раздел 9 — Конец",
+      subtitle: "Заключение, авторы и первоиздатели устава",
+      badge: "УСТАВ",
+      keywords: ["конец", "заключение", "wewewewestrelok", "egorik0130", "редактор", "дата"],
+      type: "internal",
+      target: "ustav-09"
+    },
+    {
+      title: "БРУД // Раздел 9 — Конец",
       subtitle: "Юридический архив утверждения документов в БРУД",
       badge: "БРУД // DOC",
       keywords: ["конец", "бруд", "архив"],
       type: "external",
-      url: "https://docs.google.com/document/d/BURD_FINAL_DOC_ID/edit#heading=h.section7"
+      url: brudUrl
+    },
+    {
+      title: "БРУД // Официальный документ",
+      subtitle: "Главный свод документов и нормативных положений",
+      badge: "БРУД // DOC",
+      keywords: ["бруд", "главный", "документ", "свод", "положения"],
+      type: "external",
+      url: brudUrl
     },
     {
       title: "Таблица личного состава и нормы",
