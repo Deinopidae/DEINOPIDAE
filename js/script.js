@@ -160,7 +160,6 @@
     var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
     if (!targetPanel) return;
 
-    // Сдвиг навигации влево и расширение рабочей области при открытии базы данных
     if (layout) {
       if (name === "database") {
         layout.classList.add("is-terminal-mode");
@@ -179,52 +178,54 @@
       }
 
       setTimeout(function () {
-        panels.forEach(function (panel) {
-          var isActive = panel === targetPanel;
-          panel.classList.toggle("is-visible", isActive);
-          if (isActive) {
-            panel.removeAttribute("aria-hidden");
-          } else {
-            panel.setAttribute("aria-hidden", "true");
+        try {
+          panels.forEach(function (panel) {
+            var isActive = panel === targetPanel;
+            panel.classList.toggle("is-visible", isActive);
+            if (isActive) {
+              panel.removeAttribute("aria-hidden");
+            } else {
+              panel.setAttribute("aria-hidden", "true");
+            }
+          });
+
+          if (curHead) {
+            curHead.classList.remove("head-slide-out");
           }
-        });
 
-        if (curHead) {
-          curHead.classList.remove("head-slide-out");
-        }
-
-        var newHead = targetPanel.querySelector(".dnp-screen-head");
-        if (newHead) {
-          newHead.classList.remove("head-slide-in");
-          void newHead.offsetWidth;
-          newHead.classList.add("head-slide-in");
-        }
-
-        var newContent = targetPanel.querySelector(".dnp-screen-content");
-        if (newContent) {
-          newContent.classList.remove("dnp-flicker-1", "dnp-flicker-2", "dnp-flicker-3", "dnp-no-flicker");
-          void newContent.offsetWidth;
-
-          var willFlicker = Math.random() < 0.6;
-          if (willFlicker) {
-            var blinks = Math.floor(Math.random() * 3) + 1;
-            newContent.classList.add("dnp-flicker-" + blinks);
-          } else {
-            newContent.classList.add("dnp-no-flicker");
+          var newHead = targetPanel.querySelector(".dnp-screen-head");
+          if (newHead) {
+            newHead.classList.remove("head-slide-in");
+            void newHead.offsetWidth;
+            newHead.classList.add("head-slide-in");
           }
+
+          var newContent = targetPanel.querySelector(".dnp-screen-content");
+          if (newContent) {
+            newContent.classList.remove("dnp-flicker-1", "dnp-flicker-2", "dnp-flicker-3", "dnp-no-flicker");
+            void newContent.offsetWidth;
+
+            var willFlicker = Math.random() < 0.6;
+            if (willFlicker) {
+              var blinks = Math.floor(Math.random() * 3) + 1;
+              newContent.classList.add("dnp-flicker-" + blinks);
+            } else {
+              newContent.classList.add("dnp-no-flicker");
+            }
+          }
+
+          buttons.forEach(function (button) {
+            var isActive = button.getAttribute("data-screen") === name;
+            button.classList.toggle("is-active", isActive);
+            button.setAttribute("aria-selected", isActive ? "true" : "false");
+          });
+
+          if (name === "database") {
+            initTerminalBoot();
+          }
+        } finally {
+          isTransitioning = false;
         }
-
-        buttons.forEach(function (button) {
-          var isActive = button.getAttribute("data-screen") === name;
-          button.classList.toggle("is-active", isActive);
-          button.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-
-        if (name === "database") {
-          initTerminalBoot();
-        }
-
-        isTransitioning = false;
       }, 240);
     } else {
       panels.forEach(function (panel) {
@@ -301,19 +302,9 @@
   // =========================================================
   // ТЕРМИНАЛ: ЧИСТЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС
   // =========================================================
-  var termWindow = document.getElementById("term-window");
-  var termBody = document.getElementById("term-body");
-  var termTopTitle = document.getElementById("term-top-title");
-  var termProgressLine = document.getElementById("term-progress-line");
-  var termAscii = document.getElementById("term-ascii");
-  var termOutput = document.getElementById("term-output");
-  var termPromptLine = document.getElementById("term-prompt-line");
-  var termInput = document.getElementById("term-input");
-
   var brudUrl = "https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing";
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
-  // Пользовательский ASCII-логотип Deinopidae
   var asciiLogo = [
     "    @@                                                        @@    ",
     "     @                                                         %     ",
@@ -429,6 +420,12 @@
   var cmdHistoryIndex = -1;
 
   function initTerminalBoot() {
+    var termTopTitle = document.getElementById("term-top-title");
+    var termProgressLine = document.getElementById("term-progress-line");
+    var termAscii = document.getElementById("term-ascii");
+    var termPromptLine = document.getElementById("term-prompt-line");
+    var termInput = document.getElementById("term-input");
+
     if (termLoaded || termBooting) {
       if (termInput) termInput.focus();
       return;
@@ -436,15 +433,16 @@
     termBooting = true;
     termStep = 0;
 
-    termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT";
-    termProgressLine.textContent = "▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]";
-    termAscii.style.display = "none";
-    termPromptLine.style.display = "none";
+    if (termTopTitle) termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT";
+    if (termProgressLine) termProgressLine.textContent = "▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]";
+    if (termAscii) termAscii.style.display = "none";
+    if (termPromptLine) termPromptLine.style.display = "none";
 
     runBootStep();
   }
 
   function runBootStep() {
+    var termProgressLine = document.getElementById("term-progress-line");
     var totalDots = 20;
     var filled = Math.min(termStep * 2, totalDots);
     var str = "[ ";
@@ -452,7 +450,9 @@
     for (var j = filled; j < totalDots; j++) str += "• ";
     str += "]";
 
-    termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+    if (termProgressLine) {
+      termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+    }
 
     if (termStep >= 10) {
       finishTerminalBoot();
@@ -460,7 +460,7 @@
     }
 
     termStep++;
-    termTimer = setTimeout(runBootStep, 240);
+    termTimer = setTimeout(runBootStep, 200);
   }
 
   function finishTerminalBoot() {
@@ -468,36 +468,51 @@
     termBooting = false;
     termLoaded = true;
 
-    termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
-    termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "D HELP" FOR SEE HELP';
+    var termTopTitle = document.getElementById("term-top-title");
+    var termProgressLine = document.getElementById("term-progress-line");
+    var termAscii = document.getElementById("term-ascii");
+    var termPromptLine = document.getElementById("term-prompt-line");
+    var termInput = document.getElementById("term-input");
 
-    termAscii.textContent = asciiLogo;
-    termAscii.style.display = "block";
+    if (termTopTitle) termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
+    if (termProgressLine) termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "D HELP" FOR SEE HELP';
 
-    termPromptLine.style.display = "flex";
+    if (termAscii) {
+      termAscii.textContent = asciiLogo;
+      termAscii.style.display = "block";
+    }
+
+    if (termPromptLine) {
+      termPromptLine.style.display = "flex";
+    }
     if (termInput) {
       termInput.focus();
     }
     scrollTerm();
   }
 
+  var termBody = document.getElementById("term-body");
   if (termBody) {
     termBody.addEventListener("click", function () {
       if (termBooting) {
         finishTerminalBoot();
-      } else if (termInput) {
-        termInput.focus();
+      } else {
+        var input = document.getElementById("term-input");
+        if (input) input.focus();
       }
     });
   }
 
   function scrollTerm() {
-    if (termBody) {
-      termBody.scrollTop = termBody.scrollHeight;
+    var b = document.getElementById("term-body");
+    if (b) {
+      b.scrollTop = b.scrollHeight;
     }
   }
 
   function printLine(text) {
+    var termOutput = document.getElementById("term-output");
+    if (!termOutput) return;
     var div = document.createElement("div");
     div.className = "dnp-term-resp-line";
     div.innerHTML = text;
@@ -506,22 +521,23 @@
   }
 
   function setColor(arg) {
+    var termWindow = document.getElementById("term-window");
+    if (!termWindow) return;
     var code = (arg || "").toUpperCase().trim();
     var colorMap = {
-      "0F": "#ffffff", "WHITE": "#ffffff", "DEFAULT": "#d8dde0", "RESET": "#d8dde0",
-      "0A": "#4af626", "GREEN": "#4af626",
-      "0B": "#00f0ff", "CYAN": "#00f0ff",
-      "0C": "#ff5252", "RED": "#ff5252",
-      "0E": "#ffd700", "YELLOW": "#ffd700", "AMBER": "#ffb300",
-      "09": "#64b5f6", "BLUE": "#64b5f6",
-      "07": "#8e999f", "GRAY": "#8e999f"
+      "WHITE": "#d4d9de", "DEFAULT": "#d4d9de", "RESET": "#d4d9de", "0F": "#d4d9de",
+      "GREEN": "#4af626", "0A": "#4af626",
+      "CYAN": "#00f0ff", "0B": "#00f0ff",
+      "RED": "#ff5252", "0C": "#ff5252",
+      "YELLOW": "#ffd700", "AMBER": "#ffb300", "0E": "#ffb300",
+      "GRAY": "#8e999f", "07": "#8e999f"
     };
 
     if (colorMap[code]) {
       termWindow.style.setProperty("--term-color", colorMap[code]);
-      printLine("[SYS] Консольный цвет изменен: " + code);
+      printLine("[SYS] Цвет терминала изменен: " + code);
     } else {
-      printLine("[SYS] Недопустимый цвет. Доступно: WHITE, GREEN, AMBER, CYAN, RED, GRAY, DEFAULT (или 0A, 0B, 0C, 0F)");
+      printLine("[SYS] Доступные цвета: WHITE, GREEN, AMBER, CYAN, RED, GRAY, DEFAULT (или 0A, 0B, 0C, 0F)");
     }
   }
 
@@ -532,12 +548,11 @@
     cmdHistory.push(cmd);
     cmdHistoryIndex = cmdHistory.length;
 
-    printLine(cmd);
+    printLine("█ " + cmd);
 
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
 
-    // 1. Префикс D
     if (first === "D") {
       var sub = (parts[1] || "").toUpperCase();
       var arg1 = (parts[2] || "").replace(/^"|"$/g, "");
@@ -554,13 +569,13 @@
         printLine("  D BRUD                      - Доступ к главному регламенту БРУД");
         printLine("=== [СЛУЖЕБНЫЕ УТИЛИТЫ CMD] ===");
         printLine("  TREE                        - Древовидная структура разделов комплекса");
-        printLine("  TYPE <файл>                 - Просмотр текстовых файлов (ustav.txt, rules.txt...)");
-        printLine("  COLOR <код/цвет>            - Изменение цвета текста (WHITE, GREEN, AMBER, CYAN, RED)");
-        printLine("  HOSTNAME / WHOAMI           - Сетевой узел и идентификатор оператора");
-        printLine("  SYSTEMINFO                  - Технические спецификации терминала");
-        printLine("  SET                         - Переменные среды окружения");
-        printLine("  DATE / TIME                 - Системное время комплекса");
-        printLine("  ECHO <текст>                - Вывод текста в строку");
+        printLine("  TYPE <файл>                 - Просмотр файлов (ustav.txt, rules.txt...)");
+        printLine("  COLOR <цвет>                - Изменение цвета (WHITE, GREEN, AMBER, CYAN, RED)");
+        printLine("  HOSTNAME / WHOAMI           - Идентификатор узла и оператора");
+        printLine("  SYSTEMINFO                  - Спецификации терминала");
+        printLine("  SET                         - Переменные окружения");
+        printLine("  DATE / TIME                 - Время комплекса");
+        printLine("  ECHO <текст>                - Вывод текста");
         printLine("  CLS                         - Очистить терминал");
         return;
       }
@@ -711,7 +726,6 @@
       return;
     }
 
-    // 2. Секретный префикс J
     if (first === "J") {
       var secSub = (parts[1] || "").toUpperCase();
 
@@ -755,7 +769,6 @@
       return;
     }
 
-    // 3. Стандартные системные команды CMD
     if (first === "HELP") {
       executeCommand("D HELP");
       return;
@@ -831,8 +844,9 @@
 
     if (first === "TITLE") {
       var newTitle = cmd.substring(5).trim();
-      if (newTitle) {
-        termTopTitle.textContent = newTitle;
+      var topTitle = document.getElementById("term-top-title");
+      if (newTitle && topTitle) {
+        topTitle.textContent = newTitle;
         printLine("[SYS] Заголовок окна обновлен.");
       } else {
         printLine("[SYS] Укажите заголовок: TITLE <текст>");
@@ -856,7 +870,8 @@
     }
 
     if (first === "CLS" || first === "CLEAR") {
-      termOutput.innerHTML = "";
+      var termOutput = document.getElementById("term-output");
+      if (termOutput) termOutput.innerHTML = "";
       return;
     }
 
@@ -880,6 +895,7 @@
     printLine("[TIP] Попробуйте написать \"D HELP\"");
   }
 
+  var termInput = document.getElementById("term-input");
   if (termInput) {
     termInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {

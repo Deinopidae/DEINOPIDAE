@@ -298,10 +298,10 @@ html, body {
   transition: grid-template-columns 0.3s ease, max-width 0.3s ease, width 0.3s ease;
 }
 
-/* Режим широкой консоли: навигация компактно уходит влево */
+/* Компактная навигация и расширенная консоль */
 .dnp-layout.is-terminal-mode {
-  grid-template-columns: 210px minmax(0, 1fr);
-  max-width: 1420px;
+  grid-template-columns: 200px minmax(0, 1fr);
+  max-width: 1440px;
   width: 96%;
 }
 
@@ -321,7 +321,7 @@ html, body {
   background: var(--panel);
   box-shadow: inset 3px 0 0 rgba(138, 160, 168, .28);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease;
 }
 
 .dnp-sidebar-title {
@@ -448,7 +448,7 @@ html, body {
   width: 100%;
   min-height: calc(100vh - 110px);
   background: #000000 !important;
-  border: 1px solid #1a1e22;
+  border: 1px solid #1c2226;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.95);
   position: relative;
   overflow: hidden;
@@ -459,12 +459,12 @@ html, body {
 }
 
 .dnp-term-window {
-  --term-color: #d8dde0; /* Белый спокойный тон по умолчанию */
+  --term-color: #d4d9de; /* Спокойный неяркий белый цвет */
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: 560px;
+  min-height: 580px;
   background: #000000;
   color: var(--term-color);
   font-family: "Roboto Mono", monospace;
@@ -474,12 +474,12 @@ html, body {
 }
 
 .dnp-term-topbar {
-  background: #0a0c0e;
-  border-bottom: 1px solid #1c2226;
-  padding: 7px 14px;
+  background: #0a0d0f;
+  border-bottom: 1px solid #1a2024;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  color: #a0aab0;
+  color: #929ea6;
   font-family: "Roboto Mono", monospace;
   font-size: 12px;
   font-weight: 700;
@@ -487,7 +487,7 @@ html, body {
 }
 
 .dnp-term-top-title {
-  color: #ffffff;
+  color: var(--term-color);
 }
 
 .dnp-term-body {
@@ -524,7 +524,7 @@ html, body {
 }
 
 .dnp-term-ascii {
-  margin: 10px 0;
+  margin: 12px 0;
   color: var(--term-color);
   font-family: monospace;
   font-size: 9.5px;
@@ -577,6 +577,7 @@ html, body {
   font-size: 13px;
   animation: termBlink 1s step-end infinite;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .dnp-term-input {
