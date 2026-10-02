@@ -427,7 +427,7 @@
     var termInput = document.getElementById("term-input");
 
     if (termLoaded || termBooting) {
-      if (termInput) termInput.focus();
+      if (termInput) termInput.focus({ preventScroll: true });
       return;
     }
     termBooting = true;
@@ -460,7 +460,7 @@
     }
 
     termStep++;
-    termTimer = setTimeout(runBootStep, 200);
+    termTimer = setTimeout(runBootStep, 180);
   }
 
   function finishTerminalBoot() {
@@ -486,9 +486,8 @@
       termPromptLine.style.display = "flex";
     }
     if (termInput) {
-      termInput.focus();
+      termInput.focus({ preventScroll: true });
     }
-    scrollTerm();
   }
 
   var termBody = document.getElementById("term-body");
@@ -497,8 +496,11 @@
       if (termBooting) {
         finishTerminalBoot();
       } else {
+        if (window.getSelection && window.getSelection().toString().length > 0) return;
         var input = document.getElementById("term-input");
-        if (input) input.focus();
+        if (input && document.activeElement !== input) {
+          input.focus({ preventScroll: true });
+        }
       }
     });
   }
