@@ -361,10 +361,6 @@
         if (parsed && parsed.username) return parsed.username.toUpperCase();
       } catch (e) {}
     }
-    if (window.CookieManager) {
-      var tok = window.CookieManager.get('dnp_username');
-      if (tok) return tok.toUpperCase();
-    }
     return "USER";
   }
 
@@ -373,7 +369,7 @@
   }
 
   // Обновление личного кабинета в шапке
-  function renderAuthHeader() {
+  window.renderAuthHeader = function() {
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
 
@@ -406,6 +402,7 @@
 
         document.getElementById("dnp-menu-logout").addEventListener("click", function() {
           localStorage.removeItem("dnp_active_user");
+          localStorage.removeItem("dnp_auth_token");
           location.reload();
         });
         return;
@@ -413,9 +410,9 @@
     }
 
     slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
-  }
+  };
 
-  window.addEventListener("DOMContentLoaded", renderAuthHeader);
+  window.addEventListener("DOMContentLoaded", window.renderAuthHeader);
 
   var termLoaded = false;
   var termBooting = false;
@@ -557,6 +554,7 @@
     modalTitle.textContent = "СИСТЕМА ПОДАЧИ ОТЧЁТОВ // DEINOPIDAE";
 
     var isAuth = !!localStorage.getItem("dnp_active_user");
+    var token = localStorage.getItem("dnp_auth_token");
     var authNotice = isAuth ? '' : '<div style="padding: 8px 12px; background: rgba(169,100,104,0.15); border: 1px solid var(--danger); font-size: 11.5px; color: #ff8589;">ВНИМАНИЕ: Для отправки формы необходимо войти в Личный кабинет. <a href="auth.html" style="text-decoration: underline; color: #fff; margin-left: 6px;">АВТОРИЗАЦИЯ ↗</a></div>';
 
     modalBody.innerHTML = [
@@ -568,10 +566,10 @@
       '    <option value="Изменения устава">2. Изменения устава (Предложение поправки)</option>',
       '    <option value="Обращение к руководству">3. Обращение к руководству (Запрос / Жалоба / Вопрос)</option>',
       '  </select>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ПОЗЫВНОЙ / НИКНЕЙМ:</label>',
-      '  <input type="text" id="modal-form-nick" placeholder="Ваш никнейм" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ТЕКСТ ОБРАЩЕНИЯ / ОПИСАНИЕ:</label>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ТЕКСТ ОБРАЩЕНИЯ / ОПИСАНИЕ РАБОТЫ:</label>',
       '  <textarea id="modal-form-text" rows="4" placeholder="Введите подробности..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ДОКАЗАТЕЛЬСТВА (ССЫЛКА):</label>',
+      '  <input type="text" id="modal-form-proof" placeholder="Ссылка на скриншоты (Imgur, Yapx, Drive)" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
       '  <button type="button" class="dnp-action" id="modal-form-submit" style="margin: 8px 0 0; align-self: flex-start;">ОТПРАВИТЬ ФОРМУ ↗</button>',
       '  <div id="modal-form-status" style="font-size: 11.5px; margin-top: 4px; font-weight: 700;"></div>',
       '</div>'
@@ -581,21 +579,53 @@
 
     document.getElementById("modal-form-submit").addEventListener("click", function() {
       var statusBox = document.getElementById("modal-form-status");
-      if (!isAuth) {
+      if (!isAuth || !token) {
         statusBox.style.color = "var(--danger)";
         statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
         return;
       }
-      var nick = document.getElementById("modal-form-nick").value.trim();
       var text = document.getElementById("modal-form-text").value.trim();
       var type = document.getElementById("modal-form-type").value;
-      if (!nick || !text) {
+      var proof = document.getElementById("modal-form-proof").value.trim();
+
+      if (!text) {
         statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[ОШИБКА] Заполните никнейм и описание работы.";
+        statusBox.textContent = "[ОШИБКА] Заполните описание работы.";
         return;
       }
-      statusBox.style.color = "var(--ok)";
-      statusBox.textContent = "[SYS] Заявка [" + type + "] успешно сформирована и передана в реестр.";
+
+      statusBox.style.color = "var(--line)";
+      statusBox.textContent = "[SYS] Передача отчета на сервер...";
+
+      fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          token: token,
+          type: type,
+          description: text,
+          screenshots: proof
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.success) {
+          statusBox.style.color = "var(--ok)";
+          statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " сохранена и отправлена в Discord!";
+          document.getElementById("modal-form-text").value = "";
+          document.getElementById("modal-form-proof").value = "";
+        } else {
+          statusBox.style.color = "var(--danger)";
+          statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
+        }
+      })
+      .catch(function() {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
+      });
     });
   }
 
@@ -614,25 +644,21 @@
     scrollTerm();
 
     var startTime = Date.now();
-    var fixed = false;
 
     var interval = setInterval(function() {
       var elapsed = Date.now() - startTime;
 
       if (elapsed < 1200) {
-        // Стадия 1: хаотичный глитч
         var s = "";
         for (var i = 0; i < len; i++) {
           s += chars[Math.floor(Math.random() * chars.length)];
         }
         line.textContent = s;
       } else if (elapsed >= 1200 && elapsed < 3200) {
-        // Стадия 2: замирает ровно на 2 секунды
         line.textContent = targetText;
         line.style.color = "#ffffff";
         line.style.textShadow = "0 0 10px #00f0ff";
       } else if (elapsed >= 3200 && elapsed < 4800) {
-        // Стадия 3: обратно случайные буквы
         line.style.color = "#ff5252";
         line.style.textShadow = "none";
         var s2 = "";
@@ -641,7 +667,6 @@
         }
         line.textContent = s2;
       } else {
-        // Финал
         clearInterval(interval);
         line.textContent = "[SIGNAL LOST // ENCRYPTION TERMINATED]";
         line.style.color = "var(--muted)";
@@ -669,13 +694,11 @@
       first = (parts[0] || "").toUpperCase();
     }
 
-    // PROJECT PRISMA
     if (cmd.toUpperCase() === "PROJECT PRISMA" || (parts[0] && parts[0].toUpperCase() === "PROJECT" && parts[1] && parts[1].toUpperCase() === "PRISMA")) {
       runProjectPrisma();
       return;
     }
 
-    // FORMS [-gui]
     if (first === "FORMS") {
       var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
@@ -691,7 +714,6 @@
       return;
     }
 
-    // HELP (только разрешенные команды)
     if (first === "HELP") {
       printLine("HELP                - Вызов списка доступных команд");
       printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
@@ -702,7 +724,6 @@
       return;
     }
 
-    // STAFF [-gui]
     if (first === "STAFF") {
       var isGuiStaff = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       var cleanParts = parts.filter(function(p) { return p.toLowerCase() !== "-gui"; });
@@ -718,7 +739,6 @@
 
       if (p) {
         if (isGuiStaff) {
-          // Графическая карточка GUI в терминале
           var cardHtml = [
             '<div class="dnp-gui-dossier-card">',
             '  <div class="dnp-gui-card-head">',
@@ -766,7 +786,6 @@
       return;
     }
 
-    // FIND "фраза"
     if (first === "FIND") {
       var query = (parts.slice(1).join(" ") || "").replace(/^"|"$/g, "").toLowerCase();
 
@@ -797,7 +816,6 @@
       return;
     }
 
-    // СКРЫТЫЕ, НО РАБОЧИЕ УТИЛИТЫ CMD
     if (first === "SET") {
       Object.keys(envVars).forEach(function (k) {
         printLine(k + "=" + envVars[k]);
@@ -862,7 +880,6 @@
   var termTyped = document.getElementById("term-typed");
 
   if (termInput) {
-    // Синхронизация инлайн-курсора
     termInput.addEventListener("input", function() {
       if (termTyped) termTyped.textContent = termInput.value;
     });

@@ -3,20 +3,33 @@
   var lastDataHash = "";
 
   function pollServerData() {
-    // 1. Проверка актуальности авторизации
-    fetch(SERVER_URL + "/api/auth/me", { credentials: "include" })
+    var token = localStorage.getItem("dnp_auth_token");
+
+    // 1. Проверка сессии с передачей токена в заголовке
+    if (token) {
+      fetch(SERVER_URL + "/api/auth/me", {
+        headers: { "Authorization": "Bearer " + token }
+      })
       .then(function(res) { return res.json(); })
       .then(function(authRes) {
-        if (!authRes.authenticated) {
-          localStorage.removeItem("dnp_active_user");
-        } else {
+        if (authRes && authRes.authenticated) {
           localStorage.setItem("dnp_active_user", JSON.stringify(authRes.user));
-        }
-        if (typeof window.renderAuthHeader === "function") {
-          window.renderAuthHeader();
+          if (typeof window.renderAuthHeader === "function") {
+            window.renderAuthHeader();
+          }
+        } else if (authRes && authRes.authenticated === false) {
+          // Удаляем только если сервер ответил, что токен недействителен
+          localStorage.removeItem("dnp_active_user");
+          localStorage.removeItem("dnp_auth_token");
+          if (typeof window.renderAuthHeader === "function") {
+            window.renderAuthHeader();
+          }
         }
       })
-      .catch(function() {});
+      .catch(function() {
+        // При ошибке соединения НЕ стираем пользователя (сервер может просыпаться)
+      });
+    }
 
     // 2. Поллинг данных Google Таблицы
     fetch(SERVER_URL + "/api/users/data")

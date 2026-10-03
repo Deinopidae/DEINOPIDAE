@@ -10,7 +10,7 @@
     var proofInput = document.getElementById("form-proof");
     var statusBox = document.getElementById("form-status-box");
 
-    var token = window.CookieManager ? window.CookieManager.getSessionToken() : null;
+    var token = localStorage.getItem("dnp_auth_token");
     var activeUser = localStorage.getItem("dnp_active_user");
 
     if (!token || !activeUser) {
@@ -43,8 +43,10 @@
 
     fetch(SUBMIT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
       body: JSON.stringify(payload)
     })
     .then(function(res) { return res.json(); })
@@ -66,7 +68,7 @@
     .catch(function() {
       if (statusBox) {
         statusBox.style.color = "#ff5252";
-        statusBox.textContent = "[СБОЙ СЕТИ] Сервер не отвечает. Проверьте запуск node server.js.";
+        statusBox.textContent = "[СБОЙ СЕТИ] Сервер не отвечает. Попробуйте еще раз через несколько секунд.";
       }
     });
   };

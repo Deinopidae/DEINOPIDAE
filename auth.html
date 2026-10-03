@@ -164,7 +164,7 @@
       <button type="button" class="auth-tab-btn" id="tab-reg-btn">РЕГИСТРАЦИЯ</button>
     </div>
 
-    <!-- ВХОД (3 ПЛАШКИ) -->
+    <!-- ВХОД -->
     <form class="auth-form" id="form-login">
       <div class="auth-field">
         <label>ИМЯ ПОЛЬЗОВАТЕЛЯ ИЛИ ROBLOX НИКНЕЙМ:</label>
@@ -177,7 +177,7 @@
       <button type="submit" class="auth-submit-btn">ВОЙТИ В СИСТЕМУ</button>
     </form>
 
-    <!-- РЕГИСТРАЦИЯ (4 ПЛАШКИ) -->
+    <!-- РЕГИСТРАЦИЯ -->
     <form class="auth-form" id="form-register" style="display: none;">
       <div class="auth-field">
         <label style="text-align: center;">ИМЯ ПОЛЬЗОВАТЕЛЯ:</label>
@@ -246,19 +246,17 @@
       }
 
       msg.style.color = "#00f0ff";
-      msg.textContent = "[SYS] Регистрация аккаунта...";
+      msg.textContent = "[SYS] Регистрация аккаунта в комплексе...";
 
       fetch(SERVER_URL + "/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ username: username, roblox: roblox, password: pass })
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          window.CookieManager.set("dnp_session_token", data.user.token, 30);
-          window.CookieManager.set("dnp_username", data.user.username, 30);
+          localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
           msg.style.color = "#4af626";
@@ -271,7 +269,7 @@
       })
       .catch(function() {
         msg.style.color = "#ff5252";
-        msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен (node server.js не запущен).";
+        msg.textContent = "[СБОЙ СЕТИ] Сервер просыпается... Повторите через 15 секунд.";
       });
     });
 
@@ -287,14 +285,12 @@
       fetch(SERVER_URL + "/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ identifier: ident, password: pass })
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          window.CookieManager.set("dnp_session_token", data.user.token, 30);
-          window.CookieManager.set("dnp_username", data.user.username, 30);
+          localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
           msg.style.color = "#4af626";
@@ -307,7 +303,7 @@
       })
       .catch(function() {
         msg.style.color = "#ff5252";
-        msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен (node server.js не запущен).";
+        msg.textContent = "[СБОЙ СЕТИ] Сервер просыпается... Повторите через 15 секунд.";
       });
     });
   </script>
