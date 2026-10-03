@@ -1,5 +1,5 @@
 (function() {
-  var SERVER_URL = "http://localhost:3000";
+  var SERVER_URL = "https://deinopidae-api.onrender.com";
   var lastDataHash = "";
 
   function pollServerData() {

@@ -1,5 +1,5 @@
 (function() {
-  var SUBMIT_URL = "http://localhost:3000/api/forms/submit";
+  var SUBMIT_URL = "https://deinopidae-api.onrender.com/api/forms/submit";
 
   window.submitReportForm = function(event) {
     if (event) event.preventDefault();
