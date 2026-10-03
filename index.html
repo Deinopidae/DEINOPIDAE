@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>DEINOPIDAE / ДЕИНОПИДЫ</title>
 
   <link rel="icon" type="image/png" href="assets/image/favicon.png">
@@ -127,7 +127,7 @@
                 <b>О предприятии</b>
                 <em>PROFILE</em>
               </div>
-              <p>Deinopidae Industries(Предприятие Дейнопидае) - Одно из четырех направлений научно-исследовательского крыла Арахна. Цель предприятия - оказывать помощь в поставках, разработке, и починки технологий для департамента S.E. - Kurodzakura. Второстепенными целями являются проведение геологоразведочных работ, оказание связи между комплексами, помощь партнерам из Aurum Corporation, и прочее.</p>
+              <p>Deinopidae Industries(Предприятие Дейнопидае) - Одно из трёх направлений научно-исследовательского крыла Арахна. Цель предприятия - оказывать помощь в поставках, разработке, и починки технологий для департамента S.E. - Kurodzakura. Второстепенными целями являются проведение геологоразведочных работ, оказание связи между комплексами, помощь партнерам из Aurum Corporation, и прочее.</p>
             </article>
 
             <article class="dnp-module">
@@ -323,17 +323,48 @@
         <section class="dnp-screen" data-screen-panel="ustav-05">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 05</p>
-            <h1>Раздел 5 — Задания</h1>
-            <span>TASKS</span>
+            <h1>Раздел 5 — Задания и отчёты</h1>
+            <span>DISPATCH &amp; FORMS</span>
           </div>
 
           <div class="dnp-screen-content">
             <article class="dnp-module">
               <div class="dnp-module-title">
-                <span>5.1</span>
-                <b>Задания</b>
-                <em>TASKS</em>
+                <span>05.1</span>
+                <b>ПОДАЧА ОТЧЁТА // ВНЕУРОЧКА И НОРМА</b>
+                <em>DISPATCH FORM</em>
               </div>
+
+              <form id="dnp-report-form" onsubmit="window.submitReportForm(event)" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ПОЗЫВНОЙ / НИКНЕЙМ:</label>
+                  <input type="text" id="form-nick" required placeholder="Например: EGORIK0130" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
+                </div>
+
+                <div>
+                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ТИП РАБОТЫ:</label>
+                  <select id="form-type" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
+                    <option value="Внеурочка ПО">Внеурочка ПО (Починка оборудования)</option>
+                    <option value="Внеурочка СО">Внеурочка СО (Создание оборудования)</option>
+                    <option value="Отписка нормы">Отписка по норме (Уважительная причина)</option>
+                    <option value="Квест/Задание">Выполнение задания ранга</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ОПИСАНИЕ ПРОДЕЛАННОЙ РАБОТЫ:</label>
+                  <textarea id="form-desc" rows="3" placeholder="Опишите ваши действия в комплексе..." style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;"></textarea>
+                </div>
+
+                <div>
+                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ДОКАЗАТЕЛЬСТВА (ССЫЛКИ НА СКРИНШОТЫ):</label>
+                  <input type="text" id="form-proof" placeholder="Ссылка на Imgur, Yapx или Google Drive" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
+                </div>
+
+                <button type="submit" class="dnp-action" style="margin: 6px 0 0; cursor: pointer; align-self: flex-start;">ОТПРАВИТЬ ОТЧЁТ В БАЗУ ↗</button>
+
+                <div id="form-status-box" style="font-size: 12px; font-weight: 700; margin-top: 6px; color: var(--line);"></div>
+              </form>
             </article>
 
             <div class="dnp-brud-note">
@@ -611,18 +642,18 @@
                 <div class="dnp-broken-field" id="broken-field">
                   <div class="dnp-slice dnp-slice-1">
                     <p>
-                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19кррке.12 на нижнем икеркруровне крыла Арахна проььььььььььело аварийное 
                       <span class="dnp-redact">███████████████</span> 
-                      с последующим заражением информационного ядра 
+                      с последующимссисинием инсисиииииии
                       <span class="dnp-redact">███████</span>.
                     </p>
                   </div>
 
                   <div class="dnp-slice dnp-slice-2" aria-hidden="true">
                     <p>
-                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходст12 на нижнем инженернтсмвне крркеркеерахна произошло аварийное 
                       <span class="dnp-redact">███████████████</span> 
-                      с последующим заражением информационного ядра 
+                      с последующим зараркерационногеркерра 
                       <span class="dnp-redact">███████</span>.
                     </p>
                   </div>
@@ -630,14 +661,14 @@
                   <div class="dnp-corrupt-log dnp-slice dnp-slice-log">
                     <span>ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR</span>
                     <span>MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY</span>
-                    <span>ACCESS DENIED // УРОВЕНЬ ДОСТУПА НЕДОСТАТОЧЕН ДЛЯ ДЕШИФРОВКИ</span>
+                    <span>ACCESS DENIED // УРОВЕНЬ ДОСТУПА пукпНЕДОСТАТОкпууЧЕН ДЛЯ ДЕШкупИФРОВКИ</span>
                   </div>
 
                   <div class="dnp-slice dnp-slice-3">
                     <p>
-                      С̷о̷т̸р̸у̸д̷н̸и̸к̸а̸м̶ ̶к̸а̸т̸е̸г̸о̸р̸и̸ч̸е̸с̸к̸и̶ ̶з̶а̶п̶р̶е̶щ̶е̶н̶о̶ ̶в̶о̶с̶с̶т̶а̶н̶а̶в̶л̶и̶в̶а̶т̶ь̶ ̶д̶а̶н̶н̶ы̶й̶ ̶у̶з̶е̶л̶ ̶б̶е̶з̶ ̶п̸р̶я̶м̶о̶г̶о̶ ̶р̸а̶з̶р̶е̶ш̶е̶н̶и̶я̶ 
+                      С̷о̷т̸р̸у̸д̷н̸и̸к̸а̸м̶ ̶к̸а̸т̸е̸г̸о̸р̸и̸ч̸е̸с̸к̸и̶ ̶з̶а̶п̶р̶е̶щ̶е̶н̶о̶ ̶вукп̶а̶н̶а̶в̶л̶и̶в̶а̶т̶ь̶ ̶д̶а̶н̶н̶ы̶й̶ ̶у̶зпукпуо̶г̶о̶ ̶р̸а̶з̶р̶е̶ш̶е̶н̶и̶я̶ 
                       <span class="dnp-redact">████████████</span>. 
-                      Остаточные фрагменты протокола перемещены в архив безопасности 
+                      Остаточные фрагмтмстотокола перемещены встсттспасности 
                       <span class="dnp-redact">██████████</span>.
                     </p>
                   </div>
@@ -687,6 +718,9 @@
     </footer>
   </div>
 
+  <script src="js/cookie_manager.js"></script>
+  <script src="js/live_polling.js"></script>
+  <script src="js/form_handler.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

@@ -339,13 +339,12 @@
     "                                       @@                                       "
   ].join("\n");
 
-  var employeeDb = {
-    "xxartemrtxxx": { name: "xxartemrtxxx", rank: "OFFICER", role: "Офицер отдела", hours: "18 ч.", po: 6, so: 4, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
-    "egorik0130": { name: "EGORIK0130", rank: "OFFICER", role: "Офицер отдела", hours: "24 ч.", po: 8, so: 5, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
-    "ceretow2222": { name: "ceretow2222", rank: "PROFESSOR", role: "Профессор", hours: "14 ч.", po: 4, so: 3, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
-    "zzmalf4": { name: "zzmalf4", rank: "PROFESSOR", role: "Профессор", hours: "16 ч.", po: 5, so: 2, ikoku: 0, kenseki: 0, status: "АКТИВЕН // В СТРОЮ" },
-    "wewewewestrelok": { name: "Wewewewestrelok", rank: "OFFICER", role: "Первоиздатель", hours: "—", po: "—", so: "—", ikoku: 0, kenseki: 0, status: "АРХИВ // ПОЧЁТНЫЙ" },
-    "kira_ewika": { name: "kira_ewika", rank: "PROFESSOR", role: "Экс-профессор", hours: "—", po: "—", so: "—", ikoku: 1, kenseki: 0, status: "АРХИВ" }
+  window.employeeDb = {
+    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "zzmalf4": { name: "zzmalf4", title: "Главный инженер", rank: "A RANK", mp: "0/1", hours: "0:00", equipment: "0", coins: "46", activity: "0", quota_status: "НЕ ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "Кэнсэки 1", promotion: "ПРИОСТАНОВЛЕНО (Действуют активные дисциплинарные взыскания)", lectures: { po: "НЕ ПРОЙДЕНА", so: "НЕ ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "НЕ СДАНА", b: "НЕ СДАНА", a: "НЕ СДАНА" } },
+    "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
   };
 
   var directories = {
@@ -354,7 +353,7 @@
       "РАЗДЕЛ 2: Правила (КВР, Свод законов, виды наказаний: Устный, Икоку, Кенсэки)",
       "РАЗДЕЛ 3: Повышения (Звания: Курсант -> Главный инженер, потолок рангов)",
       "РАЗДЕЛ 4: Норма (Еженедельная норма: Кадет, C, B, A ранги)",
-      "РАЗДЕЛ 5: Задания (Архив задач для проверки РП-уровня)",
+      "РАЗДЕЛ 5: Задания (Архив задач для проверки РП-уровня и подача отчетов)",
       "РАЗДЕЛ 6: Проверки и Лекции (Экзамены C/B/A, лекции ПО/СО/МП)",
       "РАЗДЕЛ 7: Активности (Шкала прогрессии, сброс очков по понедельникам)",
       "РАЗДЕЛ 8: Прочее (Проведение мероприятий: 5 и 7 звания)",
@@ -630,12 +629,13 @@
           });
         });
 
-        Object.keys(employeeDb).forEach(function (k) {
+        var db = window.employeeDb || {};
+        Object.keys(db).forEach(function (k) {
           if (scope && scope !== "состав" && scope !== "сотрудники") return;
-          var emp = employeeDb[k];
-          var rawStr = (emp.name + " " + emp.rank + " " + emp.role + " " + emp.status).toLowerCase();
+          var emp = db[k];
+          var rawStr = (emp.name + " " + emp.rank + " " + (emp.title || "") + " " + (emp.status || "")).toLowerCase();
           if (rawStr.indexOf(query) !== -1) {
-            matches.push("[СОСТАВ] " + emp.name + " // " + emp.rank + " (" + emp.role + ") - " + emp.status);
+            matches.push("[СОСТАВ] " + emp.name + " // " + emp.title + " [" + emp.rank + "] - " + emp.quota_status);
           }
         });
 
@@ -658,19 +658,28 @@
           return;
         }
 
-        var person = employeeDb[nick];
-        if (person) {
-          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // РЕЕСТР COMPLEX] ===");
-          printLine("  ПОЗЫВНОЙ / НИК  : " + person.name);
-          printLine("  ЗВАНИЕ / РОЛЬ   : " + person.rank + " [" + person.role + "]");
-          printLine("  НАИГРАНО ЧАСОВ  : " + person.hours);
-          printLine("  СДАНО ПО / СО   : " + person.po + " ПО / " + person.so + " СО");
-          printLine("  ИКОКУ / КЕНСЭКИ : " + person.ikoku + " ИК. / " + person.kenseki + " КЕН.");
-          printLine("  СТАТУС ДОПУСКА  : " + person.status);
-          printLine("==================================================");
+        var db = window.employeeDb || {};
+        var p = db[nick];
+        if (p) {
+          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+          printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
+          printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
+          printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+          printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
+          printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
+          printLine("  ОТПУСК            : " + p.vacation);
+          if (p.lectures) {
+            printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+          }
+          if (p.exams) {
+            printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
+          }
+          printLine("  НАКАЗАНИЯ         : " + p.penalties);
+          printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
+          printLine("======================================================");
         } else {
-          printLine("[SYS] Позывной '" + nick + "' отсутствует в локальном кэше.");
-          printLine("Данные обновляются из таблицы: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ GOOGLE ТАБЛИЦУ ↗</span>");
+          printLine("[SYS] Позывной '" + nick + "' не найден в локальном реестре.");
+          printLine("Ведомость доступна по ссылке: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
         }
         return;
       }
@@ -788,7 +797,7 @@
       printLine("│   ├── 02_rules.dat");
       printLine("│   ├── 03_promotions.dat");
       printLine("│   ├── 04_quota.dat");
-      printLine("│   ├── 05_tasks.dat");
+      printLine("│   ├── 05_tasks_forms.dat");
       printLine("│   ├── 06_exams_lectures.dat");
       printLine("│   ├── 07_activities.dat");
       printLine("│   ├── 08_misc.dat");
