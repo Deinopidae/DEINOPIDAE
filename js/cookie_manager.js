@@ -1,4 +1,3 @@
-// Менеджер сессий и Cookie
 (function() {
   window.CookieManager = {
     get: function(name) {
@@ -12,18 +11,12 @@
       document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + d.toUTCString() + "; path=/; SameSite=Lax";
     },
 
-    getUserToken: function() {
-      var token = this.get('dnp_user_token');
-      if (!token) {
-        token = 'OP_' + Math.random().toString(36).substring(2, 9).toUpperCase() + '_' + Date.now().toString(36).toUpperCase();
-        this.set('dnp_user_token', token, 30);
-      }
-      return token;
+    remove: function(name) {
+      document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    },
+
+    getSessionToken: function() {
+      return this.get('dnp_session_token');
     }
   };
-
-  // Инициализация токена при загрузке
-  window.addEventListener('DOMContentLoaded', function() {
-    window.CookieManager.getUserToken();
-  });
 })();

@@ -1,46 +1,47 @@
-// Автоматический поллинг сервера каждые 10 секунд
 (function() {
-  var API_URL = "http://localhost:3000/api/users/data";
+  var SERVER_URL = "http://localhost:3000";
   var lastDataHash = "";
 
   function pollServerData() {
-    fetch(API_URL)
-      .then(function(res) {
-        if (!res.ok) throw new Error("Сервер недоступен");
-        return res.json();
+    // 1. Проверка актуальности авторизации
+    fetch(SERVER_URL + "/api/auth/me", { credentials: "include" })
+      .then(function(res) { return res.json(); })
+      .then(function(authRes) {
+        if (!authRes.authenticated) {
+          localStorage.removeItem("dnp_active_user");
+        } else {
+          localStorage.setItem("dnp_active_user", JSON.stringify(authRes.user));
+        }
+        if (typeof window.renderAuthHeader === "function") {
+          window.renderAuthHeader();
+        }
       })
+      .catch(function() {});
+
+    // 2. Поллинг данных Google Таблицы
+    fetch(SERVER_URL + "/api/users/data")
+      .then(function(res) { return res.json(); })
       .then(function(data) {
         var currentHash = JSON.stringify(data);
 
-        // Если это первый запуск или данные изменились в таблице
         if (lastDataHash && lastDataHash !== currentHash) {
-          console.log("[POLL] База данных сотрудников обновлена из Google Sheets!");
-
-          // Если открыт терминал — оповещаем пользователя
           var termOutput = document.getElementById("term-output");
           if (termOutput) {
             var note = document.createElement("div");
             note.className = "dnp-term-resp-line";
             note.style.color = "#4af626";
-            note.textContent = "[SYS] ОБНАРУЖЕНО ИЗМЕНЕНИЕ БАЗЫ ДАННЫХ: Таблица синхронизирована.";
+            note.textContent = "[SYS] БАЗА ДАННЫХ ОБНОВЛЕНА: Реестр синхронизирован с таблицей.";
             termOutput.appendChild(note);
           }
-
-          // Обновляем локальный объект базы в скрипте
-          if (window.employeeDb) {
-            window.employeeDb = data;
-          }
+          window.employeeDb = data;
         }
 
         lastDataHash = currentHash;
         window.employeeDb = data;
       })
-      .catch(function(err) {
-        // Ошибки сервера в штатном режиме скрываем
-      });
+      .catch(function() {});
   }
 
-  // Запуск проверки строго каждые 10 секунд
   setInterval(pollServerData, 10000);
   window.addEventListener('DOMContentLoaded', pollServerData);
 })();

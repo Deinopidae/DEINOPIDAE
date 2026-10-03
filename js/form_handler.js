@@ -1,4 +1,3 @@
-// Обработчик подачи форм отчетов в КПК
 (function() {
   var SUBMIT_URL = "http://localhost:3000/api/forms/submit";
 
@@ -11,28 +10,41 @@
     var proofInput = document.getElementById("form-proof");
     var statusBox = document.getElementById("form-status-box");
 
-    if (!nickInput || !typeSelect) return;
+    var token = window.CookieManager ? window.CookieManager.getSessionToken() : null;
+    var activeUser = localStorage.getItem("dnp_active_user");
 
-    var token = window.CookieManager ? window.CookieManager.getUserToken() : "UNKNOWN";
+    if (!token || !activeUser) {
+      if (statusBox) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.innerHTML = '[ОТКАЗ] Отправка отчетов заблокирована. Требуется авторизация в <a href="auth.html" style="color: #fff; text-decoration: underline;">Личном кабинете</a>.';
+      }
+      return;
+    }
 
     var payload = {
       token: token,
-      nickname: nickInput.value.trim(),
-      type: typeSelect.value,
+      type: typeSelect ? typeSelect.value : "Внеурочка",
       description: descInput ? descInput.value.trim() : "",
       screenshots: proofInput ? proofInput.value.trim() : ""
     };
 
-    if (!payload.nickname) {
-      if (statusBox) statusBox.textContent = "[ОШИБКА] Укажите ваш позывной/никнейм.";
+    if (!payload.description) {
+      if (statusBox) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[ОШИБКА] Заполните описание работы.";
+      }
       return;
     }
 
-    if (statusBox) statusBox.textContent = "[SYS] Передача данных на сервер...";
+    if (statusBox) {
+      statusBox.style.color = "var(--line)";
+      statusBox.textContent = "[SYS] Передача данных на сервер...";
+    }
 
     fetch(SUBMIT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload)
     })
     .then(function(res) { return res.json(); })
@@ -40,9 +52,8 @@
       if (data.success) {
         if (statusBox) {
           statusBox.style.color = "#4af626";
-          statusBox.textContent = "[УСПЕХ] Отчет " + data.reportId + " принят в обработку и передан в Discord!";
+          statusBox.textContent = "[УСПЕХ] Отчет " + data.reportId + " зарегистрирован в базе данных и передан в Discord!";
         }
-        // Очищаем форму
         if (descInput) descInput.value = "";
         if (proofInput) proofInput.value = "";
       } else {
@@ -52,7 +63,7 @@
         }
       }
     })
-    .catch(function(err) {
+    .catch(function() {
       if (statusBox) {
         statusBox.style.color = "#ff5252";
         statusBox.textContent = "[СБОЙ СЕТИ] Сервер не отвечает. Проверьте запуск node server.js.";

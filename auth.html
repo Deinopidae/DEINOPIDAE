@@ -164,7 +164,7 @@
       <button type="button" class="auth-tab-btn" id="tab-reg-btn">РЕГИСТРАЦИЯ</button>
     </div>
 
-    <!-- ФОРМА АВТОРИЗАЦИИ (3 ПЛАШКИ) -->
+    <!-- ВХОД (3 ПЛАШКИ) -->
     <form class="auth-form" id="form-login">
       <div class="auth-field">
         <label>ИМЯ ПОЛЬЗОВАТЕЛЯ ИЛИ ROBLOX НИКНЕЙМ:</label>
@@ -177,7 +177,7 @@
       <button type="submit" class="auth-submit-btn">ВОЙТИ В СИСТЕМУ</button>
     </form>
 
-    <!-- ФОРМА РЕГИСТРАЦИИ (4 ПЛАШКИ) -->
+    <!-- РЕГИСТРАЦИЯ (4 ПЛАШКИ) -->
     <form class="auth-form" id="form-register" style="display: none;">
       <div class="auth-field">
         <label style="text-align: center;">ИМЯ ПОЛЬЗОВАТЕЛЯ:</label>
@@ -205,7 +205,10 @@
     </div>
   </div>
 
+  <script src="js/cookie_manager.js"></script>
   <script>
+    var SERVER_URL = "http://localhost:3000";
+
     var tabLogin = document.getElementById("tab-login-btn");
     var tabReg = document.getElementById("tab-reg-btn");
     var formLogin = document.getElementById("form-login");
@@ -242,20 +245,34 @@
         return;
       }
 
-      var userData = {
-        username: username,
-        roblox: roblox,
-        registeredAt: Date.now()
-      };
+      msg.style.color = "#00f0ff";
+      msg.textContent = "[SYS] Регистрация аккаунта...";
 
-      localStorage.setItem("dnp_active_user", JSON.stringify(userData));
-      document.cookie = "dnp_username=" + encodeURIComponent(username) + "; path=/; max-age=2592000";
+      fetch(SERVER_URL + "/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: username, roblox: roblox, password: pass })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.success) {
+          window.CookieManager.set("dnp_session_token", data.user.token, 30);
+          window.CookieManager.set("dnp_username", data.user.username, 30);
+          localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-      msg.style.color = "#4af626";
-      msg.textContent = "[УСПЕХ] Регистрация завершена! Переход в систему...";
-      setTimeout(function() {
-        window.location.href = "index.html";
-      }, 900);
+          msg.style.color = "#4af626";
+          msg.textContent = "[УСПЕХ] Аккаунт создан! Переход в систему...";
+          setTimeout(function() { window.location.href = "index.html"; }, 800);
+        } else {
+          msg.style.color = "#ff5252";
+          msg.textContent = "[ОТКАЗ] " + (data.error || "Ошибка регистрации");
+        }
+      })
+      .catch(function() {
+        msg.style.color = "#ff5252";
+        msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен (node server.js не запущен).";
+      });
     });
 
     // Обработка входа
@@ -264,20 +281,34 @@
       var ident = document.getElementById("login-identifier").value.trim();
       var pass = document.getElementById("login-pass").value;
 
-      var userData = {
-        username: ident,
-        roblox: ident,
-        loggedInAt: Date.now()
-      };
+      msg.style.color = "#00f0ff";
+      msg.textContent = "[SYS] Проверка учетных данных...";
 
-      localStorage.setItem("dnp_active_user", JSON.stringify(userData));
-      document.cookie = "dnp_username=" + encodeURIComponent(ident) + "; path=/; max-age=2592000";
+      fetch(SERVER_URL + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ identifier: ident, password: pass })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.success) {
+          window.CookieManager.set("dnp_session_token", data.user.token, 30);
+          window.CookieManager.set("dnp_username", data.user.username, 30);
+          localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-      msg.style.color = "#4af626";
-      msg.textContent = "[УСПЕХ] Доступ предоставлен. Переход...";
-      setTimeout(function() {
-        window.location.href = "index.html";
-      }, 700);
+          msg.style.color = "#4af626";
+          msg.textContent = "[УСПЕХ] Доступ разрешен! Вход в систему...";
+          setTimeout(function() { window.location.href = "index.html"; }, 600);
+        } else {
+          msg.style.color = "#ff5252";
+          msg.textContent = "[ОТКАЗ] " + (data.error || "Неверный логин или пароль");
+        }
+      })
+      .catch(function() {
+        msg.style.color = "#ff5252";
+        msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен (node server.js не запущен).";
+      });
     });
   </script>
 </body>
