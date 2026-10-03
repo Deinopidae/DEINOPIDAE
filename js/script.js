@@ -302,7 +302,6 @@
   // =========================================================
   // ТЕРМИНАЛ: ЧИСТЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС
   // =========================================================
-  var brudUrl = "https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing";
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
   var asciiLogo = [
@@ -347,69 +346,24 @@
     "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
   };
 
-  var directories = {
-    "устав": [
-      "РАЗДЕЛ 1: Основа (О предприятии, задачи работы)",
-      "РАЗДЕЛ 2: Правила (КВР, Свод законов, виды наказаний: Устный, Икоку, Кенсэки)",
-      "РАЗДЕЛ 3: Повышения (Звания: Курсант -> Главный инженер, потолок рангов)",
-      "РАЗДЕЛ 4: Норма (Еженедельная норма: Кадет, C, B, A ранги)",
-      "РАЗДЕЛ 5: Задания (Архив задач для проверки РП-уровня и подача отчетов)",
-      "РАЗДЕЛ 6: Проверки и Лекции (Экзамены C/B/A, лекции ПО/СО/МП)",
-      "РАЗДЕЛ 7: Активности (Шкала прогрессии, сброс очков по понедельникам)",
-      "РАЗДЕЛ 8: Прочее (Проведение мероприятий: 5 и 7 звания)",
-      "РАЗДЕЛ 9: Конец (Заключение, первоиздатель Wewewewestrelok)"
-    ],
-    "бруд": [
-      "БРУД // Ссылка: " + brudUrl,
-      "01. Положения и регламент предприятия Deinopidae",
-      "02. Квалификационные требования и должностные инструкции",
-      "03. Журнал внеурочной деятельности и отписка-нормы"
-    ],
-    "звания": [
-      "Кадет: 1. Курсант (выдается аналитиком), 2. Локализатор (5ч, 1 задание)",
-      "C Rank: 3. Оператор (6ч, 2 задания, 6 дней), 4. Диспетчер (7ч, 2 задания, 8 дней)",
-      "B Rank: 5. Полевой эксперт (8ч, 3 задания, 10 дней), 6. Старший инспектор (9ч, 3 задания, 18 дней)",
-      "A Rank: 7. Ведущий конструктор (9ч, 4 задания, 23 дня), 8. Главный инженер (выдается аналитиком)"
-    ],
-    "норма": [
-      "Кадет: Посетить 4 МП. На выбор: Наиграть 4 часа / 5 Оборудования",
-      "C RANK: Посетить 3 МП. На выбор: Наиграть 3 часа / 4 Оборудования",
-      "B RANK: Посетить 2 МП. На выбор: Наиграть 3 часа / 3 Оборудования",
-      "A RANK: Посетить 2 МП. На выбор: Наиграть 2 часа / 2 Оборудования",
-      "ШТРАФ: Невыполнение без отписки в 'Отписка-нормы' = 1 Кенсэки"
-    ],
-    "активности": [
-      "LVL 0: Базовый (разблокирует C rank)",
-      "LVL 1: Средний (разблокирует B rank, рейтинг, внеурочки)",
-      "LVL 2: Высокий (разблокирует A rank, квесты)",
-      "ПРАВИЛО: Под конец недели (0:00 ПН) при >= 20 очках снимается 20 PTS. При < 20 очках сброс на 1 уровень.",
-      "БАЛЛЫ: Внеурочки (10), Квесты (20), Помощь (10), Рейтинг (10), Отдельное МП (10), Общее МП (20), Лекция (20), Норма (10)"
-    ],
-    "документы": [
-      "Таблица состава: " + sheetsUrl,
-      "БРУД (Регламент): " + brudUrl,
-      "Внеурочки ПО: https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf",
-      "Внеурочки СО: https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n",
-      "Пользовательское соглашение: https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf",
-      "Справочник сотрудника: https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf"
-    ]
-  };
-
-  var virtualFiles = {
-    "ustav.txt": "DEINOPIDAE INDUSTRIES // СВОД УСТАВА\nЦель предприятия: разработка, снабжение, техподдержка департамента S.E.\nСоблюдение правил КВР, игровых регламентов и субординации обязательно.",
-    "rules.txt": "ПРАВИЛА И САНКЦИИ:\n1. Устный выговор (фиксация мелких нарушений)\n2. Икоку (2 устных = 1 икоку)\n3. Кенсэки (2 икоку = 1 кенсэки). 3 кенсэки = увольнение.",
-    "quota.txt": "ЕЖЕНЕДЕЛЬНАЯ НОРМА:\nКадет: 4 МП (4ч / 5 оборуд)\nC Rank: 3 МП (3ч / 4 оборуд)\nB Rank: 2 МП (3ч / 3 оборуд)\nA Rank: 2 МП (2ч / 2 оборуд)",
-    "brud.txt": "БРУД: " + brudUrl,
-    "secret.log": "19██.04.12: Аварийная изоляция нижнего инженерного крыла.\nПроизошло несанкционированное повреждение инфо-ядра. Уровень доступа: 4."
-  };
-
   var envVars = {
-    "OS": "Deinopidae Embedded Terminal [Version 4.10.88]",
-    "SECTOR": "ARACHNA // DEINOPIDAE NODE",
-    "TERMINAL_ID": "SE-DNP-CLI-02",
-    "STATUS": "SYNC_ACTIVE",
-    "USER": "OPERATOR"
+    "OS": "Deinopidae Terminal OS [Build 2026.4]",
+    "DRIVE": "D:\\",
+    "SYSTEM_NODE": "DEINOPIDAE S.E. // CORE",
+    "TERMINAL_STATUS": "ACTIVE"
   };
+
+  function getCurrentUser() {
+    if (window.CookieManager) {
+      var tok = window.CookieManager.get('dnp_username');
+      if (tok) return tok.toUpperCase();
+    }
+    return "USER";
+  }
+
+  function getPromptStr() {
+    return 'D:\\"' + getCurrentUser() + '">';
+  }
 
   var termLoaded = false;
   var termBooting = false;
@@ -423,7 +377,12 @@
     var termProgressLine = document.getElementById("term-progress-line");
     var termAscii = document.getElementById("term-ascii");
     var termPromptLine = document.getElementById("term-prompt-line");
+    var termPromptLabel = document.getElementById("term-prompt-label");
     var termInput = document.getElementById("term-input");
+
+    if (termPromptLabel) {
+      termPromptLabel.textContent = getPromptStr();
+    }
 
     if (termLoaded || termBooting) {
       if (termInput) termInput.focus({ preventScroll: true });
@@ -471,14 +430,19 @@
     var termProgressLine = document.getElementById("term-progress-line");
     var termAscii = document.getElementById("term-ascii");
     var termPromptLine = document.getElementById("term-prompt-line");
+    var termPromptLabel = document.getElementById("term-prompt-label");
     var termInput = document.getElementById("term-input");
 
     if (termTopTitle) termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
-    if (termProgressLine) termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "D HELP" FOR SEE HELP';
+    if (termProgressLine) termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "HELP" FOR SEE HELP';
 
     if (termAscii) {
       termAscii.textContent = asciiLogo;
       termAscii.style.display = "block";
+    }
+
+    if (termPromptLabel) {
+      termPromptLabel.textContent = getPromptStr();
     }
 
     if (termPromptLine) {
@@ -521,27 +485,6 @@
     scrollTerm();
   }
 
-  function setColor(arg) {
-    var termWindow = document.getElementById("term-window");
-    if (!termWindow) return;
-    var code = (arg || "").toUpperCase().trim();
-    var colorMap = {
-      "WHITE": "#d4d9de", "DEFAULT": "#d4d9de", "RESET": "#d4d9de", "0F": "#d4d9de",
-      "GREEN": "#4af626", "0A": "#4af626",
-      "CYAN": "#00f0ff", "0B": "#00f0ff",
-      "RED": "#ff5252", "0C": "#ff5252",
-      "YELLOW": "#ffd700", "AMBER": "#ffb300", "0E": "#ffb300",
-      "GRAY": "#8e999f", "07": "#8e999f"
-    };
-
-    if (colorMap[code]) {
-      termWindow.style.setProperty("--term-color", colorMap[code]);
-      printLine("[SYS] Цвет терминала изменен: " + code);
-    } else {
-      printLine("[SYS] Доступные цвета: WHITE, GREEN, AMBER, CYAN, RED, GRAY, DEFAULT (или 0A, 0B, 0C, 0F)");
-    }
-  }
-
   function executeCommand(raw) {
     var cmd = raw.trim();
     if (!cmd) return;
@@ -549,300 +492,104 @@
     cmdHistory.push(cmd);
     cmdHistoryIndex = cmdHistory.length;
 
-    printLine("█ " + cmd);
+    var currentPrompt = getPromptStr();
+    printLine(currentPrompt + " " + cmd);
 
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
 
-    if (first === "D") {
-      var sub = (parts[1] || "").toUpperCase();
-      var arg1 = (parts[2] || "").replace(/^"|"$/g, "");
-      var arg2 = (parts[3] || "").replace(/^"|"$/g, "");
-
-      if (!sub || sub === "HELP") {
-        printLine("=== [DEINOPIDAE OS // КОМАНДЫ БАЗЫ ДАННЫХ] ===");
-        printLine("  D HELP                      - Вызов списка команд");
-        printLine("  D DIR [директория]          - Просмотр содержимого директорий");
-        printLine("  D FIND \"слово\" [директория]  - Поиск данных по реестру и уставу");
-        printLine("  D STAFF <никнейм>           - Личное дело и досье сотрудника");
-        printLine("  D OPEN <раздел / ссылка>    - Быстрый переход по узлам системы");
-        printLine("  D TABLE                     - Прямой доступ к таблице состава");
-        printLine("  D BRUD                      - Доступ к главному регламенту БРУД");
-        printLine("=== [СЛУЖЕБНЫЕ УТИЛИТЫ CMD] ===");
-        printLine("  TREE                        - Древовидная структура разделов комплекса");
-        printLine("  TYPE <файл>                 - Просмотр файлов (ustav.txt, rules.txt...)");
-        printLine("  COLOR <цвет>                - Изменение цвета (WHITE, GREEN, AMBER, CYAN, RED)");
-        printLine("  HOSTNAME / WHOAMI           - Идентификатор узла и оператора");
-        printLine("  SYSTEMINFO                  - Спецификации терминала");
-        printLine("  SET                         - Переменные окружения");
-        printLine("  DATE / TIME                 - Время комплекса");
-        printLine("  ECHO <текст>                - Вывод текста");
-        printLine("  CLS                         - Очистить терминал");
-        return;
-      }
-
-      if (sub === "DIR") {
-        var dirTarget = (arg1 || "").toLowerCase();
-        if (!dirTarget) {
-          printLine("[SYS] ДОСТУПНЫЕ ДИРЕКТОРИИ БАЗЫ ДАННЫХ:");
-          printLine("  • УСТАВ        - Все 9 разделов действующего устава");
-          printLine("  • БРУД         - Ссылки и разделы базового регламента");
-          printLine("  • ЗВАНИЯ       - Квалификационные уровни и ранги");
-          printLine("  • НОРМА        - Норматив часов и оборудования");
-          printLine("  • АКТИВНОСТИ   - Баллы и прогрессия уровней");
-          printLine("  • ДОКУМЕНТЫ    - Внеурочки, соглашение, справочники");
-          printLine("[TIP] Используйте: D DIR <название>");
-          return;
-        }
-
-        if (directories[dirTarget]) {
-          printLine("[SYS] СОДЕРЖИМОЕ ДИРЕКТОРИИ [" + dirTarget.toUpperCase() + "]:");
-          directories[dirTarget].forEach(function (row) {
-            printLine("  > " + row);
-          });
-        } else {
-          printLine("[SYS] ERROR: Директория '" + dirTarget + "' не найдена.");
-          printLine("[TIP] Введите D DIR для списка всех доступных каталогов.");
-        }
-        return;
-      }
-
-      if (sub === "FIND") {
-        var query = (arg1 || "").toLowerCase();
-        var scope = (arg2 || "").toLowerCase();
-
-        if (!query) {
-          printLine("[SYS] ERROR: Не указана фраза для поиска.");
-          printLine("[TIP] Синтаксис: D FIND \"фраза\" или D FIND \"фраза\" \"директория\"");
-          return;
-        }
-
-        printLine("[SYS] СКАНИРОВАНИЕ ИНДЕКСА ПО ЗАПРОСУ: \"" + query + "\"...");
-        var matches = [];
-
-        Object.keys(directories).forEach(function (cat) {
-          if (scope && scope !== cat) return;
-          directories[cat].forEach(function (line) {
-            if (line.toLowerCase().indexOf(query) !== -1) {
-              matches.push("[" + cat.toUpperCase() + "] " + line);
-            }
-          });
-        });
-
-        var db = window.employeeDb || {};
-        Object.keys(db).forEach(function (k) {
-          if (scope && scope !== "состав" && scope !== "сотрудники") return;
-          var emp = db[k];
-          var rawStr = (emp.name + " " + emp.rank + " " + (emp.title || "") + " " + (emp.status || "")).toLowerCase();
-          if (rawStr.indexOf(query) !== -1) {
-            matches.push("[СОСТАВ] " + emp.name + " // " + emp.title + " [" + emp.rank + "] - " + emp.quota_status);
-          }
-        });
-
-        if (matches.length > 0) {
-          matches.forEach(function (m) {
-            printLine("  • " + m);
-          });
-          printLine("[SYS] Найдено записей: " + matches.length);
-        } else {
-          printLine("[SYS] ERROR: По запросу \"" + query + "\" совпадений нет.");
-        }
-        return;
-      }
-
-      if (sub === "STAFF") {
-        var nick = (arg1 || "").toLowerCase();
-        if (!nick) {
-          printLine("[SYS] ERROR: Укажите никнейм сотрудника.");
-          printLine("[TIP] Пример: D STAFF EGORIK0130");
-          return;
-        }
-
-        var db = window.employeeDb || {};
-        var p = db[nick];
-        if (p) {
-          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
-          printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
-          printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
-          printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
-          printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
-          printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
-          printLine("  ОТПУСК            : " + p.vacation);
-          if (p.lectures) {
-            printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
-          }
-          if (p.exams) {
-            printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
-          }
-          printLine("  НАКАЗАНИЯ         : " + p.penalties);
-          printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
-          printLine("======================================================");
-        } else {
-          printLine("[SYS] Позывной '" + nick + "' не найден в локальном реестре.");
-          printLine("Ведомость доступна по ссылке: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
-        }
-        return;
-      }
-
-      if (sub === "TABLE") {
-        printLine("[SYS] Запрос ведомости личного состава...");
-        window.open(sheetsUrl, "_blank");
-        printLine("[SYS] Таблица открыта в отдельном окне браузера.");
-        return;
-      }
-
-      if (sub === "BRUD") {
-        printLine("[SYS] Запрос главного регламента БРУД...");
-        window.open(brudUrl, "_blank");
-        printLine("[SYS] Документ БРУД открыт в отдельном окне браузера.");
-        return;
-      }
-
-      if (sub === "OPEN") {
-        var targetNode = (arg1 || "").toLowerCase();
-        var mapping = {
-          "1": "ustav-01", "устав 1": "ustav-01", "основа": "ustav-01",
-          "2": "ustav-02", "устав 2": "ustav-02", "правила": "ustav-02",
-          "3": "ustav-03", "устав 3": "ustav-03", "повышения": "ustav-03",
-          "4": "ustav-04", "устав 4": "ustav-04", "норма": "ustav-04",
-          "5": "ustav-05", "устав 5": "ustav-05", "задания": "ustav-05",
-          "6": "ustav-06", "устав 6": "ustav-06", "проверки": "ustav-06",
-          "7": "ustav-07", "устав 7": "ustav-07", "активности": "ustav-07",
-          "8": "ustav-08", "устав 8": "ustav-08", "прочее": "ustav-08",
-          "9": "ustav-09", "устав 9": "ustav-09", "конец": "ustav-09",
-          "корни": "roots", "roots": "roots", "бруд": "brud", "таблица": "table"
-        };
-
-        if (mapping[targetNode]) {
-          var dest = mapping[targetNode];
-          if (dest === "brud") {
-            window.open(brudUrl, "_blank");
-            printLine("[SYS] Переход к ресурсу БРУД...");
-          } else if (dest === "table") {
-            window.open(sheetsUrl, "_blank");
-            printLine("[SYS] Переход к ведомости Google Таблиц...");
-          } else {
-            printLine("[SYS] Переключение интерфейса на модуль: " + dest.toUpperCase());
-            openScreen(dest);
-          }
-        } else {
-          printLine("[SYS] ERROR: Узел '" + targetNode + "' не опознан.");
-          printLine("[TIP] Используйте: D OPEN 1 .. 9, D OPEN КОРНИ, D OPEN ТАБЛИЦА");
-        }
-        return;
-      }
-
-      printLine("[SYS] Unknown command: D " + sub);
-      printLine("[TIP] Введите \"D HELP\" для справки.");
-      return;
-    }
-
-    if (first === "J") {
-      var secSub = (parts[1] || "").toUpperCase();
-
-      if (!secSub || secSub === "HELP") {
-        printLine("[SYS] PROTOCOL J INITIALIZED:");
-        printLine("  J ARCHIVE                   - Протокол инцидента 19██.04.12");
-        printLine("  J ROOTS                     - Переход в поврежденный сектор");
-        printLine("  J SECTOR                    - Диагностика целостности ядра 0x88F0A2");
-        printLine("  J OVERRIDE                  - Сброс прав доступа комплекса");
-        return;
-      }
-
-      if (secSub === "ROOTS") {
-        printLine("[SYS] ПЕРЕНАПРАВЛЕНИЕ В АРХИВНЫЙ УЗЕЛ...");
-        openScreen("roots");
-        return;
-      }
-
-      if (secSub === "ARCHIVE") {
-        printLine("[SYS] РАСШИФРОВКА ОСТАТОЧНЫХ ЛОГОВ:");
-        printLine("ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR");
-        printLine("MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY");
-        printLine("ВНИМАНИЕ: Заражение информационного ядра ███████ подтверждено.");
-        return;
-      }
-
-      if (secSub === "SECTOR") {
-        printLine("[SYS] ДИАГНОСТИКА СЕКТОРА 02:");
-        printLine("  ЦЕЛОСТНОСТЬ ХЭША: FAIL (0x88F0A2)");
-        printLine("  СТАТУС ИЗОЛЯЦИИ : АКТИВЕН // УРОВЕНЬ ЗАЩИТЫ 4");
-        return;
-      }
-
-      if (secSub === "OVERRIDE") {
-        printLine("[SYS] ВЫПОЛНЕНИЕ АВАРИЙНОГО ПЕРЕОПРЕДЕЛЕНИЯ ПРАВ...");
-        printLine("[SYS] WARNING: Зафиксирован несанкционированный доступ.");
-        return;
-      }
-
-      printLine("[SYS] Security Command J " + secSub + " rejected.");
-      return;
+    // Убираем префикс D если пользователь случайно его ввёл
+    if (first === "D" && parts.length > 1) {
+      parts.shift();
+      first = (parts[0] || "").toUpperCase();
     }
 
     if (first === "HELP") {
-      executeCommand("D HELP");
+      printLine("HELP                - Вызов списка доступных команд");
+      printLine("STAFF &lt;никнейм&gt;     - Личное дело и статус сотрудника");
+      printLine("FIND \"фраза\"        - Поиск данных");
+      printLine("FIND STAFF \"фраза\"  - Поиск данных по сотруднику");
+      printLine("TABLE               - Вызов Google Таблицы");
+      printLine("SET                 - Переменные окружения");
+      printLine("TITLE &lt;текст&gt;       - Изменить заголовок окна");
+      printLine("VER                 - Версия системы");
+      printLine("DATE                - Системная дата");
+      printLine("TIME                - Системное время");
+      printLine("ECHO &lt;текст&gt;        - Вывод текста в консоль");
+      printLine("WHOAMI              - Имя текущего пользователя");
+      printLine("HOSTNAME            - Сетевое имя устройства");
+      printLine("CLS / CLEAR         - Очистить терминал");
       return;
     }
 
-    if (first === "COLOR") {
-      setColor(parts[1]);
-      return;
-    }
-
-    if (first === "TREE") {
-      printLine("DEINOPIDAE:\\");
-      printLine("├── 01_USTAV");
-      printLine("│   ├── 01_osnova.dat");
-      printLine("│   ├── 02_rules.dat");
-      printLine("│   ├── 03_promotions.dat");
-      printLine("│   ├── 04_quota.dat");
-      printLine("│   ├── 05_tasks_forms.dat");
-      printLine("│   ├── 06_exams_lectures.dat");
-      printLine("│   ├── 07_activities.dat");
-      printLine("│   ├── 08_misc.dat");
-      printLine("│   └── 09_final.dat");
-      printLine("├── 02_DATABASE");
-      printLine("│   ├── staff_registry.db");
-      printLine("│   └── external_links.cfg");
-      printLine("├── 03_ROOTS [DAMAGED]");
-      printLine("│   └── sector_02.corrupt");
-      printLine("└── 04_RECRUITMENT [LOCKED]");
-      return;
-    }
-
-    if (first === "TYPE") {
-      var fileName = (parts[1] || "").toLowerCase();
-      if (!fileName) {
-        printLine("[SYS] Синтаксис: TYPE <имя_файла>");
-        printLine("[SYS] Доступные файлы: ustav.txt, rules.txt, quota.txt, brud.txt, secret.log");
+    if (first === "STAFF") {
+      var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
+      if (!nick) {
+        printLine("Синтаксис: STAFF &lt;никнейм&gt;");
         return;
       }
-      if (virtualFiles[fileName]) {
-        printLine(virtualFiles[fileName]);
+
+      var db = window.employeeDb || {};
+      var p = db[nick];
+      if (p) {
+        printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+        printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
+        printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
+        printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+        printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
+        printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
+        printLine("  ОТПУСК            : " + p.vacation);
+        if (p.lectures) {
+          printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+        }
+        if (p.exams) {
+          printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
+        }
+        printLine("  НАКАЗАНИЯ         : " + p.penalties);
+        printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
+        printLine("======================================================");
       } else {
-        printLine("[SYS] Файл не найден: " + fileName);
+        printLine("Позывной '" + nick + "' не найден в локальном реестре.");
+        printLine("Ведомость доступна по ссылке: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
       }
       return;
     }
 
-    if (first === "HOSTNAME") {
-      printLine("SE-DNP-NODE04-COMPLEX");
+    if (first === "FIND") {
+      var isStaffOnly = (parts[1] || "").toUpperCase() === "STAFF";
+      var queryIdx = isStaffOnly ? 2 : 1;
+      var query = (parts.slice(queryIdx).join(" ") || "").replace(/^"|"$/g, "").toLowerCase();
+
+      if (!query) {
+        printLine("Синтаксис: FIND \"фраза\" или FIND STAFF \"фраза\"");
+        return;
+      }
+
+      var db = window.employeeDb || {};
+      var matches = [];
+
+      Object.keys(db).forEach(function (k) {
+        var emp = db[k];
+        var rawStr = (emp.name + " " + emp.rank + " " + (emp.title || "") + " " + (emp.penalties || "")).toLowerCase();
+        if (rawStr.indexOf(query) !== -1) {
+          matches.push("[СОСТАВ] " + emp.name + " // " + emp.title + " [" + emp.rank + "] - Норма: " + emp.quota_status);
+        }
+      });
+
+      if (matches.length > 0) {
+        matches.forEach(function (m) {
+          printLine("  • " + m);
+        });
+        printLine("Найдено записей: " + matches.length);
+      } else {
+        printLine("По запросу \"" + query + "\" данных не обнаружено.");
+      }
       return;
     }
 
-    if (first === "WHOAMI") {
-      printLine("deinopidae\\guest_operator");
-      return;
-    }
-
-    if (first === "SYSTEMINFO") {
-      printLine("Название ОС:                 DEINOPIDAE EMBEDDED OS");
-      printLine("Версия ОС:                   4.10.88 Build 2026");
-      printLine("Производитель системы:       Arachna S.E. Department");
-      printLine("Тип системы:                 x64-based PDA Terminal");
-      printLine("Сетевой адаптер:             Local Link: Stable (Sync: 97%)");
-      printLine("Температура ядра:            36°C");
+    if (first === "TABLE") {
+      window.open(sheetsUrl, "_blank");
+      printLine("Google Таблица состава открыта в новом окне браузера.");
       return;
     }
 
@@ -850,6 +597,7 @@
       Object.keys(envVars).forEach(function (k) {
         printLine(k + "=" + envVars[k]);
       });
+      printLine("USER=" + getCurrentUser());
       return;
     }
 
@@ -858,9 +606,9 @@
       var topTitle = document.getElementById("term-top-title");
       if (newTitle && topTitle) {
         topTitle.textContent = newTitle;
-        printLine("[SYS] Заголовок окна обновлен.");
+        printLine("Заголовок окна обновлен.");
       } else {
-        printLine("[SYS] Укажите заголовок: TITLE <текст>");
+        printLine("Синтаксис: TITLE &lt;текст&gt;");
       }
       return;
     }
@@ -880,9 +628,13 @@
       return;
     }
 
-    if (first === "CLS" || first === "CLEAR") {
-      var termOutput = document.getElementById("term-output");
-      if (termOutput) termOutput.innerHTML = "";
+    if (first === "WHOAMI") {
+      printLine('D:\\"' + getCurrentUser() + '"');
+      return;
+    }
+
+    if (first === "HOSTNAME") {
+      printLine("SE-DNP-NODE04-COMPLEX");
       return;
     }
 
@@ -892,18 +644,13 @@
       return;
     }
 
-    if (first === "DIR") {
-      executeCommand("D DIR " + (parts.slice(1).join(" ")));
+    if (first === "CLS" || first === "CLEAR") {
+      var termOutput = document.getElementById("term-output");
+      if (termOutput) termOutput.innerHTML = "";
       return;
     }
 
-    if (first === "FIND") {
-      executeCommand("D FIND " + (parts.slice(1).join(" ")));
-      return;
-    }
-
-    printLine("[SYS] Unknown command: " + cmd);
-    printLine("[TIP] Попробуйте написать \"D HELP\"");
+    printLine('Команда "' + cmd + '" не распознана. Введите "HELP" для списка команд.');
   }
 
   var termInput = document.getElementById("term-input");

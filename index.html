@@ -75,7 +75,7 @@
             <div class="dnp-subnav">
               <button class="is-active" type="button" data-screen="ustav-01">Раздел 1 Основа</button>
               <button type="button" data-screen="ustav-02">Раздел 2 Правила</button>
-              <button type="button" data-screen="ustav-03">Раздел 3 Повышения</button>
+              <button type="button" data-screen="ustav-03">Раздел 3 Иерархия и повышения</button>
               <button type="button" data-screen="ustav-04">Раздел 4 Норма</button>
               <button type="button" data-screen="ustav-05">Раздел 5 Задания</button>
               <button type="button" data-screen="ustav-06">Раздел 6 Проверки и лекции</button>
@@ -113,6 +113,7 @@
 
       <main class="dnp-main">
         
+        <!-- РАЗДЕЛ 1: ОСНОВА -->
         <section class="dnp-screen is-visible" data-screen-panel="ustav-01">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 01</p>
@@ -152,6 +153,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 2: ПРАВИЛА -->
         <section class="dnp-screen" data-screen-panel="ustav-02">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 02</p>
@@ -179,6 +181,30 @@
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>2.2</span>
+                <b>Поведение на мероприятиях</b>
+                <em>DISCIPLINE</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Каждый сотрудник обязан соблюдать правила поведения на мероприятиях. Так же соблюдать правила поведения и в голосовом чате где происходит мероприятие, на сервере в игре.</li>
+                <li>Каждый сотрудник обязан соблюдать субординацию, адекватность с высшим по званию (касается только игры).</li>
+                <li>Каждый сотрудник обязан соблюдать нормы культурного и уважительного поведения на любых мероприятиях.</li>
+                <li>Каждый сотрудник обязан сохранять неподвижность в строю, плацу или любом построении, если того просит проводящий.</li>
+                <li>Каждый сотрудник обязан ничего не писать в чат в строю, плацу или в любом построении.</li>
+                <li>Каждый сотрудник обязан не вступать в конфликты, провоцировать их, совершать действия направленные на оскорбление других сотрудников.</li>
+                <li>Каждый сотрудник обязан попросить право голоса во время мероприятия, иначе без разрешения сотруднику запрещается говорить (можете просто сказать PTS в гч).</li>
+                <li>Во время мероприятия запрещено самовольно покидать место проведения без разрешения проводящего.</li>
+                <li>Каждый сотрудник обязан не создавать помехи проведению мероприятия, шуметь, намеренно отвлекать участников, использовать предметы или иные средства, мешающие проведению.</li>
+              </ul>
+
+              <div class="dnp-platc-wrap">
+                <img src="assets/image/platc.png" alt="Схема построения на плацу" class="dnp-platc-img">
+                <span class="dnp-platc-caption">СХЕМА: ЛИНИИ ПОСТРОЕНИЯ НА ПЛАЦУ ПО ПОДРАЗДЕЛЕНИЯМ</span>
+              </div>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>2.3</span>
                 <b>Виды наказаний</b>
                 <em>PENALTY</em>
               </div>
@@ -195,6 +221,10 @@
                   <b>Кенсэки</b>
                   <p>Крайняя мера наказания. Выдается за накопления двух икоку, серьезные нарушения и прочее. Накопление 3 кенсэки приведет к увольнению.</p>
                 </div>
+                <div>
+                  <b style="color: var(--danger);">Дисциплинарное взыскание</b>
+                  <p>Наказание которое выдается за нарушение дисциплины на мероприятиях, в дискорде в текстовом чате, в голосовом чате. Взыскание прикрепляет за сотрудником особый статус наблюдения, все наказания в сторону сотрудника будут ужесточены, а повышение будет недоступно.</p>
+                </div>
               </div>
             </article>
 
@@ -205,11 +235,12 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 3: ИЕРАРХИЯ И ПОВЫШЕНИЯ -->
         <section class="dnp-screen" data-screen-panel="ustav-03">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 03</p>
-            <h1>Раздел 3 — Повышения</h1>
-            <span>PROMOTIONS</span>
+            <h1>Раздел 3 — Иерархия и повышения</h1>
+            <span>HIERARCHY &amp; PROMOTIONS</span>
           </div>
 
           <div class="dnp-screen-content">
@@ -277,8 +308,9 @@
                   </div>
                 </div>
 
-                <p style="margin-top: 16px; border-top: 1px solid rgba(138,160,168,.18); padding-top: 12px; font-size: 12.5px; color: var(--muted);">
-                  <strong>Напоминаем:</strong> Когда сотрудник повышается на 2, 4, 6 звания он упирается в "потолок". Что бы повыситься дальше ему необходимо выполнить требования для каждого ранга.
+                <p style="margin-top: 16px; border-top: 1px solid rgba(138,160,168,.18); padding-top: 12px; font-size: 12.5px; color: var(--muted); line-height: 1.6;">
+                  <strong>Напоминаем:</strong> Когда сотрудник повышается на 2, 4, 6 звания он упирается в "потолок". Чтобы повыситься дальше ему необходимо выполнить требования для каждого ранга.<br>
+                  <strong style="color: var(--danger);">Внимание:</strong> Если сотрудник не прошёл лекцию кадета он <strong>НЕ сможет</strong> повыситься дальше локализатора.
                 </p>
               </div>
             </article>
@@ -290,6 +322,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 4: НОРМА -->
         <section class="dnp-screen" data-screen-panel="ustav-04">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 04</p>
@@ -320,51 +353,21 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 5: ЗАДАНИЯ -->
         <section class="dnp-screen" data-screen-panel="ustav-05">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 05</p>
-            <h1>Раздел 5 — Задания и отчёты</h1>
-            <span>DISPATCH &amp; FORMS</span>
+            <h1>Раздел 5 — Задания</h1>
+            <span>TASKS</span>
           </div>
 
           <div class="dnp-screen-content">
             <article class="dnp-module">
               <div class="dnp-module-title">
-                <span>05.1</span>
-                <b>ПОДАЧА ОТЧЁТА // ВНЕУРОЧКА И НОРМА</b>
-                <em>DISPATCH FORM</em>
+                <span>5.1</span>
+                <b>Задания отдела</b>
+                <em>TASKS</em>
               </div>
-
-              <form id="dnp-report-form" onsubmit="window.submitReportForm(event)" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-                <div>
-                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ПОЗЫВНОЙ / НИКНЕЙМ:</label>
-                  <input type="text" id="form-nick" required placeholder="Например: EGORIK0130" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
-                </div>
-
-                <div>
-                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ТИП РАБОТЫ:</label>
-                  <select id="form-type" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
-                    <option value="Внеурочка ПО">Внеурочка ПО (Починка оборудования)</option>
-                    <option value="Внеурочка СО">Внеурочка СО (Создание оборудования)</option>
-                    <option value="Отписка нормы">Отписка по норме (Уважительная причина)</option>
-                    <option value="Квест/Задание">Выполнение задания ранга</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ОПИСАНИЕ ПРОДЕЛАННОЙ РАБОТЫ:</label>
-                  <textarea id="form-desc" rows="3" placeholder="Опишите ваши действия в комплексе..." style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;"></textarea>
-                </div>
-
-                <div>
-                  <label style="display: block; font-size: 11px; margin-bottom: 4px; color: var(--line);">ДОКАЗАТЕЛЬСТВА (ССЫЛКИ НА СКРИНШОТЫ):</label>
-                  <input type="text" id="form-proof" placeholder="Ссылка на Imgur, Yapx или Google Drive" style="width: 100%; background: var(--panel-2); border: 1px solid rgba(138,160,168,.3); padding: 8px 12px; color: #fff; font-family: 'Roboto Mono', monospace;">
-                </div>
-
-                <button type="submit" class="dnp-action" style="margin: 6px 0 0; cursor: pointer; align-self: flex-start;">ОТПРАВИТЬ ОТЧЁТ В БАЗУ ↗</button>
-
-                <div id="form-status-box" style="font-size: 12px; font-weight: 700; margin-top: 6px; color: var(--line);"></div>
-              </form>
             </article>
 
             <div class="dnp-brud-note">
@@ -374,6 +377,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 6: ПРОВЕРКИ И ЛЕКЦИИ -->
         <section class="dnp-screen" data-screen-panel="ustav-06">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 06</p>
@@ -402,8 +406,9 @@
                 <b>Лекции</b>
                 <em>LECTURES</em>
               </div>
-              <p>Лекции - мероприятия на которых сотрудникам устно пересказывают материал необходимый для повышения на следующий ранг. Существует 3 типа.</p>
+              <p>Лекции - мероприятия на которых сотрудникам устно пересказывают материал необходимый для повышения на следующий ранг. Существует 4 типа.</p>
               <ul class="dnp-list">
+                <li>Лекция кадета</li>
                 <li>Лекция ПО+внеурочки</li>
                 <li>Лекция СО+внеурочки</li>
                 <li>Лекция МП</li>
@@ -420,6 +425,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 7: АКТИВНОСТИ -->
         <section class="dnp-screen" data-screen-panel="ustav-07">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 07</p>
@@ -532,6 +538,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 8: ПРОЧЕЕ -->
         <section class="dnp-screen" data-screen-panel="ustav-08">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 08</p>
@@ -552,6 +559,63 @@
               </ul>
             </article>
 
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>8.2</span>
+                <b>Документация и реестры</b>
+                <em>RESOURCES</em>
+              </div>
+              <div class="dnp-subtle-resource-list">
+                <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?usp=sharing" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>БРУД // БАЗОВЫЙ РЕГЛАМЕНТ УПРАВЛЕНИЯ ДОКУМЕНТАЦИЕЙ</b>
+                    <span>Главный свод документов, положений и нормативно-правовых актов</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ТАБЛИЦА ЛИЧНОГО СОСТАВА</b>
+                    <span>Основной реестр нормы, часов и баллов активности</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ВНЕУРОЧКИ: ОТДЕЛ ПОЧИНКИ (ПО)</b>
+                    <span>Форма отчёта и порядок проведения ремонтных работ</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ВНЕУРОЧКИ: ОТДЕЛ СОЗДАНИЯ (СО)</b>
+                    <span>Форма отчёта создания и конструирования техники</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>
+                    <span>Регламент работы и правила использования систем</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
+                  <div class="dnp-subtle-card-main">
+                    <b>СПРАВОЧНИК СОТРУДНИКА</b>
+                    <span>Базовый информационный свод департамента S.E.</span>
+                  </div>
+                  <em>ОТКРЫТЬ ↗</em>
+                </a>
+              </div>
+            </article>
+
             <div class="dnp-brud-note">
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
@@ -559,6 +623,7 @@
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 9: КОНЕЦ -->
         <section class="dnp-screen" data-screen-panel="ustav-09">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 09</p>
@@ -604,8 +669,9 @@
               <div class="dnp-term-output" id="term-output"></div>
 
               <div class="dnp-term-prompt-line" id="term-prompt-line" style="display:none;">
-                <span class="dnp-term-cursor">█</span>
+                <span class="dnp-term-prompt" id="term-prompt-label">D:\"USER"&gt;</span>
                 <input type="text" id="term-input" class="dnp-term-input" autocomplete="off" spellcheck="false">
+                <span class="dnp-term-cursor">█</span>
               </div>
             </div>
 
@@ -642,18 +708,18 @@
                 <div class="dnp-broken-field" id="broken-field">
                   <div class="dnp-slice dnp-slice-1">
                     <p>
-                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19кррке.12 на нижнем икеркруровне крыла Арахна проььььььььььело аварийное 
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
                       <span class="dnp-redact">███████████████</span> 
-                      с последующимссисинием инсисиииииии
+                      с последующим заражением информационного ядра 
                       <span class="dnp-redact">███████</span>.
                     </p>
                   </div>
 
                   <div class="dnp-slice dnp-slice-2" aria-hidden="true">
                     <p>
-                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходст12 на нижнем инженернтсмвне крркеркеерахна произошло аварийное 
+                      П̷е̷р̸в̸о̷н̸а̸ч̸а̶л̶ь̶н̶ы̶й̶ ̶а̶р̶х̶и̶в̶ ̶о̶т̶д̶е̶л̶а̶ [ДАННЫЕ ЗАШИФРОВАНЫ]. В ходе инцидента 19██.04.12 на нижнем инженерном уровне крыла Арахна произошло аварийное 
                       <span class="dnp-redact">███████████████</span> 
-                      с последующим зараркерационногеркерра 
+                      с последующим заражением информационного ядра 
                       <span class="dnp-redact">███████</span>.
                     </p>
                   </div>
@@ -661,14 +727,14 @@
                   <div class="dnp-corrupt-log dnp-slice dnp-slice-log">
                     <span>ERR_HEX: 44 45 49 4E 4F 50 49 44 41 45 _ NULL_PTR</span>
                     <span>MEM_DUMP: 0x002B19F -- CORRUPTED BY SECTOR ANOMALY</span>
-                    <span>ACCESS DENIED // УРОВЕНЬ ДОСТУПА пукпНЕДОСТАТОкпууЧЕН ДЛЯ ДЕШкупИФРОВКИ</span>
+                    <span>ACCESS DENIED // УРОВЕНЬ ДОСТУПА НЕДОСТАТОЧЕН ДЛЯ ДЕШИФРОВКИ</span>
                   </div>
 
                   <div class="dnp-slice dnp-slice-3">
                     <p>
-                      С̷о̷т̸р̸у̸д̷н̸и̸к̸а̸м̶ ̶к̸а̸т̸е̸г̸о̸р̸и̸ч̸е̸с̸к̸и̶ ̶з̶а̶п̶р̶е̶щ̶е̶н̶о̶ ̶вукп̶а̶н̶а̶в̶л̶и̶в̶а̶т̶ь̶ ̶д̶а̶н̶н̶ы̶й̶ ̶у̶зпукпуо̶г̶о̶ ̶р̸а̶з̶р̶е̶ш̶е̶н̶и̶я̶ 
+                      С̷о̷т̸р̸у̸д̷н̸и̸к̸а̸м̶ ̶к̸а̸т̸е̸г̸о̸р̸и̸ч̸е̸с̸к̸и̶ ̶з̶а̶п̶р̶е̶щ̶е̶н̶о̶ ̶в̶о̶с̶с̶т̶а̶н̶а̶в̶л̶и̶в̶а̶т̶ь̶ ̶д̶а̶н̶н̶ы̶й̶ ̶у̶з̶е̶л̶ ̶б̶е̶з̶ ̶п̸р̶я̶м̶о̶г̶о̶ ̶р̸а̶з̶р̶е̶ш̶е̶н̶и̶я̶ 
                       <span class="dnp-redact">████████████</span>. 
-                      Остаточные фрагмтмстотокола перемещены встсттспасности 
+                      Остаточные фрагменты протокола перемещены в архив безопасности 
                       <span class="dnp-redact">██████████</span>.
                     </p>
                   </div>

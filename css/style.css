@@ -545,6 +545,12 @@ html, body {
   gap: 4px;
 }
 
+.dnp-term-cmd-echo {
+  color: var(--term-color);
+  margin-top: 8px;
+  font-weight: 700;
+}
+
 .dnp-term-resp-line {
   color: var(--term-color);
   white-space: pre-wrap;
@@ -565,9 +571,18 @@ html, body {
 .dnp-term-prompt-line {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   margin-top: 8px;
   flex-shrink: 0;
+}
+
+.dnp-term-prompt {
+  color: var(--term-color);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  user-select: none;
+  margin-right: 4px;
 }
 
 .dnp-term-cursor {
@@ -597,6 +612,88 @@ html, body {
   50% { opacity: 0; }
 }
 
+/* =========================================
+   ПРАВИЛА И ПОСТРОЕНИЕ НА ПЛАЦУ
+   ========================================= */
+.dnp-platc-wrap {
+  margin: 14px 14px 10px;
+  border: 1px solid var(--line-soft);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 10px;
+  text-align: center;
+}
+
+.dnp-platc-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid rgba(138, 160, 168, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+.dnp-platc-caption {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--line);
+  font-family: "Exo 2", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.dnp-subtle-resource-list {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 8px;
+}
+
+.dnp-subtle-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--panel-2);
+  border: 1px solid rgba(138, 160, 168, 0.14);
+  border-left: 3px solid var(--line);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dnp-subtle-card:hover {
+  background: rgba(20, 29, 35, 0.9);
+  border-color: rgba(138, 160, 168, 0.35);
+  transform: translateX(3px);
+}
+
+.dnp-subtle-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dnp-subtle-card-main b {
+  color: var(--text);
+  font: 800 12.5px "Exo 2", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.dnp-subtle-card-main span {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.dnp-subtle-card em {
+  color: var(--line);
+  font: normal 700 11px "Roboto Mono", monospace;
+  white-space: nowrap;
+  margin-left: 14px;
+}
+
+/* =========================================
+   СТРАНИЦА "КОРНИ"
+   ========================================= */
 .dnp-nav-root-btn {
   display: grid;
   grid-template-columns: 36px 1fr auto;
@@ -783,6 +880,9 @@ html, body {
   100% { transform: translate(0, 0); }
 }
 
+/* =========================================
+   ШКАЛА АКТИВНОСТЕЙ
+   ========================================= */
 .dnp-activity-wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
@@ -1139,7 +1239,7 @@ html, body {
   display: grid;
   gap: 10px;
   padding: 12px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
 .dnp-card-grid div {
