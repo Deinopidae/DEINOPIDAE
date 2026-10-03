@@ -51,7 +51,10 @@
         <span>Департамент S.E. · Kurodzakura</span>
       </div>
       <div class="dnp-top-meta">
-        <span class="dnp-ok">SYSTEM ONLINE</span>
+        <!-- БЛОК ЛИЧНОГО КАБИНЕТА В ШАПКЕ -->
+        <div id="dnp-auth-header-slot">
+          <a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>
+        </div>
       </div>
     </header>
 
@@ -661,8 +664,11 @@
 
               <div class="dnp-term-prompt-line" id="term-prompt-line" style="display:none;">
                 <span class="dnp-term-prompt" id="term-prompt-label">D:\"USER"&gt;</span>
-                <input type="text" id="term-input" class="dnp-term-input" autocomplete="off" spellcheck="false">
-                <span class="dnp-term-cursor">█</span>
+                <div class="dnp-term-input-box">
+                  <span class="dnp-term-typed" id="term-typed"></span>
+                  <span class="dnp-term-cursor">█</span>
+                  <input type="text" id="term-input" class="dnp-term-input" autocomplete="off" spellcheck="false">
+                </div>
               </div>
             </div>
 
@@ -767,6 +773,17 @@
         </section>
 
       </main>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО GUI (ДЛЯ КОМАНД FORMS -gui И STAFF -gui) -->
+    <div id="dnp-gui-modal" class="dnp-modal-backdrop" style="display: none;">
+      <div class="dnp-modal-window">
+        <div class="dnp-modal-header">
+          <span id="dnp-modal-title">DEINOPIDAE INTERFACE</span>
+          <button type="button" class="dnp-modal-close" id="dnp-modal-close-btn">✕</button>
+        </div>
+        <div class="dnp-modal-body" id="dnp-modal-body"></div>
+      </div>
     </div>
 
     <footer class="dnp-footer">

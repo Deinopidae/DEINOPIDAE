@@ -354,6 +354,13 @@
   };
 
   function getCurrentUser() {
+    var user = localStorage.getItem("dnp_active_user");
+    if (user) {
+      try {
+        var parsed = JSON.parse(user);
+        if (parsed && parsed.username) return parsed.username.toUpperCase();
+      } catch (e) {}
+    }
     if (window.CookieManager) {
       var tok = window.CookieManager.get('dnp_username');
       if (tok) return tok.toUpperCase();
@@ -364,6 +371,51 @@
   function getPromptStr() {
     return 'D:\\"' + getCurrentUser() + '">';
   }
+
+  // Обновление личного кабинета в шапке
+  function renderAuthHeader() {
+    var slot = document.getElementById("dnp-auth-header-slot");
+    if (!slot) return;
+
+    var rawUser = localStorage.getItem("dnp_active_user");
+    if (rawUser) {
+      try {
+        var u = JSON.parse(rawUser);
+        slot.innerHTML = [
+          '<div class="dnp-user-pill" id="dnp-user-pill">',
+          '  <div class="dnp-user-avatar">' + (u.username ? u.username[0].toUpperCase() : 'U') + '</div>',
+          '  <span class="dnp-user-name">' + (u.username || 'OPERATOR') + '</span>',
+          '</div>',
+          '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
+          '  <div class="dnp-dropdown-item" id="dnp-menu-profile">Профиль (' + (u.roblox || 'N/A') + ')</div>',
+          '  <div class="dnp-dropdown-item" id="dnp-menu-settings">Настройки</div>',
+          '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
+          '</div>'
+        ].join('');
+
+        var pill = document.getElementById("dnp-user-pill");
+        var dd = document.getElementById("dnp-user-dropdown");
+        pill.addEventListener("click", function(e) {
+          e.stopPropagation();
+          dd.style.display = dd.style.display === "none" ? "flex" : "none";
+        });
+
+        document.addEventListener("click", function() {
+          if (dd) dd.style.display = "none";
+        });
+
+        document.getElementById("dnp-menu-logout").addEventListener("click", function() {
+          localStorage.removeItem("dnp_active_user");
+          location.reload();
+        });
+        return;
+      } catch (e) {}
+    }
+
+    slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
+  }
+
+  window.addEventListener("DOMContentLoaded", renderAuthHeader);
 
   var termLoaded = false;
   var termBooting = false;
@@ -461,7 +513,7 @@
       } else {
         if (window.getSelection && window.getSelection().toString().length > 0) return;
         var input = document.getElementById("term-input");
-        if (input && document.activeElement !== input) {
+        if (input) {
           input.focus({ preventScroll: true });
         }
       }
@@ -485,6 +537,120 @@
     scrollTerm();
   }
 
+  // МОДАЛЬНЫЕ ОКНА GUI
+  var modalBackdrop = document.getElementById("dnp-gui-modal");
+  var modalTitle = document.getElementById("dnp-modal-title");
+  var modalBody = document.getElementById("dnp-modal-body");
+  var modalClose = document.getElementById("dnp-modal-close-btn");
+
+  if (modalClose && modalBackdrop) {
+    modalClose.addEventListener("click", function() {
+      modalBackdrop.style.display = "none";
+    });
+    modalBackdrop.addEventListener("click", function(e) {
+      if (e.target === modalBackdrop) modalBackdrop.style.display = "none";
+    });
+  }
+
+  function showFormsGui() {
+    if (!modalBackdrop || !modalBody) return;
+    modalTitle.textContent = "СИСТЕМА ПОДАЧИ ОТЧЁТОВ // DEINOPIDAE";
+
+    var isAuth = !!localStorage.getItem("dnp_active_user");
+    var authNotice = isAuth ? '' : '<div style="padding: 8px 12px; background: rgba(169,100,104,0.15); border: 1px solid var(--danger); font-size: 11.5px; color: #ff8589;">ВНИМАНИЕ: Для отправки формы необходимо войти в Личный кабинет. <a href="auth.html" style="text-decoration: underline; color: #fff; margin-left: 6px;">АВТОРИЗАЦИЯ ↗</a></div>';
+
+    modalBody.innerHTML = [
+      authNotice,
+      '<div style="display: flex; flex-direction: column; gap: 10px;">',
+      '  <label style="font-size: 11px; color: var(--line);">ВЫБЕРИТЕ КАТЕГОРИЮ:</label>',
+      '  <select id="modal-form-type" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
+      '    <option value="Внеурочка">1. Внеурочка (Починка / Создание оборудования)</option>',
+      '    <option value="Изменения устава">2. Изменения устава (Предложение поправки)</option>',
+      '    <option value="Обращение к руководству">3. Обращение к руководству (Запрос / Жалоба / Вопрос)</option>',
+      '  </select>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ПОЗЫВНОЙ / НИКНЕЙМ:</label>',
+      '  <input type="text" id="modal-form-nick" placeholder="Ваш никнейм" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ТЕКСТ ОБРАЩЕНИЯ / ОПИСАНИЕ:</label>',
+      '  <textarea id="modal-form-text" rows="4" placeholder="Введите подробности..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+      '  <button type="button" class="dnp-action" id="modal-form-submit" style="margin: 8px 0 0; align-self: flex-start;">ОТПРАВИТЬ ФОРМУ ↗</button>',
+      '  <div id="modal-form-status" style="font-size: 11.5px; margin-top: 4px; font-weight: 700;"></div>',
+      '</div>'
+    ].join('');
+
+    modalBackdrop.style.display = "flex";
+
+    document.getElementById("modal-form-submit").addEventListener("click", function() {
+      var statusBox = document.getElementById("modal-form-status");
+      if (!isAuth) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
+        return;
+      }
+      var nick = document.getElementById("modal-form-nick").value.trim();
+      var text = document.getElementById("modal-form-text").value.trim();
+      var type = document.getElementById("modal-form-type").value;
+      if (!nick || !text) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[ОШИБКА] Заполните никнейм и описание работы.";
+        return;
+      }
+      statusBox.style.color = "var(--ok)";
+      statusBox.textContent = "[SYS] Заявка [" + type + "] успешно сформирована и передана в реестр.";
+    });
+  }
+
+  // КОМАНДА Project Prisma: дешифровка с 2-секундной фиксацией
+  function runProjectPrisma() {
+    var chars = "ABCDEF0123456789!@#$%&*+=-_/?<>[]{}~";
+    var targetText = "FORMS - NICK - TFP";
+    var len = targetText.length;
+
+    var line = document.createElement("div");
+    line.className = "dnp-term-resp-line";
+    line.style.fontFamily = "monospace";
+    line.style.letterSpacing = "2px";
+    line.style.color = "#00f0ff";
+    document.getElementById("term-output").appendChild(line);
+    scrollTerm();
+
+    var startTime = Date.now();
+    var fixed = false;
+
+    var interval = setInterval(function() {
+      var elapsed = Date.now() - startTime;
+
+      if (elapsed < 1200) {
+        // Стадия 1: хаотичный глитч
+        var s = "";
+        for (var i = 0; i < len; i++) {
+          s += chars[Math.floor(Math.random() * chars.length)];
+        }
+        line.textContent = s;
+      } else if (elapsed >= 1200 && elapsed < 3200) {
+        // Стадия 2: замирает ровно на 2 секунды
+        line.textContent = targetText;
+        line.style.color = "#ffffff";
+        line.style.textShadow = "0 0 10px #00f0ff";
+      } else if (elapsed >= 3200 && elapsed < 4800) {
+        // Стадия 3: обратно случайные буквы
+        line.style.color = "#ff5252";
+        line.style.textShadow = "none";
+        var s2 = "";
+        for (var j = 0; j < len; j++) {
+          s2 += chars[Math.floor(Math.random() * chars.length)];
+        }
+        line.textContent = s2;
+      } else {
+        // Финал
+        clearInterval(interval);
+        line.textContent = "[SIGNAL LOST // ENCRYPTION TERMINATED]";
+        line.style.color = "var(--muted)";
+        scrollTerm();
+      }
+      scrollTerm();
+    }, 60);
+  }
+
   function executeCommand(raw) {
     var cmd = raw.trim();
     if (!cmd) return;
@@ -503,50 +669,96 @@
       first = (parts[0] || "").toUpperCase();
     }
 
+    // PROJECT PRISMA
+    if (cmd.toUpperCase() === "PROJECT PRISMA" || (parts[0] && parts[0].toUpperCase() === "PROJECT" && parts[1] && parts[1].toUpperCase() === "PRISMA")) {
+      runProjectPrisma();
+      return;
+    }
+
+    // FORMS [-gui]
+    if (first === "FORMS") {
+      var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
+      if (isGui) {
+        showFormsGui();
+        printLine("[SYS] Графический интерфейс подачи форм активирован.");
+        return;
+      }
+      printLine("=== [СИСТЕМА ПОДАЧИ ОТЧЁТОВ И ФОРМ] ===");
+      printLine("  [1] Внеурочка (Починка / Создание оборудования)");
+      printLine("  [2] Изменения устава (Предложение поправки)");
+      printLine("  [3] Обращение к руководству (Запрос / Вопрос)");
+      printLine('Для графического интерфейса введите: FORMS -gui');
+      return;
+    }
+
+    // HELP (только разрешенные команды)
     if (first === "HELP") {
       printLine("HELP                - Вызов списка доступных команд");
-      printLine("STAFF &lt;никнейм&gt;     - Личное дело и статус сотрудника");
+      printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
       printLine("FIND \"фраза\"        - Поиск данных");
-      printLine("FIND STAFF \"фраза\"  - Поиск данных по сотруднику");
-      printLine("TABLE               - Вызов Google Таблицы");
-      printLine("SET                 - Переменные окружения");
-      printLine("TITLE &lt;текст&gt;       - Изменить заголовок окна");
-      printLine("VER                 - Версия системы");
-      printLine("DATE                - Системная дата");
-      printLine("TIME                - Системное время");
-      printLine("ECHO &lt;текст&gt;        - Вывод текста в консоль");
-      printLine("WHOAMI              - Имя текущего пользователя");
-      printLine("HOSTNAME            - Сетевое имя устройства");
+      printLine("FORMS               - Система подачи отчетов (флаг -gui для графики)");
+      printLine("PROJECT PRISMA      - Протокол дешифровки");
       printLine("CLS / CLEAR         - Очистить терминал");
       return;
     }
 
+    // STAFF [-gui]
     if (first === "STAFF") {
-      var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
+      var isGuiStaff = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
+      var cleanParts = parts.filter(function(p) { return p.toLowerCase() !== "-gui"; });
+      var nick = (cleanParts[1] || "").replace(/^"|"$/g, "").toLowerCase();
+
       if (!nick) {
-        printLine("Синтаксис: STAFF &lt;никнейм&gt;");
+        printLine("Синтаксис: STAFF &lt;никнейм&gt; или STAFF &lt;никнейм&gt; -gui");
         return;
       }
 
       var db = window.employeeDb || {};
       var p = db[nick];
+
       if (p) {
-        printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
-        printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
-        printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
-        printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
-        printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
-        printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
-        printLine("  ОТПУСК            : " + p.vacation);
-        if (p.lectures) {
-          printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+        if (isGuiStaff) {
+          // Графическая карточка GUI в терминале
+          var cardHtml = [
+            '<div class="dnp-gui-dossier-card">',
+            '  <div class="dnp-gui-card-head">',
+            '    <b>' + p.name + ' // ДОСЬЕ КОМПЛЕКСА</b>',
+            '    <span>' + p.title + ' [' + p.rank + ']</span>',
+            '  </div>',
+            '  <div class="dnp-gui-card-body">',
+            '    <div class="dnp-gui-avatar-box">',
+            '      <img src="assets/image/favicon.png" alt="Avatar">',
+            '    </div>',
+            '    <div class="dnp-gui-stats-grid">',
+            '      <div class="dnp-gui-stat-cell"><span>Норматив МП/Часы</span><b>' + p.mp + ' МП / ' + p.hours + ' ч.</b></div>',
+            '      <div class="dnp-gui-stat-cell"><span>Статус нормы</span><b>' + p.quota_status + '</b></div>',
+            '      <div class="dnp-gui-stat-cell"><span>Повышение</span><b>' + p.promotion + '</b></div>',
+            '      <div class="dnp-gui-stat-cell"><span>Отпуск</span><b>' + p.vacation + '</b></div>',
+            '      <div class="dnp-gui-stat-cell"><span>Дисциплина</span><b>' + p.penalties + '</b></div>',
+            '      <div class="dnp-gui-stat-cell"><span>Хихикойны / Актив</span><b>' + p.coins + ' / ' + p.activity + ' PTS</b></div>',
+            '    </div>',
+            '  </div>',
+            '</div>'
+          ].join('');
+          printLine(cardHtml);
+        } else {
+          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+          printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
+          printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
+          printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+          printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
+          printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
+          printLine("  ОТПУСК            : " + p.vacation);
+          if (p.lectures) {
+            printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+          }
+          if (p.exams) {
+            printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
+          }
+          printLine("  НАКАЗАНИЯ         : " + p.penalties);
+          printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
+          printLine("======================================================");
         }
-        if (p.exams) {
-          printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
-        }
-        printLine("  НАКАЗАНИЯ         : " + p.penalties);
-        printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
-        printLine("======================================================");
       } else {
         printLine("Позывной '" + nick + "' не найден в локальном реестре.");
         printLine("Ведомость доступна по ссылке: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
@@ -554,21 +766,20 @@
       return;
     }
 
+    // FIND "фраза"
     if (first === "FIND") {
-      var isStaffOnly = (parts[1] || "").toUpperCase() === "STAFF";
-      var queryIdx = isStaffOnly ? 2 : 1;
-      var query = (parts.slice(queryIdx).join(" ") || "").replace(/^"|"$/g, "").toLowerCase();
+      var query = (parts.slice(1).join(" ") || "").replace(/^"|"$/g, "").toLowerCase();
 
       if (!query) {
-        printLine("Синтаксис: FIND \"фраза\" или FIND STAFF \"фраза\"");
+        printLine("Синтаксис: FIND \"фраза\"");
         return;
       }
 
-      var db = window.employeeDb || {};
+      var db2 = window.employeeDb || {};
       var matches = [];
 
-      Object.keys(db).forEach(function (k) {
-        var emp = db[k];
+      Object.keys(db2).forEach(function (k) {
+        var emp = db2[k];
         var rawStr = (emp.name + " " + emp.rank + " " + (emp.title || "") + " " + (emp.penalties || "")).toLowerCase();
         if (rawStr.indexOf(query) !== -1) {
           matches.push("[СОСТАВ] " + emp.name + " // " + emp.title + " [" + emp.rank + "] - Норма: " + emp.quota_status);
@@ -586,12 +797,7 @@
       return;
     }
 
-    if (first === "TABLE") {
-      window.open(sheetsUrl, "_blank");
-      printLine("Google Таблица состава открыта в новом окне браузера.");
-      return;
-    }
-
+    // СКРЫТЫЕ, НО РАБОЧИЕ УТИЛИТЫ CMD
     if (first === "SET") {
       Object.keys(envVars).forEach(function (k) {
         printLine(k + "=" + envVars[k]);
@@ -653,24 +859,35 @@
   }
 
   var termInput = document.getElementById("term-input");
+  var termTyped = document.getElementById("term-typed");
+
   if (termInput) {
+    // Синхронизация инлайн-курсора
+    termInput.addEventListener("input", function() {
+      if (termTyped) termTyped.textContent = termInput.value;
+    });
+
     termInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         var val = termInput.value;
         termInput.value = "";
+        if (termTyped) termTyped.textContent = "";
         executeCommand(val);
       } else if (e.key === "ArrowUp") {
         if (cmdHistory.length > 0 && cmdHistoryIndex > 0) {
           cmdHistoryIndex--;
           termInput.value = cmdHistory[cmdHistoryIndex];
+          if (termTyped) termTyped.textContent = termInput.value;
         }
       } else if (e.key === "ArrowDown") {
         if (cmdHistoryIndex < cmdHistory.length - 1) {
           cmdHistoryIndex++;
           termInput.value = cmdHistory[cmdHistoryIndex];
+          if (termTyped) termTyped.textContent = termInput.value;
         } else {
           cmdHistoryIndex = cmdHistory.length;
           termInput.value = "";
+          if (termTyped) termTyped.textContent = "";
         }
       }
     });
