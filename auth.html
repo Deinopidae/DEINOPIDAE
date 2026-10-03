@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ЛИЧНЫЙ КАБИНЕТ // DEINOPIDAE</title>
+  <link rel="icon" type="image/png" href="assets/image/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #02070a;
+      font-family: "Roboto Mono", monospace;
+      color: #d9e1e4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-image: 
+        linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(8, 13, 16, 0.96);
+      border: 1px solid rgba(138, 160, 168, 0.3);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 16px rgba(138, 160, 168, 0.05);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .auth-header img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .auth-header h1 {
+      margin: 0;
+      font: 800 20px "Exo 2", sans-serif;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    .auth-header span {
+      font-size: 11px;
+      color: #829199;
+      letter-spacing: 1px;
+    }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid rgba(138, 160, 168, 0.2);
+      padding-bottom: 8px;
+    }
+    .auth-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      font: 800 12px "Exo 2", sans-serif;
+      color: #829199;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+    }
+    .auth-tab-btn.is-active {
+      color: #00f0ff;
+      border-bottom: 2px solid #00f0ff;
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .auth-field label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #8aa0a8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .auth-field input {
+      background: #0d1519;
+      border: 1px solid rgba(138, 160, 168, 0.25);
+      padding: 10px 12px;
+      color: #fff;
+      font-family: "Roboto Mono", monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .auth-field input:focus {
+      border-color: #00f0ff;
+      box-shadow: inset 2px 0 0 #00f0ff;
+    }
+    .auth-submit-btn {
+      margin-top: 8px;
+      background: #111a20;
+      border: 1px solid #00f0ff;
+      color: #00f0ff;
+      padding: 12px;
+      font: 800 13px "Exo 2", sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .auth-submit-btn:hover {
+      background: #00f0ff;
+      color: #000;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
+    }
+    .auth-msg {
+      font-size: 11.5px;
+      font-weight: 700;
+      min-height: 18px;
+      text-align: center;
+      margin-top: 6px;
+    }
+    .auth-back {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .auth-back a {
+      color: #829199;
+      text-decoration: underline;
+    }
+    .auth-back a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <img src="assets/image/favicon.png" alt="Deinopidae Core">
+      <h1>ЛИЧНЫЙ КАБИНЕТ</h1>
+      <span>DEINOPIDAE INDUSTRIES S.E.</span>
+    </div>
+
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab-btn is-active" id="tab-login-btn">ВХОД</button>
+      <button type="button" class="auth-tab-btn" id="tab-reg-btn">РЕГИСТРАЦИЯ</button>
+    </div>
+
+    <!-- ФОРМА АВТОРИЗАЦИИ (3 ПЛАШКИ) -->
+    <form class="auth-form" id="form-login">
+      <div class="auth-field">
+        <label>ИМЯ ПОЛЬЗОВАТЕЛЯ ИЛИ ROBLOX НИКНЕЙМ:</label>
+        <input type="text" id="login-identifier" required autocomplete="off" placeholder="Введите логин или ник">
+      </div>
+      <div class="auth-field">
+        <label>ПАРОЛЬ:</label>
+        <input type="password" id="login-pass" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="auth-submit-btn">ВОЙТИ В СИСТЕМУ</button>
+    </form>
+
+    <!-- ФОРМА РЕГИСТРАЦИИ (4 ПЛАШКИ) -->
+    <form class="auth-form" id="form-register" style="display: none;">
+      <div class="auth-field">
+        <label style="text-align: center;">ИМЯ ПОЛЬЗОВАТЕЛЯ:</label>
+        <input type="text" id="reg-username" required autocomplete="off" placeholder="Отображаемое имя">
+      </div>
+      <div class="auth-field">
+        <label>НИКНЕЙМ ИЗ ROBLOX (НЕ DISPLAY NAME):</label>
+        <input type="text" id="reg-roblox" required autocomplete="off" placeholder="Пример: EGORIK0130">
+      </div>
+      <div class="auth-field">
+        <label>ПАРОЛЬ:</label>
+        <input type="password" id="reg-pass" required placeholder="••••••••">
+      </div>
+      <div class="auth-field">
+        <label>ПОВТОР ПАРОЛЯ:</label>
+        <input type="password" id="reg-pass2" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="auth-submit-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+    </form>
+
+    <div class="auth-msg" id="auth-msg"></div>
+
+    <div class="auth-back">
+      <a href="index.html">← Вернуться к КПК Deinopidae</a>
+    </div>
+  </div>
+
+  <script>
+    var tabLogin = document.getElementById("tab-login-btn");
+    var tabReg = document.getElementById("tab-reg-btn");
+    var formLogin = document.getElementById("form-login");
+    var formReg = document.getElementById("form-register");
+    var msg = document.getElementById("auth-msg");
+
+    tabLogin.addEventListener("click", function() {
+      tabLogin.classList.add("is-active");
+      tabReg.classList.remove("is-active");
+      formLogin.style.display = "flex";
+      formReg.style.display = "none";
+      msg.textContent = "";
+    });
+
+    tabReg.addEventListener("click", function() {
+      tabReg.classList.add("is-active");
+      tabLogin.classList.remove("is-active");
+      formReg.style.display = "flex";
+      formLogin.style.display = "none";
+      msg.textContent = "";
+    });
+
+    // Обработка регистрации
+    formReg.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var username = document.getElementById("reg-username").value.trim();
+      var roblox = document.getElementById("reg-roblox").value.trim();
+      var pass = document.getElementById("reg-pass").value;
+      var pass2 = document.getElementById("reg-pass2").value;
+
+      if (pass !== pass2) {
+        msg.style.color = "#ff5252";
+        msg.textContent = "[ОШИБКА] Введенные пароли не совпадают.";
+        return;
+      }
+
+      var userData = {
+        username: username,
+        roblox: roblox,
+        registeredAt: Date.now()
+      };
+
+      localStorage.setItem("dnp_active_user", JSON.stringify(userData));
+      document.cookie = "dnp_username=" + encodeURIComponent(username) + "; path=/; max-age=2592000";
+
+      msg.style.color = "#4af626";
+      msg.textContent = "[УСПЕХ] Регистрация завершена! Переход в систему...";
+      setTimeout(function() {
+        window.location.href = "index.html";
+      }, 900);
+    });
+
+    // Обработка входа
+    formLogin.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var ident = document.getElementById("login-identifier").value.trim();
+      var pass = document.getElementById("login-pass").value;
+
+      var userData = {
+        username: ident,
+        roblox: ident,
+        loggedInAt: Date.now()
+      };
+
+      localStorage.setItem("dnp_active_user", JSON.stringify(userData));
+      document.cookie = "dnp_username=" + encodeURIComponent(ident) + "; path=/; max-age=2592000";
+
+      msg.style.color = "#4af626";
+      msg.textContent = "[УСПЕХ] Доступ предоставлен. Переход...";
+      setTimeout(function() {
+        window.location.href = "index.html";
+      }, 700);
+    });
+  </script>
+</body>
+</html>
