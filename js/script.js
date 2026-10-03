@@ -498,7 +498,6 @@
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
 
-    // Убираем префикс D если пользователь случайно его ввёл
     if (first === "D" && parts.length > 1) {
       parts.shift();
       first = (parts[0] || "").toUpperCase();
