@@ -19,17 +19,13 @@
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
 
-    var inPages = window.location.pathname.indexOf('/pages/') !== -1;
-    var pPrefix = inPages ? '' : 'pages/';
-    var authPath = inPages ? '../auth.html' : 'auth.html';
-
     var rawUser = localStorage.getItem("dnp_active_user");
     if (rawUser) {
       try {
         var u = JSON.parse(rawUser);
         var avatarHtml = '';
         if (u.avatar && u.avatar.length > 5) {
-          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:2px;">';
         } else {
           avatarHtml = (u.displayName || u.username || 'U')[0].toUpperCase();
         }
@@ -40,15 +36,16 @@
           '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
           '</div>',
           '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <a href="' + pPrefix + 'profile.html" class="dnp-dropdown-item">Профиль</a>',
-          '  <a href="' + pPrefix + 'tickets.html" class="dnp-dropdown-item">Обращения</a>',
-          '  <a href="' + pPrefix + 'settings.html" class="dnp-dropdown-item">Настройки</a>',
-          '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
+          '  <button type="button" class="dnp-dropdown-item" data-screen="profile">Профиль</button>',
+          '  <button type="button" class="dnp-dropdown-item" data-screen="tickets">Обращения</button>',
+          '  <button type="button" class="dnp-dropdown-item" data-screen="settings">Настройки</button>',
+          '  <button type="button" class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</button>',
           '</div>'
         ].join('');
 
         var pill = document.getElementById("dnp-user-pill");
         var dd = document.getElementById("dnp-user-dropdown");
+        
         pill.addEventListener("click", function (e) {
           e.stopPropagation();
           dd.style.display = dd.style.display === "none" ? "flex" : "none";
@@ -61,13 +58,14 @@
         document.getElementById("dnp-menu-logout").addEventListener("click", function () {
           localStorage.removeItem("dnp_active_user");
           localStorage.removeItem("dnp_auth_token");
-          location.reload();
+          window.renderAuthHeader();
+          if (window.openScreen) window.openScreen("ustav-01");
         });
         return;
       } catch (e) {}
     }
 
-    slot.innerHTML = '<a href="' + authPath + '" class="dnp-auth-btn">ЛИЧНЫЙ КАБИНЕТ</a>';
+    slot.innerHTML = '<button type="button" class="dnp-auth-btn" data-screen="auth">ЛИЧНЫЙ КАБИНЕТ</button>';
   };
 
   function pollServerData() {

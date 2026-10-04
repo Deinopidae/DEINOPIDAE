@@ -1,9 +1,39 @@
-@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap");
+
+/* ==========================================================================
+   DEINOPIDAE INDUSTRIES // DEPARTMENT S.E. - KURODZAKURA
+   TACTICAL PDA OPERATING SYSTEM (DNP-OS v4.19)
+   UNIFIED SCI-FI INTERFACE STYLESHEET
+   ========================================================================== */
+
+:root {
+  --bg: #02070a;
+  --bg-deep: #010406;
+  --panel: rgba(8, 13, 16, 0.96);
+  --panel-2: rgba(14, 21, 25, 0.94);
+  --panel-hover: #121c22;
+  --line: #8aa0a8;
+  --line-soft: rgba(138, 160, 168, 0.24);
+  --line-bright: rgba(138, 160, 168, 0.55);
+  --text: #d9e1e4;
+  --text-bright: #ffffff;
+  --muted: #829199;
+  --warn: #e5b324;
+  --danger: #a96468;
+  --danger-bright: #ff5252;
+  --ok: #4af626;
+  --cyan: #00f0ff;
+  --cyan-glow: rgba(0, 240, 255, 0.35);
+  --font-head: "Exo 2", "Chakra Petch", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+}
 
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #02070a;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
@@ -19,18 +49,21 @@ a {
 }
 
 .dnp-pda ::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 .dnp-pda * {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .dnp-screen-head h1:focus {
   outline: none;
 }
 
+/* ==========================================================================
+   СИСТЕМНЫЙ ЗАГРУЗЧИК
+   ========================================================================== */
 .dnp-loader {
   position: fixed;
   inset: 0;
@@ -47,8 +80,8 @@ a {
   position: absolute;
   inset: -30px;
   background:
-    linear-gradient(rgba(138, 160, 168, .035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px),
+    linear-gradient(rgba(138, 160, 168, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 160, 168, 0.025) 1px, transparent 1px),
     #02070a;
   background-size: 28px 28px, 28px 28px, auto;
   filter: blur(20px);
@@ -60,8 +93,8 @@ a {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .014) 0, rgba(255, 255, 255, .014) 1px, transparent 1px, transparent 6px);
-  opacity: .35;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.014) 0, rgba(255, 255, 255, 0.014) 1px, transparent 1px, transparent 6px);
+  opacity: 0.35;
 }
 
 .dnp-loader-content {
@@ -87,8 +120,8 @@ a {
   left: 0;
   width: 100%;
   height: 0%;
-  background: #00f0ff;
-  box-shadow: none;
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
 }
 
 .dnp-loader-pin {
@@ -113,22 +146,23 @@ a {
   display: inline-block;
   width: 3px;
   height: 18px;
-  background: #00f0ff;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan-glow);
 }
 
 .dnp-loader-num {
-  color: #00f0ff;
-  font-family: "Exo 2", sans-serif;
+  color: var(--cyan);
+  font-family: var(--font-head);
   font-size: 24px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.5px;
-  text-shadow: none;
+  text-shadow: 0 0 10px var(--cyan-glow);
 }
 
 .dnp-loader-sub {
   color: #829199;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -140,7 +174,7 @@ a {
 }
 
 .dnp-loader-dots {
-  color: #00f0ff;
+  color: var(--cyan);
   font-size: 9px;
   letter-spacing: 1px;
 }
@@ -157,13 +191,13 @@ a {
 .dnp-loader-title {
   margin: 0;
   color: #c4d0d4;
-  font-family: "Chakra Petch", "Roboto Mono", monospace;
+  font-family: "Chakra Petch", var(--font-mono);
   font-size: clamp(26px, 3.8vw, 48px);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: 5px;
   text-transform: uppercase;
-  text-shadow: none;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
 }
 
 .dnp-loader-wipe {
@@ -172,7 +206,7 @@ a {
   bottom: 0;
   left: 0;
   width: 0%;
-  background: #00f0ff;
+  background: var(--cyan);
   box-shadow: none;
   z-index: 10;
   pointer-events: none;
@@ -189,44 +223,35 @@ a {
   transition: left 0.5s cubic-bezier(0.65, 0, 0.15, 1);
 }
 
+/* ==========================================================================
+   КОРНЕВАЯ ОБОЛОЧКА ТЕРМИНАЛА КПК
+   ========================================================================== */
 .dnp-pda {
-  --bg: #02070a;
-  --panel: rgba(8, 13, 16, .96);
-  --panel-2: rgba(14, 21, 25, .92);
-  --line: #8aa0a8;
-  --line-soft: rgba(138, 160, 168, .24);
-  --text: #d9e1e4;
-  --muted: #829199;
-  --warn: #a29a8c;
-  --danger: #a96468;
-  --ok: #92aaa0;
-  --cyan: #00f0ff;
-  
   position: relative;
   width: 100%;
-  min-height: 100vh; 
-  height: auto; 
+  min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
-  overflow: visible; 
-  
+  overflow: visible;
   background:
-    linear-gradient(rgba(138, 160, 168, .025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 160, 168, .02) 1px, transparent 1px),
+    linear-gradient(rgba(138, 160, 168, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 160, 168, 0.02) 1px, transparent 1px),
     var(--bg);
   background-size: 26px 26px, 26px 26px, auto;
   border: 1px solid var(--line-soft);
   color: var(--text);
-  font-family: "Roboto Mono", monospace;
-  box-shadow: 0 0 18px rgba(0, 0, 0, .42), inset 0 0 20px rgba(138, 160, 168, .04);
+  font-family: var(--font-mono);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.42), inset 0 0 20px rgba(138, 160, 168, 0.04);
 }
 
 .dnp-scan {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .018) 0, rgba(255, 255, 255, .018) 1px, transparent 1px, transparent 6px);
-  opacity: .35;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.018) 0, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 6px);
+  opacity: 0.35;
+  z-index: 2;
 }
 
 .dnp-topbar,
@@ -237,9 +262,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 18px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--line-soft);
-  background: rgba(4, 8, 10, .92);
+  background: rgba(4, 8, 10, 0.94);
   color: var(--muted);
   font-size: 11px;
   text-transform: uppercase;
@@ -249,7 +274,7 @@ a {
   border-top: 1px solid var(--line-soft);
   border-bottom: 0;
   margin-top: auto;
-  padding: 6px 18px;
+  padding: 8px 20px;
 }
 
 .dnp-footer-link {
@@ -265,15 +290,17 @@ a {
 
 .dnp-brand strong {
   display: inline-block;
-  color: var(--text);
-  font: 800 15px "Exo 2", sans-serif;
+  color: var(--cyan);
+  font: 800 15px var(--font-head);
   letter-spacing: 2px;
+  text-shadow: 0 0 8px var(--cyan-glow);
 }
 
 .dnp-brand span {
   display: inline-block;
   margin-left: 10px;
   font-size: 11px;
+  color: var(--muted);
 }
 
 .dnp-top-meta {
@@ -282,54 +309,69 @@ a {
   position: relative;
 }
 
-/* ЛИЧНЫЙ КАБИНЕТ В ШАПКЕ */
+/* СЛОТ ЛИЧНОГО КАБИНЕТА В ШАПКЕ */
 .dnp-auth-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
-  background: rgba(14, 21, 25, 0.9);
-  border: 1px solid rgba(138, 160, 168, 0.35);
-  color: var(--text);
-  font: 800 11px "Exo 2", sans-serif;
-  letter-spacing: 0.8px;
+  padding: 6px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font: 800 11px var(--font-head);
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.15);
 }
 
 .dnp-auth-btn:hover {
-  border-color: var(--line);
-  background: rgba(22, 33, 40, 1);
-  box-shadow: 0 0 8px rgba(138, 160, 168, 0.2);
+  background: var(--cyan);
+  color: #02070a;
+  box-shadow: 0 0 14px var(--cyan-glow);
 }
 
 .dnp-user-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 3px 10px 3px 4px;
+  padding: 3px 12px 3px 4px;
   background: rgba(14, 21, 25, 0.95);
-  border: 1px solid var(--line);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
   cursor: pointer;
   user-select: none;
+  transition: all 0.2s ease;
+}
+
+.dnp-user-pill:hover {
+  background: var(--panel-hover);
+  box-shadow: 0 0 14px var(--cyan-glow);
 }
 
 .dnp-user-avatar {
   width: 24px;
   height: 24px;
   border-radius: 2px;
-  background: var(--line);
+  background: var(--cyan);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   color: #000;
   font-size: 12px;
+  overflow: hidden;
+}
+
+.dnp-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .dnp-user-name {
   color: #fff;
-  font: 800 11px "Exo 2", sans-serif;
+  font: 800 11px var(--font-head);
   letter-spacing: 0.5px;
 }
 
@@ -337,24 +379,30 @@ a {
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 6px;
-  background: #090e12;
-  border: 1px solid var(--line);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+  margin-top: 8px;
+  background: #080d10;
+  border: 1px solid var(--cyan);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 240, 255, 0.2);
   display: flex;
   flex-direction: column;
-  min-width: 160px;
+  min-width: 170px;
   z-index: 1000;
 }
 
 .dnp-dropdown-item {
-  padding: 9px 14px;
+  padding: 10px 14px;
   font-size: 11.5px;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--font-mono);
   color: var(--text);
   cursor: pointer;
   border-bottom: 1px solid rgba(138, 160, 168, 0.12);
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: left;
+  width: 100%;
 }
 
 .dnp-dropdown-item:last-child {
@@ -362,14 +410,23 @@ a {
 }
 
 .dnp-dropdown-item:hover {
-  background: rgba(138, 160, 168, 0.15);
-  color: #fff;
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--cyan);
+  padding-left: 18px;
 }
 
 .dnp-dropdown-item.is-logout {
-  color: var(--danger);
+  color: var(--danger-bright);
 }
 
+.dnp-dropdown-item.is-logout:hover {
+  background: rgba(255, 82, 82, 0.15);
+  color: #fff;
+}
+
+/* ==========================================================================
+   СЕТКА И КОМПОЗИЦИЯ
+   ========================================================================== */
 .dnp-layout {
   position: relative;
   z-index: 1;
@@ -377,8 +434,8 @@ a {
   grid-template-columns: 280px minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   gap: 14px 18px;
-  width: 92%; 
-  max-width: 1240px; 
+  width: 92%;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 16px 0;
   flex-grow: 1;
@@ -387,7 +444,7 @@ a {
 }
 
 .dnp-layout.is-terminal-mode {
-  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-columns: 230px minmax(0, 1fr);
   max-width: 1440px;
   width: 96%;
 }
@@ -406,7 +463,7 @@ a {
   flex-direction: column;
   border: 1px solid var(--line-soft);
   background: var(--panel);
-  box-shadow: inset 3px 0 0 rgba(138, 160, 168, .28);
+  box-shadow: inset 3px 0 0 rgba(0, 240, 255, 0.4);
   overflow: hidden;
   transition: width 0.3s ease;
 }
@@ -416,10 +473,10 @@ a {
   align-items: center;
   justify-content: space-between;
   min-height: 44px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-bottom: 1px solid var(--line-soft);
-  background: rgba(18, 27, 32, .95);
-  font-family: "Exo 2", sans-serif;
+  background: rgba(18, 27, 32, 0.95);
+  font-family: var(--font-head);
   text-transform: uppercase;
   flex-shrink: 0;
 }
@@ -431,15 +488,15 @@ a {
 }
 
 .dnp-sidebar-title-left span {
-  color: var(--text);
+  color: var(--text-bright);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.5px;
 }
 
 .dnp-menu-tag {
-  color: var(--muted);
-  font: normal 700 11px "Roboto Mono", monospace;
+  color: var(--cyan);
+  font: normal 700 11px var(--font-mono);
   margin-left: auto;
 }
 
@@ -450,16 +507,198 @@ a {
   flex-direction: column;
 }
 
+/* ==========================================================================
+   СЛУЖЕБНЫЕ ПОЛОСКИ С ФРАЗАМИ (ВЕРХ И НИЗ КАЖДОЙ ВКЛАДКИ)
+   ========================================================================== */
+.dnp-stripe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  user-select: none;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.dnp-stripe-top {
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.14) 0%, rgba(8, 13, 16, 0.96) 20%, rgba(8, 13, 16, 0.96) 80%, rgba(0, 240, 255, 0.14) 100%);
+  border: 1px solid rgba(138, 160, 168, 0.28);
+  border-top: 1px solid var(--cyan);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow: 0 2px 12px rgba(0, 240, 255, 0.12);
+  margin-bottom: 14px;
+}
+
+.dnp-stripe-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.dnp-stripe-bottom {
+  background: linear-gradient(90deg, rgba(8, 13, 16, 0.96) 0%, rgba(14, 21, 25, 0.96) 50%, rgba(8, 13, 16, 0.96) 100%);
+  border: 1px solid rgba(138, 160, 168, 0.28);
+  border-top: 1px solid rgba(0, 240, 255, 0.35);
+  border-bottom: 1px solid var(--line-soft);
+  box-shadow: 0 -2px 12px rgba(0, 240, 255, 0.08);
+  margin-top: 16px;
+}
+
+.dnp-stripe-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--line);
+}
+
+.dnp-stripe-tag {
+  color: var(--cyan);
+  font-weight: 700;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dnp-stripe-tag::before {
+  content: "▪";
+  color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan);
+}
+
+.dnp-stripe-phrase {
+  flex: 1;
+  text-align: center;
+  color: #e6f6f9;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-shadow: 0 0 6px rgba(0, 240, 255, 0.25);
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.dnp-stripe-meta {
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+  letter-spacing: 0.8px;
+}
+
+/* Служебные полосы для сектора "Корни" (Аварийный сбой) */
+.dnp-stripe-corrupt {
+  border-color: rgba(169, 100, 104, 0.45) !important;
+  border-top-color: var(--danger-bright) !important;
+  box-shadow: 0 0 16px rgba(169, 100, 104, 0.22) !important;
+  background: linear-gradient(90deg, rgba(169, 100, 104, 0.16) 0%, rgba(8, 13, 16, 0.96) 20%, rgba(8, 13, 16, 0.96) 80%, rgba(169, 100, 104, 0.16) 100%) !important;
+}
+
+.dnp-stripe-corrupt::before {
+  background: var(--danger-bright) !important;
+  box-shadow: 0 0 8px var(--danger-bright) !important;
+}
+
+.dnp-stripe-corrupt::after {
+  background: var(--danger) !important;
+}
+
+.dnp-stripe-corrupt .dnp-stripe-tag {
+  color: var(--danger-bright) !important;
+}
+
+.dnp-stripe-corrupt .dnp-stripe-tag::before {
+  color: var(--danger-bright) !important;
+  text-shadow: 0 0 6px var(--danger-bright) !important;
+}
+
+.dnp-stripe-corrupt .dnp-stripe-phrase {
+  color: #ffccd0 !important;
+  text-shadow: 0 0 8px rgba(255, 82, 82, 0.35) !important;
+}
+
+/* Служебные полосы терминала */
+.dnp-stripe-term {
+  border-color: #1a2024 !important;
+  border-top-color: var(--cyan) !important;
+  background: #040709 !important;
+  margin: 0 !important;
+  padding: 6px 14px !important;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   ШАПКА И КОНТЕНТ ЭКРАНОВ
+   ========================================================================== */
+.dnp-screen {
+  display: contents;
+}
+
+.dnp-screen:not(.is-visible) .dnp-screen-head,
+.dnp-screen:not(.is-visible) .dnp-screen-content {
+  display: none !important;
+}
+
 .dnp-screen-head {
   grid-column: 2;
   grid-row: 1;
   margin-bottom: 0;
-  padding: 14px 18px;
+  padding: 14px 20px;
   border: 1px solid var(--line-soft);
-  background: rgba(8, 13, 16, .78);
+  border-top: 1px solid var(--cyan);
+  background: rgba(8, 13, 16, 0.85);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
   text-align: center;
   overflow: hidden;
   position: relative;
+}
+
+.dnp-screen-head::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.dnp-screen-head p {
+  margin: 0 0 6px;
+  color: var(--cyan);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.dnp-screen-head h1 {
+  margin: 0;
+  color: var(--text-bright);
+  font: 800 clamp(22px, 3vw, 34px)/1.1 var(--font-head);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.dnp-screen-head span {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .dnp-screen-content {
@@ -524,7 +763,239 @@ a {
 .dnp-screen-content.dnp-flicker-3 { animation: fluorescentBlink3 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .dnp-screen-content.dnp-no-flicker { animation: smoothFadeIn 0.15s ease both; }
 
-/* КАРТОЧКИ НАКАЗАНИЙ */
+/* ==========================================================================
+   МОДУЛИ УСТАВА (ARTICLES & MODULES)
+   ========================================================================== */
+.dnp-module {
+  border: 1px solid var(--line-soft);
+  background: var(--panel);
+  box-shadow: inset 3px 0 0 rgba(0, 240, 255, 0.35);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.dnp-module:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: inset 3px 0 0 var(--cyan), 0 0 14px rgba(0, 240, 255, 0.08);
+}
+
+.dnp-module-title {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(18, 27, 32, 0.92);
+  font-family: var(--font-head);
+  text-transform: uppercase;
+}
+
+.dnp-num,
+.dnp-module-title span {
+  color: var(--cyan);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.dnp-module-title b {
+  color: var(--text-bright);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.dnp-module-title em {
+  color: var(--muted);
+  font: normal 700 10.5px var(--font-mono);
+}
+
+.dnp-module p {
+  margin: 0;
+  padding: 12px 14px;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.dnp-module strong {
+  color: var(--cyan);
+}
+
+.dnp-muted {
+  color: var(--muted);
+}
+
+.dnp-list {
+  margin: 0;
+  padding: 11px 18px 13px 30px;
+  line-height: 1.55;
+  font-size: 13px;
+}
+
+.dnp-list li {
+  margin-bottom: 7px;
+}
+
+/* ==========================================================================
+   БОКОВОЕ МЕНЮ
+   ========================================================================== */
+.dnp-nav-group {
+  border-bottom: 1px solid rgba(138, 160, 168, 0.16);
+}
+
+.dnp-nav-group summary,
+.dnp-locked-main {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+  min-height: 48px;
+  padding: 9px 12px;
+  border: 0;
+  border-bottom: 1px solid rgba(138, 160, 168, 0.16);
+  background: rgba(6, 10, 13, 0.74);
+  color: var(--text);
+  cursor: pointer;
+  font: 700 13px var(--font-mono);
+  text-align: left;
+  list-style: none;
+  transition: all 0.2s ease;
+}
+
+.dnp-nav-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.dnp-nav-group summary:hover,
+.dnp-locked-main:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.08);
+  color: #fff;
+}
+
+.dnp-locked-main:disabled {
+  cursor: not-allowed;
+  background: rgba(169, 100, 104, 0.05);
+  border-bottom-color: rgba(169, 100, 104, 0.18);
+}
+
+.dnp-locked-main:disabled b,
+.dnp-locked-main:disabled .dnp-num,
+.dnp-locked-main:disabled em {
+  color: var(--danger) !important;
+}
+
+.dnp-nav-group summary em,
+.dnp-locked-main em {
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.dnp-subnav {
+  display: grid;
+  gap: 6px;
+  padding: 9px 11px 11px 16px;
+  background: rgba(4, 8, 10, 0.54);
+}
+
+.dnp-subnav-category {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin: 10px 0 3px 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.dnp-subnav-category:first-child {
+  margin-top: 0;
+}
+
+.dnp-subnav button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid rgba(138, 160, 168, 0.18);
+  background: rgba(10, 15, 18, 0.88);
+  color: var(--text);
+  cursor: pointer;
+  font: 700 11.5px var(--font-mono);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.dnp-subnav button:hover:not(:disabled) {
+  transform: translateX(4px);
+  border-color: var(--cyan);
+  box-shadow: inset 3px 0 0 var(--cyan), 0 0 10px rgba(0, 240, 255, 0.15);
+  color: #fff;
+}
+
+.dnp-subnav button.is-active {
+  background: #142028;
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: inset 4px 0 0 var(--cyan), 0 0 14px rgba(0, 240, 255, 0.2);
+}
+
+.dnp-subnav button:disabled {
+  cursor: not-allowed;
+  color: var(--danger);
+  background: rgba(169, 100, 104, 0.05);
+  border-color: rgba(169, 100, 104, 0.18);
+}
+
+.dnp-terminal-note {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  color: var(--muted);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(138, 160, 168, 0.12);
+  background: rgba(4, 8, 10, 0.4);
+}
+
+/* ==========================================================================
+   РАНГИ, КАРТОЧКИ И ШКАЛА
+   ========================================================================== */
+.dnp-rank-block {
+  background: var(--panel-2);
+  border: 1px solid rgba(138, 160, 168, 0.18);
+  padding: 10px 14px;
+  border-left: 3px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.dnp-rank-block:hover {
+  border-color: rgba(0, 240, 255, 0.35);
+  transform: translateX(3px);
+}
+
+.dnp-rank-block.hr { border-left-color: var(--danger-bright); }
+.dnp-rank-block.jhr { border-left-color: var(--warn); }
+.dnp-rank-block.mr { border-left-color: var(--ok); }
+.dnp-rank-block.lr { border-left-color: var(--cyan); }
+
+.dnp-rank-info { flex-grow: 1; }
+.dnp-rank-info b {
+  color: var(--text-bright);
+  font: 800 14px var(--font-head);
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.dnp-rank-info span {
+  color: var(--text);
+  font-size: 12px;
+  display: inline-block;
+}
+
 .dnp-card-grid {
   display: grid;
   gap: 10px;
@@ -533,7 +1004,7 @@ a {
 }
 
 .dnp-card-grid div {
-  border: 1px solid rgba(138, 160, 168, .18);
+  border: 1px solid rgba(138, 160, 168, 0.18);
   background: var(--panel-2);
   padding: 12px;
 }
@@ -541,8 +1012,8 @@ a {
 .dnp-card-grid b {
   display: block;
   margin-bottom: 6px;
-  color: var(--text);
-  font: 800 15px "Exo 2", sans-serif;
+  color: var(--text-bright);
+  font: 800 15px var(--font-head);
   text-transform: uppercase;
 }
 
@@ -554,11 +1025,10 @@ a {
   color: #c4ccd0;
 }
 
-/* Растягивание дисциплинарного взыскания */
 .dnp-card-grid .dnp-card-full {
   grid-column: 1 / -1 !important;
-  border-left: 3px solid var(--danger);
-  background: rgba(169, 100, 104, 0.08);
+  border-left: 3px solid var(--danger-bright);
+  background: rgba(169, 100, 104, 0.1);
 }
 
 /* СПИСОК РЕСУРСОВ 8.2 */
@@ -576,7 +1046,7 @@ a {
   padding: 12px 16px !important;
   background: var(--panel-2) !important;
   border: 1px solid rgba(138, 160, 168, 0.2) !important;
-  border-left: 3px solid var(--line) !important;
+  border-left: 3px solid var(--cyan) !important;
   text-decoration: none !important;
   color: var(--text) !important;
   transition: all 0.2s ease !important;
@@ -584,7 +1054,8 @@ a {
 
 .dnp-subtle-card:hover {
   background: rgba(22, 33, 40, 0.95) !important;
-  border-color: rgba(138, 160, 168, 0.45) !important;
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15) !important;
   transform: translateX(4px);
 }
 
@@ -595,8 +1066,8 @@ a {
 }
 
 .dnp-subtle-card-main b {
-  color: var(--text) !important;
-  font: 800 13px "Exo 2", sans-serif !important;
+  color: var(--text-bright) !important;
+  font: 800 13px var(--font-head) !important;
   letter-spacing: 0.5px !important;
 }
 
@@ -606,8 +1077,8 @@ a {
 }
 
 .dnp-subtle-card em {
-  color: var(--line) !important;
-  font: normal 700 11px "Roboto Mono", monospace !important;
+  color: var(--cyan) !important;
+  font: normal 700 11px var(--font-mono) !important;
   white-space: nowrap !important;
   margin-left: 14px !important;
 }
@@ -634,13 +1105,150 @@ a {
   display: block;
   margin-top: 8px;
   font-size: 11px;
-  color: var(--line);
-  font-family: "Exo 2", sans-serif;
+  color: var(--cyan);
+  font-family: var(--font-head);
   font-weight: 800;
   letter-spacing: 0.8px;
 }
 
-/* ТЕРМИНАЛ */
+/* ШКАЛА АКТИВНОСТЕЙ */
+.dnp-activity-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 16px;
+  padding: 14px;
+  align-items: start;
+}
+
+.dnp-activity-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dnp-scale-container {
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  border-top: 2px solid var(--cyan);
+  padding: 16px 14px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dnp-scale-title {
+  color: var(--cyan);
+  font: 700 11px var(--font-head);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(138, 160, 168, 0.15);
+  padding-bottom: 6px;
+  width: 100%;
+}
+
+.dnp-scale-axis {
+  position: relative;
+  width: 200px;
+  height: 270px;
+  margin: 0 auto;
+}
+
+.dnp-scale-axis::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 70px;
+  width: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan-glow);
+}
+
+.dnp-scale-node {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.dnp-scale-lvl {
+  width: 58px;
+  text-align: right;
+  color: var(--text-bright);
+  font: 800 12px var(--font-head);
+  letter-spacing: 0.5px;
+}
+
+.dnp-scale-line {
+  width: 24px;
+  height: 2px;
+  background: var(--cyan);
+  margin-left: 12px;
+  box-shadow: 0 0 6px var(--cyan);
+}
+
+.dnp-scale-line-sub {
+  width: 14px;
+  height: 1px;
+  background: rgba(138, 160, 168, 0.5);
+  margin-left: 12px;
+}
+
+.dnp-scale-pts {
+  margin-left: 12px;
+  color: var(--cyan);
+  font: 700 11.5px var(--font-mono);
+  letter-spacing: 0.5px;
+}
+
+.dnp-scale-node.is-mid .dnp-scale-pts {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.dnp-scale-node.is-base {
+  transform: translateY(-100%);
+}
+
+.dnp-brud-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--cyan);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dnp-brud-note strong {
+  color: var(--text-bright);
+}
+
+.dnp-brud-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: var(--cyan);
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   ТЕРМИНАЛ CMD
+   ========================================================================== */
 .dnp-terminal-screen {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -666,10 +1274,11 @@ a {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  flex: 1 1 0;
+  min-height: 0;
   background: #000000;
   color: var(--term-color);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.45;
   user-select: text;
@@ -683,7 +1292,7 @@ a {
   display: flex;
   align-items: center;
   color: #929ea6;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -691,7 +1300,7 @@ a {
 }
 
 .dnp-term-top-title {
-  color: var(--term-color);
+  color: var(--cyan);
 }
 
 .dnp-term-body {
@@ -725,13 +1334,13 @@ a {
 }
 
 .dnp-term-line.term-progress {
-  color: var(--term-color);
+  color: var(--cyan);
   font-weight: 700;
 }
 
 .dnp-term-ascii {
   margin: 10px 0;
-  color: var(--term-color);
+  color: var(--cyan);
   font-family: monospace;
   font-size: 9px;
   line-height: 1.05;
@@ -739,6 +1348,7 @@ a {
   user-select: none;
   overflow-x: auto;
   white-space: pre;
+  text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
 }
 
 .dnp-term-output {
@@ -748,7 +1358,7 @@ a {
 }
 
 .dnp-term-cmd-echo {
-  color: var(--term-color);
+  color: var(--cyan);
   margin-top: 8px;
   font-weight: 700;
 }
@@ -760,7 +1370,7 @@ a {
 }
 
 .dnp-term-link {
-  color: var(--term-color);
+  color: var(--cyan);
   text-decoration: underline;
   cursor: pointer;
   margin-left: 6px;
@@ -770,7 +1380,6 @@ a {
   filter: brightness(1.3);
 }
 
-/* ИНЛАЙН-КУРСОР В КОМАНДНОЙ СТРОКЕ */
 .dnp-term-prompt-line {
   display: flex;
   align-items: center;
@@ -780,7 +1389,7 @@ a {
 }
 
 .dnp-term-prompt {
-  color: var(--term-color);
+  color: var(--cyan);
   font-weight: 700;
   font-size: 13px;
   white-space: nowrap;
@@ -803,7 +1412,7 @@ a {
 }
 
 .dnp-term-cursor {
-  color: var(--term-color);
+  color: var(--cyan);
   font-weight: 700;
   font-size: 13px;
   animation: termBlink 1s step-end infinite;
@@ -821,151 +1430,9 @@ a {
   cursor: text;
 }
 
-@keyframes termBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* ГРАФИЧЕСКАЯ КАРТОЧКА DOSSIER GUI ВНУТРИ ТЕРМИНАЛА */
-.dnp-gui-dossier-card {
-  margin: 10px 0;
-  padding: 14px;
-  background: #070d10;
-  border: 1px solid var(--line);
-  box-shadow: inset 0 0 14px rgba(0, 240, 255, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.dnp-gui-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(138, 160, 168, 0.25);
-  padding-bottom: 8px;
-}
-
-.dnp-gui-card-head b {
-  color: #fff;
-  font: 800 14px "Exo 2", sans-serif;
-  letter-spacing: 1px;
-}
-
-.dnp-gui-card-head span {
-  font-size: 10.5px;
-  padding: 2px 6px;
-  background: rgba(146, 170, 160, 0.15);
-  color: var(--ok);
-  border: 1px solid var(--ok);
-}
-
-.dnp-gui-card-body {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 14px;
-  align-items: center;
-}
-
-.dnp-gui-avatar-box {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--line);
-  background: #02070a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-}
-
-.dnp-gui-avatar-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.dnp-gui-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 8px;
-}
-
-.dnp-gui-stat-cell {
-  background: rgba(14, 21, 25, 0.85);
-  padding: 6px 10px;
-  border: 1px solid rgba(138, 160, 168, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dnp-gui-stat-cell span {
-  font-size: 9.5px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.dnp-gui-stat-cell b {
-  font-size: 12px;
-  color: #fff;
-  font-family: "Exo 2", sans-serif;
-}
-
-/* МОДАЛЬНОЕ ОКНО GUI */
-.dnp-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.dnp-modal-window {
-  width: 100%;
-  max-width: 540px;
-  background: #080d11;
-  border: 1px solid var(--line);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
-  display: flex;
-  flex-direction: column;
-}
-
-.dnp-modal-header {
-  padding: 10px 16px;
-  background: #0d151a;
-  border-bottom: 1px solid rgba(138, 160, 168, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--text);
-  font: 800 13px "Exo 2", sans-serif;
-  letter-spacing: 1px;
-}
-
-.dnp-modal-close {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.dnp-modal-close:hover {
-  color: var(--danger);
-}
-
-.dnp-modal-body {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* СТРАНИЦА "КОРНИ" */
+/* ==========================================================================
+   СЕКТОР: КОРНИ DEINOPIDAE (ГЛИТЧ)
+   ========================================================================== */
 .dnp-nav-root-btn {
   display: grid;
   grid-template-columns: 36px 1fr auto;
@@ -975,35 +1442,35 @@ a {
   min-height: 48px;
   padding: 9px 12px;
   border: 0;
-  border-bottom: 1px solid rgba(138, 160, 168, .16);
-  background: rgba(6, 10, 13, .74);
+  border-bottom: 1px solid rgba(138, 160, 168, 0.16);
+  background: rgba(6, 10, 13, 0.74);
   color: var(--text);
   cursor: pointer;
-  font: 700 13px "Roboto Mono", monospace;
+  font: 700 13px var(--font-mono);
   text-align: left;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .dnp-nav-root-btn:hover {
-  background: rgba(169, 100, 104, 0.12);
-  border-bottom-color: rgba(169, 100, 104, 0.35);
+  background: rgba(169, 100, 104, 0.15);
+  border-bottom-color: var(--danger-bright);
 }
 
 .dnp-corrupt-head {
-  border-color: rgba(169, 100, 104, 0.3) !important;
+  border-color: rgba(169, 100, 104, 0.4) !important;
 }
 
 .dnp-corrupt-head h1 {
-  color: #d1b4b6 !important;
+  color: #ffb8bc !important;
   letter-spacing: 3px;
-  text-shadow: 1px 0 rgba(169, 100, 104, 0.4), -1px 0 rgba(138, 160, 168, 0.3);
+  text-shadow: 1px 0 rgba(255, 82, 82, 0.6), -1px 0 rgba(0, 240, 255, 0.4);
 }
 
 .dnp-corrupt-module {
   position: relative;
   overflow: hidden;
-  border-color: rgba(169, 100, 104, 0.28) !important;
-  box-shadow: inset 3px 0 0 rgba(169, 100, 104, 0.4) !important;
+  border-color: rgba(169, 100, 104, 0.35) !important;
+  box-shadow: inset 3px 0 0 var(--danger-bright) !important;
 }
 
 .dnp-corrupt-overlay-img {
@@ -1033,7 +1500,7 @@ a {
   background: rgba(18, 27, 32, 0.95);
   border: 1px solid rgba(169, 100, 104, 0.35);
   color: var(--text);
-  font-family: "Exo 2", sans-serif;
+  font-family: var(--font-head);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -1044,9 +1511,7 @@ a {
   transition: transform 0.08s ease-out;
 }
 
-.dnp-ghost-title span {
-  color: var(--line);
-}
+.dnp-ghost-title span { color: var(--line); }
 
 .dnp-corrupt-body {
   padding: 14px;
@@ -1062,7 +1527,7 @@ a {
 }
 
 .dnp-corrupt-notice {
-  color: var(--danger) !important;
+  color: var(--danger-bright) !important;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.8px;
@@ -1080,10 +1545,7 @@ a {
   will-change: transform;
 }
 
-.dnp-slice-1 {
-  clip-path: polygon(0 0, 100% 0, 100% 65%, 0 45%);
-}
-
+.dnp-slice-1 { clip-path: polygon(0 0, 100% 0, 100% 65%, 0 45%); }
 .dnp-slice-2 {
   position: absolute;
   top: 0;
@@ -1095,18 +1557,12 @@ a {
   pointer-events: none;
   filter: contrast(1.15);
 }
-
-.dnp-slice-log {
-  transform-origin: left center;
-}
-
-.dnp-slice-3 {
-  clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 100%);
-}
+.dnp-slice-log { transform-origin: left center; }
+.dnp-slice-3 { clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 100%); }
 
 .dnp-corrupt-log {
-  background: rgba(4, 8, 10, .75);
-  border: 1px dashed rgba(169, 100, 104, .25);
+  background: rgba(4, 8, 10, 0.85);
+  border: 1px dashed rgba(255, 82, 82, 0.4);
   padding: 10px 12px;
   margin: 10px 0 14px;
   display: flex;
@@ -1114,7 +1570,7 @@ a {
   gap: 5px;
   font-size: 11px;
   color: var(--warn);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--font-mono);
 }
 
 .dnp-redact {
@@ -1138,7 +1594,7 @@ a {
   position: absolute;
   left: 1px;
   top: 0;
-  color: rgba(169, 100, 104, 0.45);
+  color: rgba(255, 82, 82, 0.5);
   clip-path: polygon(0 20%, 100% 20%, 100% 50%, 0 50%);
   animation: subtleGlitch 3.5s infinite linear alternate-reverse;
 }
@@ -1152,410 +1608,210 @@ a {
   100% { transform: translate(0, 0); }
 }
 
-/* ШКАЛА АКТИВНОСТЕЙ */
-.dnp-activity-wrap {
+/* ==========================================================================
+   СТИЛИ ДЛЯ ЭКРАНОВ: ПРОФИЛЬ, НАСТРОЙКИ, ТИКЕТЫ, ВХОД
+   ========================================================================== */
+.dnp-profile-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 16px;
-  padding: 14px;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  padding: 18px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
   align-items: start;
 }
 
-.dnp-activity-rules {
+.dnp-profile-avatar-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.dnp-scale-container {
-  background: var(--panel-2);
-  border: 1px solid var(--line-soft);
-  padding: 16px 14px 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.dnp-scale-title {
-  color: var(--line);
-  font: 700 11px "Exo 2", sans-serif;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  text-align: center;
-  border-bottom: 1px solid rgba(138, 160, 168, 0.15);
-  padding-bottom: 6px;
-  width: 100%;
-}
-
-.dnp-scale-axis {
-  position: relative;
-  width: 200px;
-  height: 270px;
-  margin: 0 auto;
-}
-
-.dnp-scale-axis::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 70px;
-  width: 2px;
-  background: var(--line);
-}
-
-.dnp-scale-node {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  transform: translateY(-50%);
-}
-
-.dnp-scale-lvl {
-  width: 58px;
-  text-align: right;
-  color: var(--text);
-  font: 800 12px "Exo 2", sans-serif;
-  letter-spacing: 0.5px;
-}
-
-.dnp-scale-line {
-  width: 24px;
-  height: 2px;
-  background: var(--line);
-  margin-left: 12px;
-}
-
-.dnp-scale-line-sub {
-  width: 14px;
-  height: 1px;
-  background: rgba(138, 160, 168, 0.5);
-  margin-left: 12px;
-}
-
-.dnp-scale-pts {
-  margin-left: 12px;
-  color: var(--line);
-  font: 700 11.5px "Roboto Mono", monospace;
-  letter-spacing: 0.5px;
-}
-
-.dnp-scale-node.is-mid .dnp-scale-pts {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.dnp-scale-node.is-base {
-  transform: translateY(-100%);
-}
-
-.dnp-brud-note {
-  display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
-  margin-top: 4px;
-  margin-bottom: 12px;
-  background: var(--panel-2);
-  border: 1px solid var(--line-soft);
-  border-left: 3px solid var(--line);
-  font-size: 12px;
-  color: var(--muted);
 }
 
-.dnp-brud-note strong {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.dnp-brud-tag {
-  display: inline-block;
-  padding: 2px 6px;
-  background: rgba(138, 160, 168, 0.1);
-  border: 1px solid rgba(138, 160, 168, 0.25);
-  color: var(--line);
-  font-family: "Exo 2", sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.dnp-screen {
-  display: contents;
-}
-
-.dnp-screen:not(.is-visible) .dnp-screen-head,
-.dnp-screen:not(.is-visible) .dnp-screen-content {
-  display: none !important;
-}
-
-.dnp-screen-head p {
-  margin: 0 0 6px;
-  color: var(--line);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.dnp-screen-head h1 {
-  margin: 0;
-  color: var(--text);
-  font: 800 clamp(24px, 3.2vw, 36px)/1.05 "Exo 2", sans-serif;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.dnp-screen-head span {
-  display: inline-block;
-  margin-top: 6px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.dnp-danger-text {
-  color: var(--danger) !important;
-}
-
-.dnp-warn-text {
-  color: var(--warn) !important;
-}
-
-.dnp-module {
-  border: 1px solid var(--line-soft);
-  background: var(--panel);
-  box-shadow: inset 3px 0 0 rgba(138, 160, 168, .28);
-  margin-bottom: 12px;
-  transition: all .2s ease;
-}
-
-.dnp-module-title {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--line-soft);
-  background: rgba(18, 27, 32, .9);
-  font-family: "Exo 2", sans-serif;
-  text-transform: uppercase;
-}
-
-.dnp-num,
-.dnp-module-title span {
-  color: var(--line);
-  font-weight: 800;
-  font-size: 13px;
-}
-
-.dnp-module-title b {
-  color: var(--text);
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-}
-
-.dnp-module-title em {
-  color: var(--muted);
-  font: normal 700 10.5px "Roboto Mono", monospace;
-}
-
-.dnp-module p {
-  margin: 0;
-  padding: 12px 14px;
-  line-height: 1.55;
-  font-size: 13px;
-}
-
-.dnp-module strong {
-  color: var(--text);
-}
-
-.dnp-muted {
-  color: var(--muted);
-}
-
-.dnp-list {
-  margin: 0;
-  padding: 11px 18px 13px 30px;
-  line-height: 1.5;
-  font-size: 13px;
-}
-
-.dnp-list li {
-  margin-bottom: 7px;
-}
-
-.dnp-nav-group {
-  border-bottom: 1px solid rgba(138, 160, 168, .16);
-}
-
-.dnp-nav-group summary,
-.dnp-locked-main {
-  display: grid;
-  grid-template-columns: 36px 1fr auto;
-  gap: 8px;
-  width: 100%;
-  align-items: center;
-  min-height: 48px;
-  padding: 9px 12px;
-  border: 0;
-  border-bottom: 1px solid rgba(138, 160, 168, .16);
-  background: rgba(6, 10, 13, .74);
-  color: var(--text);
-  cursor: pointer;
-  font: 700 13px "Roboto Mono", monospace;
-  text-align: left;
-  list-style: none;
-}
-
-.dnp-nav-group summary::-webkit-details-marker {
-  display: none;
-}
-
-.dnp-nav-group summary:hover,
-.dnp-locked-main:hover:not(:disabled) {
-  background: rgba(32, 30, 24, .62);
-}
-
-.dnp-locked-main:disabled {
-  cursor: not-allowed;
-  background: rgba(169, 100, 104, .05);
-  border-bottom-color: rgba(169, 100, 104, .18);
-}
-
-.dnp-locked-main:disabled b,
-.dnp-locked-main:disabled .dnp-num,
-.dnp-locked-main:disabled em {
-  color: var(--danger) !important;
-}
-
-.dnp-nav-group summary em,
-.dnp-locked-main em {
-  color: var(--muted);
-  font-size: 10px;
-  font-style: normal;
-}
-
-.dnp-subnav {
-  display: grid;
-  gap: 6px;
-  padding: 9px 11px 11px 16px;
-  background: rgba(4, 8, 10, .54);
-}
-
-.dnp-subnav-category {
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--line);
-  margin: 10px 0 3px 0;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.dnp-subnav-category:first-child {
-  margin-top: 0;
-}
-
-.dnp-subnav button {
-  min-height: 32px;
-  padding: 6px 9px;
-  border: 1px solid rgba(138, 160, 168, .18);
-  background: rgba(10, 15, 18, .88);
-  color: var(--text);
-  cursor: pointer;
-  font: 700 11.5px "Roboto Mono", monospace;
-  text-align: left;
-  transition: all .2s ease;
-}
-
-.dnp-subnav button:hover:not(:disabled) {
-  transform: translateX(4px);
-  box-shadow: inset 3px 0 0 var(--line), 0 0 10px rgba(138,160,168,.15);
-}
-
-.dnp-subnav button.is-active {
-  background: #1b2328;
-  border-color: rgba(138,160,168,.55);
-  box-shadow: inset 4px 0 0 var(--line), 0 0 14px rgba(138,160,168,.12);
-}
-
-.dnp-subnav button:disabled {
-  cursor: not-allowed;
-  color: var(--danger);
-  background: rgba(169, 100, 104, .05);
-  border-color: rgba(169, 100, 104, .18);
-}
-
-.dnp-terminal-note {
-  display: grid;
-  gap: 6px;
-  padding: 12px 14px;
-  color: var(--muted);
-  font-size: 10.5px;
-  text-transform: uppercase;
-  border-top: 1px solid rgba(138, 160, 168, .12);
-  background: rgba(4, 8, 10, .4);
-}
-
-.dnp-rank-block {
-  background: var(--panel-2);
-  border: 1px solid rgba(138, 160, 168, .18);
-  padding: 10px 14px;
-  border-left: 3px solid var(--line);
+.dnp-profile-avatar-box {
+  width: 120px;
+  height: 120px;
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 14px var(--cyan-glow);
+  background: #02070a;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-.dnp-rank-block.hr { border-left-color: var(--danger); }
-.dnp-rank-block.jhr { border-left-color: var(--warn); }
-.dnp-rank-block.mr { border-left-color: var(--ok); }
-.dnp-rank-block.lr { border-left-color: var(--line-soft); }
-
-.dnp-rank-info {
-  flex-grow: 1;
-}
-.dnp-rank-info b {
-  color: var(--text);
-  font: 800 14px "Exo 2", sans-serif;
-  display: block;
-  margin-bottom: 3px;
-  text-transform: uppercase;
-}
-.dnp-rank-info span {
-  color: var(--text);
-  font-size: 12px;
-  display: inline-block;
-}
-
-.dnp-action {
-  display: inline-flex;
-  margin: 0 12px 12px;
-  min-height: 34px;
   align-items: center;
   justify-content: center;
-  padding: 7px 11px;
-  border: 1px solid rgba(138, 160, 168, .34);
-  background: rgba(12, 18, 22, .94);
-  color: var(--text);
-  font: 800 11.5px "Roboto Mono", monospace;
+  overflow: hidden;
+}
+
+.dnp-profile-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dnp-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px solid var(--line);
+  color: var(--line);
+}
+
+.dnp-badge.is-ok {
+  color: var(--ok);
+  border-color: var(--ok);
+  background: rgba(74, 246, 38, 0.08);
+}
+
+.dnp-badge.is-danger {
+  color: var(--danger-bright);
+  border-color: var(--danger-bright);
+  background: rgba(255, 82, 82, 0.08);
+}
+
+.dnp-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.dnp-field-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.dnp-input, .dnp-textarea, .dnp-select {
+  background: #060b0e;
+  border: 1px solid rgba(138, 160, 168, 0.25);
+  padding: 10px 12px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.dnp-input:focus, .dnp-textarea:focus, .dnp-select:focus {
+  border-color: var(--cyan);
+  box-shadow: inset 2px 0 0 var(--cyan), 0 0 10px rgba(0, 240, 255, 0.15);
+}
+
+.dnp-form-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 8px;
+}
+
+.dnp-form-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  font: 800 12px var(--font-head);
+  color: var(--muted);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.dnp-form-tab-btn.is-active {
+  color: var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+  text-shadow: 0 0 6px var(--cyan);
+}
+
+/* ==========================================================================
+   КНОПКИ И МОДАЛЬНЫЕ ОКНА GUI
+   ========================================================================== */
+.dnp-action {
+  display: inline-flex;
+  margin: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid var(--cyan);
+  background: rgba(0, 240, 255, 0.08);
+  color: var(--cyan);
+  font: 800 12px var(--font-mono);
   text-decoration: none;
   text-transform: uppercase;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  letter-spacing: 0.8px;
 }
 
 .dnp-action:hover {
-  border-color: rgba(138, 160, 168, .54);
+  background: var(--cyan);
+  color: #02070a;
+  box-shadow: 0 0 16px var(--cyan-glow);
 }
 
+.dnp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 7, 10, 0.88);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.dnp-modal-window {
+  width: 100%;
+  max-width: 580px;
+  background: #080d11;
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 35px rgba(0, 240, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.dnp-modal-header {
+  padding: 12px 18px;
+  background: #0d151a;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--cyan);
+  font: 800 13px var(--font-head);
+  letter-spacing: 1px;
+}
+
+.dnp-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.dnp-modal-close:hover {
+  color: var(--danger-bright);
+}
+
+.dnp-modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   АДАПТИВНОСТЬ
+   ========================================================================== */
 @media (max-width: 850px) {
   .dnp-layout,
   .dnp-layout.is-terminal-mode {
@@ -1565,7 +1821,7 @@ a {
     padding: 10px 8px;
     gap: 12px;
   }
-  
+
   .dnp-sidebar {
     grid-column: 1;
     grid-row: auto;
@@ -1580,6 +1836,12 @@ a {
     grid-column: 1 !important;
     grid-row: auto !important;
     width: 100% !important;
+  }
+
+  .dnp-profile-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 
   .dnp-card-grid {
@@ -1615,5 +1877,12 @@ a {
   .dnp-rank-block {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .dnp-stripe {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+    font-size: 10px;
   }
 }

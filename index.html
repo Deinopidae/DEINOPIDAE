@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Exo+2:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dossier.css">
@@ -54,8 +54,7 @@
       <div class="dnp-top-meta">
         <!-- БЛОК ЛИЧНОГО КАБИНЕТА В ШАПКЕ -->
         <div id="dnp-auth-header-slot">
-          
-          <a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>
+          <button type="button" class="dnp-auth-btn" data-screen="auth">ЛИЧНЫЙ КАБИНЕТ</button>
         </div>
       </div>
     </header>
@@ -107,7 +106,7 @@
             <em>LOCK</em>
           </button>
 
-           <div class="dnp-terminal-note">
+          <div class="dnp-terminal-note">
             <span>PDA-LINK: ONLINE // SYS.V-7</span>
             <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
             <span>SYNC: 97%</span>
@@ -118,6 +117,7 @@
 
       <main class="dnp-main">
         
+        <!-- РАЗДЕЛ 1 -->
         <section class="dnp-screen is-visible" data-screen-panel="ustav-01">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 01</p>
@@ -126,6 +126,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">SYS // SEC-01</span>
+              <span class="dnp-stripe-phrase">«ТЕХНОЛОГИИ АРАХНА НА СЛУЖБЕ ДЕПАРТАМЕНТА KURODZAKURA»</span>
+              <span class="dnp-stripe-meta">SEC-LVL: 01</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>1.1</span>
@@ -154,9 +160,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">DNP // REGULATION</span>
+              <span class="dnp-stripe-phrase">«НАУЧНЫЙ ПРОГРЕСС КУЕТСЯ ДИСЦИПЛИНОЙ И ТОЧНОСТЬЮ ИНЖЕНЕРОВ»</span>
+              <span class="dnp-stripe-meta">INTEGRITY: 100%</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 2 -->
         <section class="dnp-screen" data-screen-panel="ustav-02">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 02</p>
@@ -165,6 +178,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">SEC // DISCIPLINE</span>
+              <span class="dnp-stripe-phrase">«СТРОГИЙ ПОРЯДОК НА ПЛАЦУ — ЗАЛОГ ВЫЖИВАНИЯ КОМПЛЕКСА»</span>
+              <span class="dnp-stripe-meta">RULEBOOK: ACTIVE</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>2.1</span>
@@ -225,7 +244,7 @@
                   <p>Крайняя мера наказания. Выдается за накопления двух икоку, серьезные нарушения и прочее. Накопление 3 кенсэки приведет к увольнению.</p>
                 </div>
                 <div class="dnp-card-full">
-                  <b style="color: var(--danger);">Дисциплинарное взыскание</b>
+                  <b style="color: var(--danger-bright);">Дисциплинарное взыскание</b>
                   <p>Наказание которое выдается за нарушение дисциплины на мероприятиях, в дискорде в текстовом чате, в голосовом чате. Взыскание прикрепляет за сотрудником особый статус наблюдения, все наказания в сторону сотрудника будут ужесточены, а повышение будет недоступно.</p>
                 </div>
               </div>
@@ -235,9 +254,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">DNP // PENALTY CODE</span>
+              <span class="dnp-stripe-phrase">«НАРУШЕНИЕ СУБОРДИНАЦИИ И КВР ВЕДЕТ К НЕМЕДЛЕННОМУ ВЗЫСКАНИЮ»</span>
+              <span class="dnp-stripe-meta">STATUS: OBSERVED</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 3 -->
         <section class="dnp-screen" data-screen-panel="ustav-03">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 03</p>
@@ -246,6 +272,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">PERS // HIERARCHY</span>
+              <span class="dnp-stripe-phrase">«ОТ КУРСАНТА ДО ГЛАВНОГО ИНЖЕНЕРА: ТРУД, ЧАСЫ И ПРОВЕРКИ»</span>
+              <span class="dnp-stripe-meta">PROMO: VERIFIED</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>3.1</span>
@@ -312,7 +344,7 @@
 
                 <p style="margin-top: 16px; border-top: 1px solid rgba(138,160,168,.18); padding-top: 12px; font-size: 12.5px; color: var(--muted); line-height: 1.6;">
                   <strong>Напоминаем:</strong> Когда сотрудник повышается на 2, 4, 6 звания он упирается в "потолок". Чтобы повыситься дальше ему необходимо выполнить требования для каждого ранга.<br>
-                  <strong style="color: var(--danger);">Внимание:</strong> Если сотрудник не прошёл лекцию кадета он <strong>НЕ сможет</strong> повыситься дальше локализатора.
+                  <strong style="color: var(--danger-bright);">Внимание:</strong> Если сотрудник не прошёл лекцию кадета он <strong>НЕ сможет</strong> повыситься дальше локализатора.
                 </p>
               </div>
             </article>
@@ -321,9 +353,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">SE-RANK // PROGRESS</span>
+              <span class="dnp-stripe-phrase">«ДОСТИЖЕНИЕ ПОТОЛКА РАНГА ТРЕБУЕТ СДАЧИ КВАЛИФИКАЦИИ ОФИЦЕРАМ»</span>
+              <span class="dnp-stripe-meta">SYS: EVALUATING</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 4 -->
         <section class="dnp-screen" data-screen-panel="ustav-04">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 04</p>
@@ -332,6 +371,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">QUOTA // CYCLES</span>
+              <span class="dnp-stripe-phrase">«ЕЖЕНЕДЕЛЬНЫЙ НОРМАТИВ ОБЯЗАТЕЛЕН ДЛЯ ВСЕГО ЛИЧНОГО СОСТАВА»</span>
+              <span class="dnp-stripe-meta">CYCLE: MON-SUN</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>4.1</span>
@@ -351,9 +396,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">ALERT // ENFORCE</span>
+              <span class="dnp-stripe-phrase">«ОТСУТСТВИЕ ОТПИСКИ В СЛУЧАЕ НЕВЫПОЛНЕНИЯ ПРИРАВНИВАЕТСЯ К КЕНСЭКИ»</span>
+              <span class="dnp-stripe-meta">LOGGED: AUTO</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 5 -->
         <section class="dnp-screen" data-screen-panel="ustav-05">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 05</p>
@@ -362,21 +414,37 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">TASK // OBJECTIVES</span>
+              <span class="dnp-stripe-phrase">«РЕЕСТР ТЕКУЩИХ ИНЖЕНЕРНЫХ ЗАКАЗОВ И СЛУЖЕБНЫХ ПОРУЧЕНИЙ»</span>
+              <span class="dnp-stripe-meta">QUEUE: 08 TASKS</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>5.1</span>
                 <b>Задания отдела</b>
                 <em>TASKS</em>
               </div>
+              <p style="padding: 14px; line-height: 1.6; color: var(--text);">
+                Список оперативных задач для повышения ранга формируется командованием сектора. Для получения индивидуального задания обратитесь к действующему офицеру отдела или проверьте соответствующий канал служебной связи.
+              </p>
             </article>
 
             <div class="dnp-brud-note">
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">EXEC // MONITOR</span>
+              <span class="dnp-stripe-phrase">«ВЫПОЛНЕНИЕ ЗАДАНИЯ СВОЕГО РАНГА — ПРЯМОЙ ШАГ К ПОВЫШЕНИЮ»</span>
+              <span class="dnp-stripe-meta">PRIORITY: HIGH</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 6 -->
         <section class="dnp-screen" data-screen-panel="ustav-06">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 06</p>
@@ -385,6 +453,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">EXAM // MATRIX</span>
+              <span class="dnp-stripe-phrase">«ТЕОРЕТИЧЕСКИЙ БАЗИС И ПРАКТИКА: ПО, СО И МЕРОПРИЯТИЯ»</span>
+              <span class="dnp-stripe-meta">VOICE-AUTH: REQ</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>6.1</span>
@@ -421,9 +495,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">LECT // CURRICULUM</span>
+              <span class="dnp-stripe-phrase">«БЕЗ ПРОХОЖДЕНИЯ ЛЕКЦИИ КАДЕТА ДАЛЬНЕЙШЕЕ ПОВЫШЕНИЕ БЛОКИРУЕТСЯ»</span>
+              <span class="dnp-stripe-meta">SUPERVISION: ON</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 7 -->
         <section class="dnp-screen" data-screen-panel="ustav-07">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 07</p>
@@ -432,6 +513,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">ACT // METRICS</span>
+              <span class="dnp-stripe-phrase">«СИСТЕМА ДИНАМИЧЕСКИХ ОЧКОВ: АКТИВНОСТЬ ОПРЕДЕЛЯЕТ ВОЗМОЖНОСТИ»</span>
+              <span class="dnp-stripe-meta">PTS-ENGINE: V3</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>7.1</span>
@@ -533,9 +620,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">BURN // CYCLE</span>
+              <span class="dnp-stripe-phrase">«ПОНЕДЕЛЬНИК 00:00 — СПИСАНИЕ 20 PTS. ПОДДЕРЖИВАЙТЕ УРОВЕНЬ»</span>
+              <span class="dnp-stripe-meta">RESET: 00:00 MON</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 8 -->
         <section class="dnp-screen" data-screen-panel="ustav-08">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 08</p>
@@ -544,6 +638,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">ARCH // REPOSITORIES</span>
+              <span class="dnp-stripe-phrase">«РЕГЛАМЕНТ ПРОВЕДЕНИЯ МЕРОПРИЯТИЙ И ВНЕШНИЕ СЛУЖЕБНЫЕ РЕЕСТРЫ»</span>
+              <span class="dnp-stripe-meta">DOCS: UNLOCKED</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>8.1</span>
@@ -617,9 +717,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">EXT-LINK // DIRECT</span>
+              <span class="dnp-stripe-phrase">«БРУД, ТАБЛИЦА ЛИЧНОГО СОСТАВА И ВНЕУРОЧКИ ДОСТУПНЫ К ИЗУЧЕНИЮ»</span>
+              <span class="dnp-stripe-meta">NETWORK: EXTERNAL</span>
+            </div>
           </div>
         </section>
 
+        <!-- РАЗДЕЛ 9 -->
         <section class="dnp-screen" data-screen-panel="ustav-09">
           <div class="dnp-screen-head">
             <p>USTAV NODE / SECTION 09</p>
@@ -628,6 +735,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">TERM // PROTOCOL</span>
+              <span class="dnp-stripe-phrase">«НЕЗНАНИЕ ОЦИФРОВАННОГО УСТАВА НЕ ОСВОБОЖДАЕТ ОТ ОТВЕТСТВЕННОСТИ»</span>
+              <span class="dnp-stripe-meta">ENACTED: 18.06</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>9.1</span>
@@ -644,13 +757,24 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">CORE // SEAL</span>
+              <span class="dnp-stripe-phrase">«УТВЕРЖДЕНО РУКОВОДСТВОМ ДЕПАРТАМЕНТА KURODZAKURA // S.E.»</span>
+              <span class="dnp-stripe-meta">HASH: 0x88F0A2</span>
+            </div>
           </div>
         </section>
 
         <!-- ТЕРМИНАЛ: БАЗА ДАННЫХ DEINOPIDAE -->
         <section class="dnp-screen dnp-terminal-screen" data-screen-panel="database">
+          <div class="dnp-stripe dnp-stripe-top dnp-stripe-term">
+            <span class="dnp-stripe-tag">TERM-NET // DNP-OS</span>
+            <span class="dnp-stripe-phrase">«ПРЯМОЙ ДОСТУП К ТАКТИЧЕСКОМУ РЕЕСТРУ ДЕЙНОПИДОВ»</span>
+            <span class="dnp-stripe-meta">PORT: 8888</span>
+          </div>
+
           <div class="dnp-term-window" id="term-window">
-            
             <div class="dnp-term-topbar">
               <span class="dnp-term-top-title" id="term-top-title">LOADING .  .  . PLEASE WAIT</span>
             </div>
@@ -673,10 +797,16 @@
                 </div>
               </div>
             </div>
+          </div>
 
+          <div class="dnp-stripe dnp-stripe-bottom dnp-stripe-term">
+            <span class="dnp-stripe-tag">CMD // SYSTEM</span>
+            <span class="dnp-stripe-phrase">«ДЛЯ СПРАВКИ ВВЕДИТЕ HELP // ГРАФИКА: STAFF -GUI, FORMS -GUI»</span>
+            <span class="dnp-stripe-meta">BAUD: 115200</span>
           </div>
         </section>
 
+        <!-- КОРНИ DEINOPIDAE (ПОВРЕЖДЕННЫЙ АРХИВ) -->
         <section class="dnp-screen" data-screen-panel="roots">
           <div class="dnp-screen-head dnp-corrupt-head">
             <p>ARCHIVE NODE // [SECTOR-02_CORRUPTED]</p>
@@ -685,6 +815,12 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top dnp-stripe-corrupt">
+              <span class="dnp-stripe-tag">CRIT // MEMORY</span>
+              <span class="dnp-stripe-phrase">«ВНИМАНИЕ: СЕКТОР 02 ПОВРЕЖДЁН // ОБНАРУЖЕНА АНОМАЛИЯ ЯДРА»</span>
+              <span class="dnp-stripe-meta">INTEGRITY: 14%</span>
+            </div>
+
             <article class="dnp-module dnp-corrupt-module" id="corrupt-module">
               <img src="assets/image/corrupt-glitch.jpg" class="dnp-corrupt-overlay-img" id="corrupt-img" alt="Corrupted Sector Fragment">
 
@@ -745,9 +881,16 @@
               <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
               <span>Более подробно о каждом пункте можете узнать в <strong>БРУД</strong> (ссылка будет добавлена позже).</span>
             </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom dnp-stripe-corrupt">
+              <span class="dnp-stripe-tag">WARN // LOCKED</span>
+              <span class="dnp-stripe-phrase">«ВОССТАНОВЛЕНИЕ ДАННЫХ БЕЗ ПРЯМОЙ САНКЦИИ РУКОВОДСТВА КАРАЕТСЯ»</span>
+              <span class="dnp-stripe-meta">HEX: 44 45 49</span>
+            </div>
           </div>
         </section>
 
+        <!-- ВЕРБОВКА -->
         <section class="dnp-screen" data-screen-panel="verbovka-info-1">
           <div class="dnp-screen-head">
             <p>RECRUITMENT NODE / INFO 01</p>
@@ -756,12 +899,21 @@
           </div>
 
           <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">REC // INTAKE</span>
+              <span class="dnp-stripe-phrase">«ДЕЙНОПИДЫ — СТАЛЬНОЙ КАРКАС НАУЧНО-ТЕХНИЧЕСКОГО КРЫЛА АРАХНА»</span>
+              <span class="dnp-stripe-meta">PORTAL: OPEN</span>
+            </div>
+
             <article class="dnp-module">
               <div class="dnp-module-title">
                 <span>1.1</span>
                 <b>О отделе</b>
                 <em>PROFILE</em>
               </div>
+              <p style="padding: 14px; line-height: 1.6; color: var(--text);">
+                Подразделение Deinopidae производит квалификационный отбор полевых инженеров, конструкторов и локализаторов оборудования. Для подачи заявки на вербовку дождитесь открытия набора или обратитесь к уполномоченным рекрутерам.
+              </p>
             </article>
 
             <article class="dnp-module">
@@ -770,7 +922,259 @@
                 <b>Задачи отдела</b>
                 <em>AURUM CORP</em>
               </div>
+              <p style="padding: 14px; line-height: 1.6; color: var(--text);">
+                Снабжение передовыми техническими разработками, ремонт узлов комплекса, развертывание средств дальней связи и содействие стратегическим операциям крыла Арахна.
+              </p>
             </article>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">AURUM // ALLIANCE</span>
+              <span class="dnp-stripe-phrase">«ОБЕСПЕЧЕНИЕ СВЯЗИ, ПОСТАВОК И ПОДДЕРЖКА КОМПЛЕКСОВ S.E.»</span>
+              <span class="dnp-stripe-meta">CHANNEL: SECTOR-1</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             БЕСШОВНЫЙ ЭКРАН 1: ПРОФИЛЬ СОТРУДНИКА
+             ======================================================== -->
+        <section class="dnp-screen" data-screen-panel="profile">
+          <div class="dnp-screen-head">
+            <p>OPERATOR DOSSIER // DEINOPIDAE</p>
+            <h1>Личный профиль</h1>
+            <span>MONGODB + GSHEETS SYNC</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">PERSONNEL // ID</span>
+              <span class="dnp-stripe-phrase">«УЧЕТНАЯ КАРТОЧКА СОТРУДНИКА // КОМПЛЕКС S.E. KURODZAKURA»</span>
+              <span class="dnp-stripe-meta">STATUS: VERIFIED</span>
+            </div>
+
+            <article class="dnp-module">
+              <div class="dnp-profile-card">
+                <div class="dnp-profile-avatar-wrap">
+                  <div class="dnp-profile-avatar-box">
+                    <img id="prof-avatar" src="assets/image/favicon.png" alt="Avatar">
+                  </div>
+                  <span class="dnp-badge is-ok" id="prof-activity-badge">В АКТИВЕ</span>
+                </div>
+
+                <div>
+                  <div class="dnp-module-title" style="margin-bottom: 12px; border: 1px solid var(--line-soft);">
+                    <span id="prof-callsign">DNP-OP</span>
+                    <b id="prof-display-name">ЗАГРУЗКА ДАННЫХ...</b>
+                    <em>OPERATOR</em>
+                  </div>
+
+                  <div class="dnp-card-grid" style="padding: 0;">
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">ЗВАНИЕ / РАНГ</b>
+                      <p id="p-rank" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">МП / ЧАСЫ</b>
+                      <p id="p-norm" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">СТАТУС НОРМЫ</b>
+                      <p id="p-quota" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">ОБОРУДОВАНИЕ</b>
+                      <p id="p-equip" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">ПОВЫШЕНИЕ</b>
+                      <p id="p-promo" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div>
+                      <b style="color: var(--cyan); font-size: 11px;">БАЛЛЫ / КОЙНЫ</b>
+                      <p id="p-coins" style="color: #fff; font-weight: 700;">—</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                      <b style="color: var(--danger-bright); font-size: 11px;">ДИСЦИПЛИНАРНЫЕ ВЗЫСКАНИЯ</b>
+                      <p id="p-penalties" style="color: #fff;">—</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">SYNC // ATLAS</span>
+              <span class="dnp-stripe-phrase">«ДАННЫЕ СИНХРОНИЗИРОВАНЫ С РЕЕСТРОМ GOOGLE SHEETS И DNP_AUTH_DB»</span>
+              <span class="dnp-stripe-meta">PULL: 10 SEC</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             БЕСШОВНЫЙ ЭКРАН 2: НАСТРОЙКИ ПРОФИЛЯ
+             ======================================================== -->
+        <section class="dnp-screen" data-screen-panel="settings">
+          <div class="dnp-screen-head">
+            <p>TERMINAL CONFIG // USER SETTINGS</p>
+            <h1>Параметры профиля</h1>
+            <span>DNP_AUTH_DB ENGINE</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">SYS // PREFERENCES</span>
+              <span class="dnp-stripe-phrase">«МОДИФИКАЦИЯ ОТОБРАЖАЕМЫХ ДАННЫХ И АВАТАРА ОПЕРАТОРА»</span>
+              <span class="dnp-stripe-meta">SECURE-POST</span>
+            </div>
+
+            <article class="dnp-module" style="padding: 16px;">
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; align-items: start;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                  <div class="dnp-profile-avatar-box">
+                    <img id="cfg-avatar-preview" src="assets/image/favicon.png" alt="Preview">
+                  </div>
+                  <label class="dnp-action" style="font-size: 10px; padding: 6px 10px; cursor: pointer;">
+                    ЗАГРУЗИТЬ ФАЙЛ
+                    <input type="file" id="cfg-avatar-file" accept="image/*" style="display: none;">
+                  </label>
+                </div>
+
+                <div>
+                  <div class="dnp-field-group">
+                    <label>Отображаемое имя (Display Name):</label>
+                    <input type="text" id="cfg-display-name" class="dnp-input" placeholder="Введите позывной">
+                  </div>
+
+                  <div class="dnp-field-group">
+                    <label>Ссылка на аватар (URL):</label>
+                    <input type="text" id="cfg-avatar-url" class="dnp-input" placeholder="https://...">
+                  </div>
+
+                  <div class="dnp-field-group">
+                    <label>Статус активности:</label>
+                    <div style="display: flex; gap: 20px; margin-top: 6px;">
+                      <label style="color: var(--ok); cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="pda-act-status" value="В активе" checked> В АКТИВЕ
+                      </label>
+                      <label style="color: var(--danger-bright); cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="pda-act-status" value="Инактив"> ИНАКТИВ
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="button" class="dnp-action" id="cfg-save-btn" style="margin-top: 10px;">СОХРАНИТЬ ИЗМЕНЕНИЯ ↗</button>
+                  <div id="cfg-status-msg" style="font-size: 11px; margin-top: 8px; font-weight: 700;"></div>
+                </div>
+              </div>
+            </article>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">AUTH // PERSIST</span>
+              <span class="dnp-stripe-phrase">«ИЗМЕНЕНИЯ ВСТУПАЮТ В СИЛУ НЕМЕДЛЕННО И ТРАНСЛИРУЮТСЯ В РЕЕСТР»</span>
+              <span class="dnp-stripe-meta">WRITE: 200 OK</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             БЕСШОВНЫЙ ЭКРАН 3: ТИКЕТЫ И ОБРАЩЕНИЯ
+             ======================================================== -->
+        <section class="dnp-screen" data-screen-panel="tickets">
+          <div class="dnp-screen-head">
+            <p>DISPATCH REGISTER // DNP_TICKETS_DB</p>
+            <h1>Мои обращения</h1>
+            <span>DISCORD WEBHOOK INTEGRATION</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">TICKETS // FEED</span>
+              <span class="dnp-stripe-phrase">«ИСТОРИЯ ПОДАННЫХ РАПОРТОВ, ЖАЛОБ И ПРЕДЛОЖЕНИЙ ПО УСТАВУ»</span>
+              <span class="dnp-stripe-meta">SYNC: DISCORD</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 11px; color: var(--muted);">ЗАРЕГИСТРИРОВАННЫЕ В БАЗЕ ТИКЕТЫ:</span>
+              <button type="button" class="dnp-action" id="tickets-open-gui-btn">ПОДАТЬ НОВОЕ ОБРАЩЕНИЕ ↗</button>
+            </div>
+
+            <div id="tickets-feed" style="display: flex; flex-direction: column; gap: 10px;">
+              <div class="dnp-module" style="padding: 14px; color: var(--muted); font-size: 12px;">Загрузка списка обращений из dnp_tickets_db...</div>
+            </div>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">ARCHIVE // REPORTS</span>
+              <span class="dnp-stripe-phrase">«КАЖДЫЙ ТИКЕТ ФИКСИРУЕТСЯ В ШТАБНОМ КАНАЛЕ СВЯЗИ ДЕПАРТАМЕНТА»</span>
+              <span class="dnp-stripe-meta">DISPATCH: ACTIVE</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             БЕСШОВНЫЙ ЭКРАН 4: ЛИЧНЫЙ КАБИНЕТ (ВХОД / РЕГИСТРАЦИЯ)
+             ======================================================== -->
+        <section class="dnp-screen" data-screen-panel="auth">
+          <div class="dnp-screen-head">
+            <p>SECURITY GATE // AUTH PROTOCOL</p>
+            <h1>Личный кабинет</h1>
+            <span>AUTHORIZATION &amp; ACCESS CONTROL</span>
+          </div>
+
+          <div class="dnp-screen-content">
+            <div class="dnp-stripe dnp-stripe-top">
+              <span class="dnp-stripe-tag">AUTH // LOGIN</span>
+              <span class="dnp-stripe-phrase">«ИДЕНТИФИКАЦИЯ ОПЕРАТОРА ДЕЙНОПИДОВ В ЗАКРЫТОЙ СЕТИ»</span>
+              <span class="dnp-stripe-meta">SHA-512 PBKDF2</span>
+            </div>
+
+            <article class="dnp-module" style="max-width: 520px; margin: 0 auto; width: 100%; padding: 20px;">
+              <div class="dnp-form-tabs">
+                <button type="button" class="dnp-form-tab-btn is-active" id="tab-login-btn">ВХОД</button>
+                <button type="button" class="dnp-form-tab-btn" id="tab-reg-btn">РЕГИСТРАЦИЯ</button>
+              </div>
+
+              <!-- ВХОД -->
+              <form id="form-login" style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="dnp-field-group">
+                  <label>Логин или Roblox никнейм:</label>
+                  <input type="text" id="login-identifier" class="dnp-input" required autocomplete="off" placeholder="Введите логин или ник">
+                </div>
+                <div class="dnp-field-group">
+                  <label>Пароль доступа:</label>
+                  <input type="password" id="login-pass" class="dnp-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="dnp-action" style="margin-top: 6px;">ВОЙТИ В СИСТЕМУ КПК ↗</button>
+              </form>
+
+              <!-- РЕГИСТРАЦИЯ -->
+              <form id="form-register" style="display: none; flex-direction: column; gap: 12px;">
+                <div class="dnp-field-group">
+                  <label>Имя пользователя (Позывной):</label>
+                  <input type="text" id="reg-username" class="dnp-input" required autocomplete="off" placeholder="Отображаемое имя">
+                </div>
+                <div class="dnp-field-group">
+                  <label>Никнейм Roblox (не Display Name):</label>
+                  <input type="text" id="reg-roblox" class="dnp-input" required autocomplete="off" placeholder="Пример: EGORIK0130">
+                </div>
+                <div class="dnp-field-group">
+                  <label>Пароль:</label>
+                  <input type="password" id="reg-pass" class="dnp-input" required placeholder="••••••••">
+                </div>
+                <div class="dnp-field-group">
+                  <label>Повтор пароля:</label>
+                  <input type="password" id="reg-pass2" class="dnp-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="dnp-action" style="margin-top: 6px;">ЗАРЕГИСТРИРОВАТЬСЯ В БАЗЕ ↗</button>
+              </form>
+
+              <div id="auth-msg" style="font-size: 11.5px; margin-top: 10px; font-weight: 700; text-align: center;"></div>
+            </article>
+
+            <div class="dnp-stripe dnp-stripe-bottom">
+              <span class="dnp-stripe-tag">STORAGE // LOCAL</span>
+              <span class="dnp-stripe-phrase">«СЕССИЯ СОХРАНЯЕТСЯ ЧЕРЕЗ BEARER ТОКЕН В ПАМЯТИ ТЕРМИНАЛА»</span>
+              <span class="dnp-stripe-meta">NO-COOKIE</span>
+            </div>
           </div>
         </section>
 
@@ -789,14 +1193,12 @@
     </div>
 
     <footer class="dnp-footer">
-      <span>DEINOPIDAE FIELD PDA</span>
+      <span>DEINOPIDAE FIELD PDA // TERMINAL ACTIVE</span>
       <a href="https://sites.google.com/view/deinopidae-js/%D1%84%D0%BE%D1%82%D0%BE%D1%87%D0%BA%D0%B8-%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%BA%D0%B0" target="_blank" class="dnp-ok dnp-footer-link">READY</a>
     </footer>
   </div>
 
-  <script src="js/cookie_manager.js"></script>
   <script src="js/live_polling.js"></script>
-  <script src="js/form_handler.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

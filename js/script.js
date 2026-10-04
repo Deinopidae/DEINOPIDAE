@@ -140,24 +140,9 @@
   var buttons = root.querySelectorAll("[data-screen]");
   var panels = root.querySelectorAll("[data-screen-panel]");
 
-  buttons.forEach(function (button) {
-    var screenName = button.getAttribute("data-screen");
-    button.id = "tab-" + screenName;
-    button.setAttribute("aria-controls", "panel-" + screenName);
-    button.setAttribute("role", "tab");
-    button.setAttribute("aria-selected", "false");
-  });
-
-  panels.forEach(function (panel) {
-    var panelName = panel.getAttribute("data-screen-panel");
-    panel.id = "panel-" + panelName;
-    panel.setAttribute("role", "tabpanel");
-    panel.setAttribute("aria-labelledby", "tab-" + panelName);
-  });
-
   var isTransitioning = false;
 
-  function openScreen(name) {
+  window.openScreen = function (name) {
     if (isTransitioning) return;
 
     var currentPanel = root.querySelector(".dnp-screen.is-visible");
@@ -170,6 +155,13 @@
       } else {
         layout.classList.remove("is-terminal-mode");
       }
+    }
+
+    // Если открываем экран профиля, тикетов или настроек, проверяем токен
+    var token = localStorage.getItem("dnp_auth_token");
+    if ((name === "profile" || name === "settings" || name === "tickets") && !token) {
+      window.openScreen("auth");
+      return;
     }
 
     if (currentPanel && currentPanel !== targetPanel) {
@@ -186,16 +178,9 @@
           panels.forEach(function (panel) {
             var isActive = panel === targetPanel;
             panel.classList.toggle("is-visible", isActive);
-            if (isActive) {
-              panel.removeAttribute("aria-hidden");
-            } else {
-              panel.setAttribute("aria-hidden", "true");
-            }
           });
 
-          if (curHead) {
-            curHead.classList.remove("head-slide-out");
-          }
+          if (curHead) curHead.classList.remove("head-slide-out");
 
           var newHead = targetPanel.querySelector(".dnp-screen-head");
           if (newHead) {
@@ -218,15 +203,15 @@
             }
           }
 
-          buttons.forEach(function (button) {
+          root.querySelectorAll("[data-screen]").forEach(function (button) {
             var isActive = button.getAttribute("data-screen") === name;
             button.classList.toggle("is-active", isActive);
-            button.setAttribute("aria-selected", isActive ? "true" : "false");
           });
 
-          if (name === "database") {
-            initTerminalBoot();
-          }
+          if (name === "database") initTerminalBoot();
+          if (name === "profile") loadProfileScreenData();
+          if (name === "settings") loadSettingsScreenData();
+          if (name === "tickets") loadTicketsScreenData();
         } finally {
           isTransitioning = false;
         }
@@ -235,42 +220,335 @@
       panels.forEach(function (panel) {
         var isActive = panel === targetPanel;
         panel.classList.toggle("is-visible", isActive);
-        if (isActive) {
-          panel.removeAttribute("aria-hidden");
-        } else {
-          panel.setAttribute("aria-hidden", "true");
-        }
       });
 
-      buttons.forEach(function (button) {
+      root.querySelectorAll("[data-screen]").forEach(function (button) {
         var isActive = button.getAttribute("data-screen") === name;
         button.classList.toggle("is-active", isActive);
-        button.setAttribute("aria-selected", isActive ? "true" : "false");
       });
 
-      if (name === "database") {
-        initTerminalBoot();
-      }
+      if (name === "database") initTerminalBoot();
+      if (name === "profile") loadProfileScreenData();
+      if (name === "settings") loadSettingsScreenData();
+      if (name === "tickets") loadTicketsScreenData();
     }
-  }
+  };
 
   root.addEventListener("click", function (event) {
     var trigger = event.target.closest("[data-screen]");
     if (trigger && !trigger.disabled) {
       var screenName = trigger.getAttribute("data-screen");
-      openScreen(screenName);
+      window.openScreen(screenName);
     }
   });
 
   if (window.location.search.indexOf("open=terminal") !== -1) {
-    openScreen("database");
+    window.openScreen("database");
   } else {
     var firstButton = root.querySelector('[data-screen].is-active') || root.querySelector('[data-screen]:not([disabled])');
     if (firstButton) {
-      openScreen(firstButton.getAttribute("data-screen"));
+      window.openScreen(firstButton.getAttribute("data-screen"));
     }
   }
 
+  // ========================================================
+  // ЭКРАНЫ ПРОФИЛЯ, НАСТРОЕК, ТИКЕТОВ И АВТОРИЗАЦИИ
+  // ========================================================
+  var SERVER_URL = "https://deinopidae-api.onrender.com";
+
+  function loadProfileScreenData() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+
+    fetch(SERVER_URL + "/api/user/profile", {
+      headers: { "Authorization": "Bearer " + token }
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || data.error) return;
+        var acc = data.account || {};
+        var st = data.staff || {};
+
+        document.getElementById("prof-display-name").textContent =
+          (acc.displayName || acc.username).toUpperCase() + " // " + acc.roblox;
+
+        if (acc.avatar && acc.avatar.length > 5) {
+          document.getElementById("prof-avatar").src = acc.avatar;
+        }
+
+        var badge = document.getElementById("prof-activity-badge");
+        badge.textContent = acc.activityStatus || "В АКТИВЕ";
+        if (acc.activityStatus === "Инактив") {
+          badge.className = "dnp-badge is-danger";
+        } else {
+          badge.className = "dnp-badge is-ok";
+        }
+
+        document.getElementById("p-rank").textContent = (st.title || "Сотрудник") + " [" + (st.rank || "Кадет") + "]";
+        document.getElementById("p-norm").textContent = (st.mp || "0/0") + " МП / " + (st.hours || "0:00") + " ч.";
+        document.getElementById("p-equip").textContent = (st.equipment || "0") + " ед.";
+        document.getElementById("p-quota").textContent = st.quota_status || "В ОБРАБОТКЕ";
+        document.getElementById("p-promo").textContent = st.promotion || "Проверяется";
+        document.getElementById("p-penalties").textContent = st.penalties || "N/A";
+        document.getElementById("p-coins").textContent = (st.coins || "0") + " койнов / " + (st.activity || "0") + " PTS";
+      })
+      .catch(function () {});
+  }
+
+  var currentAvatarBase64 = "";
+
+  function loadSettingsScreenData() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+
+    fetch(SERVER_URL + "/api/user/profile", {
+      headers: { "Authorization": "Bearer " + token }
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.account) {
+          document.getElementById("cfg-display-name").value = data.account.displayName || data.account.username;
+          if (data.account.avatar && data.account.avatar.length > 5) {
+            document.getElementById("cfg-avatar-preview").src = data.account.avatar;
+            currentAvatarBase64 = data.account.avatar;
+          }
+          var radios = document.getElementsByName("pda-act-status");
+          for (var i = 0; i < radios.length; i++) {
+            if (radios[i].value === data.account.activityStatus) {
+              radios[i].checked = true;
+            }
+          }
+        }
+      });
+  }
+
+  var cfgFile = document.getElementById("cfg-avatar-file");
+  var cfgUrl = document.getElementById("cfg-avatar-url");
+  var cfgPrev = document.getElementById("cfg-avatar-preview");
+  var cfgSave = document.getElementById("cfg-save-btn");
+  var cfgMsg = document.getElementById("cfg-status-msg");
+
+  if (cfgFile) {
+    cfgFile.addEventListener("change", function () {
+      var f = cfgFile.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        cfgPrev.src = e.target.result;
+        currentAvatarBase64 = e.target.result;
+      };
+      reader.readAsDataURL(f);
+    });
+  }
+
+  if (cfgUrl) {
+    cfgUrl.addEventListener("input", function () {
+      var v = cfgUrl.value.trim();
+      if (v.startsWith("http")) {
+        cfgPrev.src = v;
+        currentAvatarBase64 = v;
+      }
+    });
+  }
+
+  if (cfgSave) {
+    cfgSave.addEventListener("click", function () {
+      var token = localStorage.getItem("dnp_auth_token");
+      if (!token) return;
+
+      cfgMsg.style.color = "var(--cyan)";
+      cfgMsg.textContent = "[SYS] Сохранение в dnp_auth_db...";
+
+      var actStatus = "В активе";
+      var radios = document.getElementsByName("pda-act-status");
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) actStatus = radios[i].value;
+      }
+
+      fetch(SERVER_URL + "/api/user/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          displayName: document.getElementById("cfg-display-name").value.trim(),
+          avatar: currentAvatarBase64,
+          activityStatus: actStatus
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.success) {
+            localStorage.setItem("dnp_active_user", JSON.stringify(res.user));
+            cfgMsg.style.color = "var(--ok)";
+            cfgMsg.textContent = "[УСПЕХ] Параметры сохранены.";
+            if (window.renderAuthHeader) window.renderAuthHeader();
+          } else {
+            cfgMsg.style.color = "var(--danger-bright)";
+            cfgMsg.textContent = "[ОТКАЗ] " + (res.error || "Ошибка сохранения");
+          }
+        })
+        .catch(function () {
+          cfgMsg.style.color = "var(--danger-bright)";
+          cfgMsg.textContent = "[СБОЙ СЕТИ] Ошибка соединения.";
+        });
+    });
+  }
+
+  function loadTicketsScreenData() {
+    var token = localStorage.getItem("dnp_auth_token");
+    var feed = document.getElementById("tickets-feed");
+    if (!feed || !token) return;
+
+    fetch(SERVER_URL + "/api/forms/my", {
+      headers: { "Authorization": "Bearer " + token }
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (tickets) {
+        if (!tickets || tickets.length === 0) {
+          feed.innerHTML = '<div class="dnp-module" style="padding: 14px; color: var(--muted); font-size: 12px;">Зарегистрированных обращений не найдено.</div>';
+          return;
+        }
+        feed.innerHTML = "";
+        tickets.forEach(function (t) {
+          var card = document.createElement("div");
+          card.className = "dnp-module";
+          card.style.padding = "14px";
+          var date = new Date(t.submittedAt).toLocaleString("ru-RU");
+
+          card.innerHTML = [
+            '<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line-soft); padding-bottom: 6px; margin-bottom: 8px;">',
+            '  <strong style="color: var(--cyan); font-family: \'Exo 2\', sans-serif;">[' + t.type + '] ' + t.reportId + '</strong>',
+            '  <span class="dnp-badge is-ok">' + (t.status || 'НА ПРОВЕРКЕ') + '</span>',
+            '</div>',
+            '<p style="padding:0; margin: 0 0 8px; color: #fff; line-height: 1.5; font-size: 12.5px;">' + t.description + '</p>',
+            '<div style="font-size: 11px; color: var(--muted); border-top: 1px solid rgba(138, 160, 168, 0.1); padding-top: 6px;">',
+            '  Дата: ' + date + ' | Ссылки: ' + (t.links || 'Отсутствуют'),
+            '</div>'
+          ].join('');
+
+          feed.appendChild(card);
+        });
+      })
+      .catch(function () {
+        feed.innerHTML = '<div class="dnp-module" style="padding: 14px; color: var(--danger-bright); font-size: 12px;">Ошибка доступа к базе dnp_tickets_db.</div>';
+      });
+  }
+
+  var btnNewTicket = document.getElementById("tickets-open-gui-btn");
+  if (btnNewTicket) {
+    btnNewTicket.addEventListener("click", function () {
+      showFormsGui();
+    });
+  }
+
+  // Вкладки авторизации
+  var tabLogin = document.getElementById("tab-login-btn");
+  var tabReg = document.getElementById("tab-reg-btn");
+  var formLogin = document.getElementById("form-login");
+  var formReg = document.getElementById("form-register");
+  var authMsg = document.getElementById("auth-msg");
+
+  if (tabLogin && tabReg) {
+    tabLogin.addEventListener("click", function () {
+      tabLogin.classList.add("is-active");
+      tabReg.classList.remove("is-active");
+      formLogin.style.display = "flex";
+      formReg.style.display = "none";
+      authMsg.textContent = "";
+    });
+
+    tabReg.addEventListener("click", function () {
+      tabReg.classList.add("is-active");
+      tabLogin.classList.remove("is-active");
+      formReg.style.display = "flex";
+      formLogin.style.display = "none";
+      authMsg.textContent = "";
+    });
+  }
+
+  if (formReg) {
+    formReg.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var username = document.getElementById("reg-username").value.trim();
+      var roblox = document.getElementById("reg-roblox").value.trim();
+      var pass = document.getElementById("reg-pass").value;
+      var pass2 = document.getElementById("reg-pass2").value;
+
+      if (pass !== pass2) {
+        authMsg.style.color = "var(--danger-bright)";
+        authMsg.textContent = "[ОШИБКА] Введенные пароли не совпадают.";
+        return;
+      }
+
+      authMsg.style.color = "var(--cyan)";
+      authMsg.textContent = "[SYS] Регистрация аккаунта в комплексе...";
+
+      fetch(SERVER_URL + "/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username, roblox: roblox, password: pass })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            localStorage.setItem("dnp_auth_token", data.user.token);
+            localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
+            authMsg.style.color = "var(--ok)";
+            authMsg.textContent = "[УСПЕХ] Аккаунт создан! Вход выполнен.";
+            if (window.renderAuthHeader) window.renderAuthHeader();
+            setTimeout(function () { window.openScreen("profile"); }, 600);
+          } else {
+            authMsg.style.color = "var(--danger-bright)";
+            authMsg.textContent = "[ОТКАЗ] " + (data.error || "Ошибка регистрации");
+          }
+        })
+        .catch(function () {
+          authMsg.style.color = "var(--danger-bright)";
+          authMsg.textContent = "[СБОЙ СЕТИ] Сервер недоступен.";
+        });
+    });
+  }
+
+  if (formLogin) {
+    formLogin.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var ident = document.getElementById("login-identifier").value.trim();
+      var pass = document.getElementById("login-pass").value;
+
+      authMsg.style.color = "var(--cyan)";
+      authMsg.textContent = "[SYS] Проверка учетных данных...";
+
+      fetch(SERVER_URL + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: ident, password: pass })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            localStorage.setItem("dnp_auth_token", data.user.token);
+            localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
+            authMsg.style.color = "var(--ok)";
+            authMsg.textContent = "[УСПЕХ] Доступ разрешен!";
+            if (window.renderAuthHeader) window.renderAuthHeader();
+            setTimeout(function () { window.openScreen("profile"); }, 500);
+          } else {
+            authMsg.style.color = "var(--danger-bright)";
+            authMsg.textContent = "[ОТКАЗ] " + (data.error || "Неверный логин или пароль");
+          }
+        })
+        .catch(function () {
+          authMsg.style.color = "var(--danger-bright)";
+          authMsg.textContent = "[СБОЙ СЕТИ] Сервер недоступен.";
+        });
+    });
+  }
+
+  // ========================================================
+  // ГЛИТЧ-ЭФФЕКТ ДЛЯ КОРНЕЙ
+  // ========================================================
   var corruptModule = document.getElementById("corrupt-module");
   var corruptImg = document.getElementById("corrupt-img");
   var ghostTitle = document.getElementById("ghost-title");
@@ -285,12 +563,8 @@
       var xNorm = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       var yNorm = ((e.clientY - rect.top) / rect.height) * 2 - 1;
 
-      if (corruptImg) {
-        corruptImg.style.transform = "translate(" + (xNorm * 10).toFixed(1) + "px, " + (yNorm * 6).toFixed(1) + "px)";
-      }
-      if (ghostTitle) {
-        ghostTitle.style.transform = "translate(" + (-xNorm * 14 - 10).toFixed(1) + "px, " + (-yNorm * 8 - 4).toFixed(1) + "px)";
-      }
+      if (corruptImg) corruptImg.style.transform = "translate(" + (xNorm * 10).toFixed(1) + "px, " + (yNorm * 6).toFixed(1) + "px)";
+      if (ghostTitle) ghostTitle.style.transform = "translate(" + (-xNorm * 14 - 10).toFixed(1) + "px, " + (-yNorm * 8 - 4).toFixed(1) + "px)";
       if (slice1) slice1.style.transform = "translate(" + (xNorm * 6).toFixed(1) + "px, " + (yNorm * 3).toFixed(1) + "px)";
       if (slice2) slice2.style.transform = "translate(" + (-xNorm * 8 + 4).toFixed(1) + "px, " + (-yNorm * 4).toFixed(1) + "px) skewX(" + (-xNorm * 1.5).toFixed(1) + "deg)";
       if (sliceLog) sliceLog.style.transform = "translateX(" + (xNorm * 5).toFixed(1) + "px)";
@@ -307,7 +581,9 @@
     });
   }
 
-  // ТЕРМИНАЛ
+  // ========================================================
+  // ТЕРМИНАЛ CMD
+  // ========================================================
   var asciiLogo = [
     "    @@                                                        @@    ",
     "     @                                                         %     ",
@@ -343,13 +619,6 @@
   ].join("\n");
 
   window.employeeDb = {};
-
-  var envVars = {
-    "OS": "Deinopidae Terminal OS [Build 2026.4]",
-    "DRIVE": "D:\\",
-    "SYSTEM_NODE": "DEINOPIDAE S.E. // CORE",
-    "TERMINAL_STATUS": "ACTIVE"
-  };
 
   function getCurrentUser() {
     var user = localStorage.getItem("dnp_active_user");
@@ -480,9 +749,7 @@
   var modalClose = document.getElementById("dnp-modal-close-btn");
 
   if (modalClose && modalBackdrop) {
-    modalClose.addEventListener("click", function () {
-      modalBackdrop.style.display = "none";
-    });
+    modalClose.addEventListener("click", function () { modalBackdrop.style.display = "none"; });
     modalBackdrop.addEventListener("click", function (e) {
       if (e.target === modalBackdrop) modalBackdrop.style.display = "none";
     });
@@ -511,21 +778,21 @@
 
     var isAuth = !!localStorage.getItem("dnp_active_user");
     var token = localStorage.getItem("dnp_auth_token");
-    var authNotice = isAuth ? '' : '<div style="padding: 8px 12px; background: rgba(169,100,104,0.15); border: 1px solid var(--danger); font-size: 11.5px; color: #ff8589;">ВНИМАНИЕ: Для отправки формы необходимо войти в Личный кабинет. <a href="auth.html" style="text-decoration: underline; color: #fff; margin-left: 6px;">АВТОРИЗАЦИЯ ↗</a></div>';
+    var authNotice = isAuth ? '' : '<div style="padding: 8px 12px; background: rgba(169,100,104,0.15); border: 1px solid var(--danger); font-size: 11.5px; color: #ff8589;">ВНИМАНИЕ: Для отправки формы необходимо войти в Личный кабинет.</div>';
 
     modalBody.innerHTML = [
       authNotice,
       '<div style="display: flex; flex-direction: column; gap: 10px;">',
-      '  <label style="font-size: 11px; color: var(--line);">ВЫБЕРИТЕ КАТЕГОРИЮ:</label>',
-      '  <select id="modal-form-type" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
+      '  <label style="font-size: 11px; color: var(--cyan);">ВЫБЕРИТЕ КАТЕГОРИЮ:</label>',
+      '  <select id="modal-form-type" class="dnp-select">',
       '    <option value="Обращение к руководству">1. Обращение к руководству</option>',
       '    <option value="Жалоба">2. Жалоба</option>',
       '    <option value="Изменение устава">3. Изменение устава</option>',
       '  </select>',
       '  <div id="modal-dynamic-fields" style="display: flex; flex-direction: column; gap: 10px;"></div>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ССЫЛКИ НА ДОКАЗАТЕЛЬСТВА (Диск, Imgur, Yapx и др.):</label>',
-      '  <textarea id="modal-form-links" rows="2" placeholder="Вставьте ссылки (каждая с новой строки)..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ПРИКРЕПИТЬ ФАЙЛЫ / ФОТО (ДО 10 ШТУК):</label>',
+      '  <label style="font-size: 11px; color: var(--cyan); margin-top: 4px;">ССЫЛКИ НА ДОКАЗАТЕЛЬСТВА (Диск, Imgur, Yapx и др.):</label>',
+      '  <textarea id="modal-form-links" class="dnp-textarea" rows="2" placeholder="Вставьте ссылки..."></textarea>',
+      '  <label style="font-size: 11px; color: var(--cyan); margin-top: 4px;">ПРИКРЕПИТЬ ФАЙЛЫ / ФОТО (ДО 10 ШТУК):</label>',
       '  <input type="file" id="modal-form-files" multiple accept="image/*,.pdf,.txt,.doc,.docx" style="color: var(--muted); font-size: 11px;">',
       '  <div id="modal-files-count" style="font-size: 11px; color: var(--muted);">Файлов выбрано: 0 / 10</div>',
       '  <button type="button" class="dnp-action" id="modal-form-submit" style="margin: 8px 0 0; align-self: flex-start;">ОТПРАВИТЬ ФОРМУ ↗</button>',
@@ -542,22 +809,22 @@
       var val = typeSelect.value;
       if (val === "Обращение к руководству") {
         dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ОБРАЩЕНИЯ:</label>',
-          '<textarea id="field-desc" rows="4" placeholder="Изложите суть обращения к руководству..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>'
+          '<label style="font-size: 11px; color: var(--cyan);">1. СУТЬ ОБРАЩЕНИЯ:</label>',
+          '<textarea id="field-desc" class="dnp-textarea" rows="4" placeholder="Изложите суть обращения к руководству..."></textarea>'
         ].join('');
       } else if (val === "Жалоба") {
         dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ЖАЛОБЫ:</label>',
-          '<textarea id="field-desc" rows="3" placeholder="Опишите подробности нарушения..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-          '<label style="font-size: 11px; color: var(--line);">2. НИКНЕЙМ НА КОГО ЖАЛУЕТЕСЬ:</label>',
-          '<input type="text" id="field-target" placeholder="Игровой никнейм нарушителя" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+          '<label style="font-size: 11px; color: var(--cyan);">1. СУТЬ ЖАЛОБЫ:</label>',
+          '<textarea id="field-desc" class="dnp-textarea" rows="3" placeholder="Опишите подробности нарушения..."></textarea>',
+          '<label style="font-size: 11px; color: var(--cyan);">2. НИКНЕЙМ НА КОГО ЖАЛУЕТЕСЬ:</label>',
+          '<input type="text" id="field-target" class="dnp-input" placeholder="Игровой никнейм нарушителя">'
         ].join('');
       } else if (val === "Изменение устава") {
         dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. ЧТО ИЗМЕНИТЬ:</label>',
-          '<textarea id="field-desc" rows="3" placeholder="Что конкретно предлагается изменить..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-          '<label style="font-size: 11px; color: var(--line);">2. КАКИЕ ПУНКТЫ УСТАВА:</label>',
-          '<input type="text" id="field-points" placeholder="Например: Раздел 2.2, пункт 4" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+          '<label style="font-size: 11px; color: var(--cyan);">1. ЧТО ИЗМЕНИТЬ:</label>',
+          '<textarea id="field-desc" class="dnp-textarea" rows="3" placeholder="Что конкретно предлагается изменить..."></textarea>',
+          '<label style="font-size: 11px; color: var(--cyan);">2. КАКИЕ ПУНКТЫ УСТАВА:</label>',
+          '<input type="text" id="field-points" class="dnp-input" placeholder="Например: Раздел 2.2, пункт 4">'
         ].join('');
       }
     }
@@ -578,8 +845,8 @@
     document.getElementById("modal-form-submit").addEventListener("click", function () {
       var statusBox = document.getElementById("modal-form-status");
       if (!isAuth || !token) {
-        statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
+        statusBox.style.color = "var(--danger-bright)";
+        statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации.";
         return;
       }
 
@@ -592,19 +859,19 @@
       var rulesPoints = pointsEl ? pointsEl.value.trim() : "";
 
       if (!desc) {
-        statusBox.style.color = "var(--danger)";
+        statusBox.style.color = "var(--danger-bright)";
         statusBox.textContent = "[ОШИБКА] Заполните описание сути формы.";
         return;
       }
 
-      statusBox.style.color = "var(--line)";
+      statusBox.style.color = "var(--cyan)";
       statusBox.textContent = "[SYS] Подготовка и отправка...";
 
       var rawFiles = filesInput.files ? Array.from(filesInput.files) : [];
       readFilesAsBase64(rawFiles).then(function (encodedFiles) {
         var validFiles = (encodedFiles || []).filter(function (f) { return f !== null; });
 
-        fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
+        fetch(SERVER_URL + "/api/forms/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -631,60 +898,20 @@
               document.getElementById("modal-form-links").value = "";
               filesInput.value = "";
               filesCount.textContent = "Файлов выбрано: 0 / 10";
+              loadTicketsScreenData();
             } else {
-              statusBox.style.color = "var(--danger)";
+              statusBox.style.color = "var(--danger-bright)";
               statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
             }
           })
           .catch(function () {
-            statusBox.style.color = "var(--danger)";
-            statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
+            statusBox.style.color = "var(--danger-bright)";
+            statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения.";
           });
       });
     });
 
     modalBackdrop.style.display = "flex";
-  }
-
-  function sendTextForm(type, desc, extraField, links) {
-    var token = localStorage.getItem("dnp_auth_token");
-    if (!token) {
-      printLine("<span style='color:var(--danger);'>[ОТКАЗ] Требуется авторизация в Личном кабинете.</span>");
-      return;
-    }
-
-    var payload = {
-      token: token,
-      type: type,
-      description: desc,
-      links: links || 'Отсутствуют',
-      files: []
-    };
-
-    if (type === "Жалоба") payload.targetUser = extraField || "Не указан";
-    else if (type === "Изменение устава") payload.rulesPoints = extraField || "Не указаны";
-
-    printLine("<span style='color:var(--line);'>[SYS] Отправка формы [" + type + "]...</span>");
-
-    fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (data.success) {
-          printLine("<span style='color:var(--ok);'>[УСПЕХ] Форма [" + type + "] " + data.reportId + " зарегистрирована!</span>");
-        } else {
-          printLine("<span style='color:var(--danger);'>[ОШИБКА] " + (data.error || "Сбой отправки") + "</span>");
-        }
-      })
-      .catch(function () {
-        printLine("<span style='color:var(--danger);'>[СБОЙ СЕТИ] Сервер недоступен.</span>");
-      });
   }
 
   function executeCommand(raw) {
@@ -700,11 +927,6 @@
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
 
-    if (first === "D" && parts.length > 1) {
-      parts.shift();
-      first = (parts[0] || "").toUpperCase();
-    }
-
     if (first === "FORMS") {
       var isGui = parts.some(function (p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
@@ -712,48 +934,7 @@
         printLine("[SYS] Графический интерфейс подачи форм активирован.");
         return;
       }
-
-      var subCmd = (parts[1] || "").toLowerCase();
-
-      if (subCmd === "1" || subCmd === "обращение") {
-        var desc1 = (parts[2] || "").replace(/^"|"$/g, "");
-        var links1 = (parts[3] || "").replace(/^"|"$/g, "");
-        if (!desc1) {
-          printLine("Синтаксис: forms 1 \"Суть обращения\" \"Ссылки на файлы (опционально)\"");
-          return;
-        }
-        sendTextForm("Обращение к руководству", desc1, "", links1);
-        return;
-      }
-
-      if (subCmd === "2" || subCmd === "жалоба") {
-        var desc2 = (parts[2] || "").replace(/^"|"$/g, "");
-        var target = (parts[3] || "").replace(/^"|"$/g, "");
-        var links2 = (parts[4] || "").replace(/^"|"$/g, "");
-        if (!desc2 || !target) {
-          printLine("Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки\"");
-          return;
-        }
-        sendTextForm("Жалоба", desc2, target, links2);
-        return;
-      }
-
-      if (subCmd === "3" || subCmd === "устав") {
-        var desc3 = (parts[2] || "").replace(/^"|"$/g, "");
-        var points = (parts[3] || "").replace(/^"|"$/g, "");
-        var links3 = (parts[4] || "").replace(/^"|"$/g, "");
-        if (!desc3 || !points) {
-          printLine("Синтаксис: forms 3 \"Что изменить\" \"Какие пункты\" \"Ссылки\"");
-          return;
-        }
-        sendTextForm("Изменение устава", desc3, points, links3);
-        return;
-      }
-
       printLine("=== [СИСТЕМА ПОДАЧИ ФОРМ И ОБРАЩЕНИЙ] ===");
-      printLine("  [1] Обращение к руководству: forms 1 \"Суть\" \"Ссылки\"");
-      printLine("  [2] Жалоба: forms 2 \"Суть\" \"Никнейм нарушителя\" \"Ссылки\"");
-      printLine("  [3] Изменение устава: forms 3 \"Что изменить\" \"Пункты\" \"Ссылки\"");
       printLine("Для вызова графического окна: FORMS -gui");
       return;
     }
