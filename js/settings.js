@@ -19,7 +19,7 @@
     .then(function (data) {
       if (data && data.account) {
         nameInput.value = data.account.displayName || data.account.username;
-        if (data.account.avatar) {
+        if (data.account.avatar && data.account.avatar.length > 5) {
           preview.src = data.account.avatar;
           currentAvatar = data.account.avatar;
         }
@@ -52,7 +52,7 @@
   });
 
   document.getElementById("cfg-save-btn").addEventListener("click", function () {
-    msg.style.color = "var(--pda-accent)";
+    msg.style.color = "#00f0ff";
     msg.textContent = "[SYS] Запись изменений в dnp_auth_db...";
 
     var actStatus = "В активе";
@@ -77,15 +77,15 @@
       .then(function (res) {
         if (res.success) {
           localStorage.setItem("dnp_active_user", JSON.stringify(res.user));
-          msg.style.color = "var(--pda-status-ok)";
+          msg.style.color = "#4af626";
           msg.textContent = "[УСПЕХ] Параметры КПК сохранены.";
         } else {
-          msg.style.color = "var(--pda-status-err)";
+          msg.style.color = "#ff5252";
           msg.textContent = "[ОТКАЗ] " + (res.error || "Ошибка сохранения");
         }
       })
       .catch(function () {
-        msg.style.color = "var(--pda-status-err)";
+        msg.style.color = "#ff5252";
         msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен.";
       });
   });

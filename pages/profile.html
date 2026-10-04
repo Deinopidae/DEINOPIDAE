@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEINOPIDAE S.E. // ПРОФИЛЬ</title>
+  <title>DEINOPIDAE S.E. // ЛИЧНЫЙ ПРОФИЛЬ</title>
   <link rel="icon" type="image/png" href="../assets/image/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/pda_modules.css">
+  <link rel="stylesheet" href="../css/pda_pages.css">
 </head>
 <body>
   <div class="dnp-scan"></div>
@@ -22,73 +21,46 @@
     </div>
   </header>
 
-  <div class="dnp-layout" id="dnp-layout">
-    <aside class="dnp-sidebar">
-      <div class="dnp-sidebar-title">
-        <div class="dnp-sidebar-title-left">
-          <span>Навигация КПК</span>
+  <div class="pda-standalone-container">
+    <nav class="pda-tabs-nav">
+      <a href="../index.html" class="pda-tab-link is-back">← В ТЕРМИНАЛ / УСТАВ</a>
+      <a href="profile.html" class="pda-tab-link is-active">ЛИЧНЫЙ ПРОФИЛЬ</a>
+      <a href="tickets.html" class="pda-tab-link">ЖУРНАЛ ОБРАЩЕНИЙ</a>
+      <a href="settings.html" class="pda-tab-link">НАСТРОЙКИ СИСТЕМЫ</a>
+    </nav>
+
+    <div class="dnp-screen-card">
+      <div class="dnp-screen-head">
+        <h2 id="prof-display-name">ЗАГРУЗКА ЛИЧНОГО ДЕЛА...</h2>
+        <span>SECTOR S.E. // PROTOCOL 01</span>
+      </div>
+
+      <div class="pda-profile-grid">
+        <div class="pda-avatar-col">
+          <div class="pda-avatar-circle">
+            <img src="../assets/image/favicon.png" id="prof-avatar" alt="Avatar">
+          </div>
+          <span class="pda-status-pill is-active" id="prof-activity-badge">В АКТИВЕ</span>
         </div>
-        <em class="dnp-menu-tag">SYS</em>
+
+        <div class="pda-stats-table">
+          <div class="pda-stat-row"><span>Звание / Ранг:</span><b id="p-rank">—</b></div>
+          <div class="pda-stat-row"><span>Норматив МП / Часы:</span><b id="p-norm">—</b></div>
+          <div class="pda-stat-row"><span>Оборудование:</span><b id="p-equip">—</b></div>
+          <div class="pda-stat-row"><span>Статус нормы:</span><b id="p-quota">—</b></div>
+          <div class="pda-stat-row"><span>Статус повышения:</span><b id="p-promo">—</b></div>
+          <div class="pda-stat-row"><span>Отпуск:</span><b id="p-vacation">—</b></div>
+          <div class="pda-stat-row"><span>Дисциплинарные меры:</span><b id="p-penalties">—</b></div>
+          <div class="pda-stat-row"><span>Хихикойны / Баллы активности:</span><b id="p-coins">—</b></div>
+        </div>
       </div>
 
-      <div class="dnp-sidebar-body">
-        <a href="../index.html" class="dnp-nav-btn">
-          <b>00</b>
-          <span>УСТАВ ДЕПАРТАМЕНТА</span>
-          <i>DOC</i>
-        </a>
-        <a href="profile.html" class="dnp-nav-btn is-active">
-          <b>01</b>
-          <span>ЛИЧНЫЙ ПРОФИЛЬ</span>
-          <i>USR</i>
-        </a>
-        <a href="tickets.html" class="dnp-nav-btn">
-          <b>02</b>
-          <span>ЖУРНАЛ ОБРАЩЕНИЙ</span>
-          <i>REP</i>
-        </a>
-        <a href="settings.html" class="dnp-nav-btn">
-          <b>03</b>
-          <span>НАСТРОЙКИ СИСТЕМЫ</span>
-          <i>CFG</i>
-        </a>
-      </div>
-
-      <div class="dnp-terminal-note">
+      <div class="pda-footer-status">
         <span>PDA-LINK: ONLINE // SYS.V-6</span>
         <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
-        <span>SYNC: 97%</span>
         <span>CORE TEMP: 36C</span>
       </div>
-    </aside>
-
-    <main class="dnp-main">
-      <div class="pda-screen-viewport">
-        <div class="pda-head-strip">
-          <h2 class="pda-head-title" id="prof-display-name">ЗАГРУЗКА ДОСЬЕ...</h2>
-          <span class="pda-head-tag">DEINOPIDAE PROTOCOL // DOSSIER</span>
-        </div>
-
-        <div class="pda-dossier-layout">
-          <div class="pda-photo-zone">
-            <div class="pda-avatar-frame">
-              <img src="../assets/image/favicon.png" id="prof-avatar" alt="Avatar">
-            </div>
-            <span class="pda-badge is-active" id="prof-activity-badge">В АКТИВЕ</span>
-          </div>
-
-          <div class="pda-dossier-table">
-            <div class="pda-table-row"><span>Звание / Ранг:</span><b id="p-rank">—</b></div>
-            <div class="pda-table-row"><span>Норматив МП / Часы:</span><b id="p-norm">—</b></div>
-            <div class="pda-table-row"><span>Статус нормы:</span><b id="p-quota">—</b></div>
-            <div class="pda-table-row"><span>Статус повышения:</span><b id="p-promo">—</b></div>
-            <div class="pda-table-row"><span>Отпускной статус:</span><b id="p-vacation">—</b></div>
-            <div class="pda-table-row"><span>Дисциплинарные меры:</span><b id="p-penalties">—</b></div>
-            <div class="pda-table-row"><span>Хихикойны / Актив:</span><b id="p-coins">—</b></div>
-          </div>
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 
   <script src="../js/live_polling.js"></script>

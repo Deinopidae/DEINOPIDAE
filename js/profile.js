@@ -21,18 +21,19 @@
       document.getElementById("prof-display-name").textContent =
         (acc.displayName || acc.username) + " // " + acc.roblox;
 
-      if (acc.avatar) {
+      if (acc.avatar && acc.avatar.length > 5) {
         document.getElementById("prof-avatar").src = acc.avatar;
       }
 
       var badge = document.getElementById("prof-activity-badge");
       badge.textContent = acc.activityStatus || "В АКТИВЕ";
       badge.className = (acc.activityStatus === "Инактив")
-        ? "pda-badge is-inactive"
-        : "pda-badge is-active";
+        ? "pda-status-pill is-inactive"
+        : "pda-status-pill is-active";
 
       document.getElementById("p-rank").textContent = (st.title || "Сотрудник") + " [" + (st.rank || "Кадет") + "]";
       document.getElementById("p-norm").textContent = (st.mp || "0/0") + " МП / " + (st.hours || "0:00") + " ч.";
+      document.getElementById("p-equip").textContent = (st.equipment || "0") + " ед.";
       document.getElementById("p-quota").textContent = st.quota_status || "В ОБРАБОТКЕ";
       document.getElementById("p-promo").textContent = st.promotion || "Проверяется руководством";
       document.getElementById("p-vacation").textContent = st.vacation || "НЕТ";

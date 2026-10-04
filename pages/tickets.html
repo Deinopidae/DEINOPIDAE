@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEINOPIDAE S.E. // ОБРАЩЕНИЯ</title>
+  <title>DEINOPIDAE S.E. // ЖУРНАЛ ОБРАЩЕНИЙ</title>
   <link rel="icon" type="image/png" href="../assets/image/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/pda_modules.css">
+  <link rel="stylesheet" href="../css/pda_pages.css">
 </head>
 <body>
   <div class="dnp-scan"></div>
@@ -22,58 +21,30 @@
     </div>
   </header>
 
-  <div class="dnp-layout" id="dnp-layout">
-    <aside class="dnp-sidebar">
-      <div class="dnp-sidebar-title">
-        <div class="dnp-sidebar-title-left">
-          <span>Навигация КПК</span>
-        </div>
-        <em class="dnp-menu-tag">SYS</em>
+  <div class="pda-standalone-container">
+    <nav class="pda-tabs-nav">
+      <a href="../index.html" class="pda-tab-link is-back">← В ТЕРМИНАЛ / УСТАВ</a>
+      <a href="profile.html" class="pda-tab-link">ЛИЧНЫЙ ПРОФИЛЬ</a>
+      <a href="tickets.html" class="pda-tab-link is-active">ЖУРНАЛ ОБРАЩЕНИЙ</a>
+      <a href="settings.html" class="pda-tab-link">НАСТРОЙКИ СИСТЕМЫ</a>
+    </nav>
+
+    <div class="dnp-screen-card">
+      <div class="dnp-screen-head">
+        <h2>РЕЕСТР ЗАРЕГИСТРИРОВАННЫХ ОБРАЩЕНИЙ</h2>
+        <span>DATABASE: DNP_TICKETS_DB</span>
       </div>
 
-      <div class="dnp-sidebar-body">
-        <a href="../index.html" class="dnp-nav-btn">
-          <b>00</b>
-          <span>УСТАВ ДЕПАРТАМЕНТА</span>
-          <i>DOC</i>
-        </a>
-        <a href="profile.html" class="dnp-nav-btn">
-          <b>01</b>
-          <span>ЛИЧНЫЙ ПРОФИЛЬ</span>
-          <i>USR</i>
-        </a>
-        <a href="tickets.html" class="dnp-nav-btn is-active">
-          <b>02</b>
-          <span>ЖУРНАЛ ОБРАЩЕНИЙ</span>
-          <i>REP</i>
-        </a>
-        <a href="settings.html" class="dnp-nav-btn">
-          <b>03</b>
-          <span>НАСТРОЙКИ СИСТЕМЫ</span>
-          <i>CFG</i>
-        </a>
+      <div class="pda-tickets-feed" id="tickets-feed">
+        <div style="font-size:12px; color:#8aa0a8; padding: 20px 0;">Загрузка обращений из базы данных...</div>
       </div>
 
-      <div class="dnp-terminal-note">
+      <div class="pda-footer-status">
         <span>PDA-LINK: ONLINE // SYS.V-6</span>
         <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
-        <span>SYNC: 97%</span>
         <span>CORE TEMP: 36C</span>
       </div>
-    </aside>
-
-    <main class="dnp-main">
-      <div class="pda-screen-viewport">
-        <div class="pda-head-strip">
-          <h2 class="pda-head-title">РЕЕСТР ЗАРЕГИСТРИРОВАННЫХ ОБРАЩЕНИЙ</h2>
-          <span class="pda-head-tag">DATABASE: DNP_TICKETS_DB</span>
-        </div>
-
-        <div class="pda-tickets-container" id="tickets-feed">
-          <div style="font-size: 11.5px; color: var(--pda-text-muted);">Синхронизация тикетов с базой данных...</div>
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 
   <script src="../js/live_polling.js"></script>
