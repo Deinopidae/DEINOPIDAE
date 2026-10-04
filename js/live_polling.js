@@ -2,23 +2,40 @@
   var SERVER_URL = "https://deinopidae-api.onrender.com";
   var lastDataHash = "";
 
+  // Функция переключения индикатора состояния сети в навигации
+  function setNetStatus(isOnline) {
+    var netStatusEl = document.getElementById("dnp-local-net-status");
+    if (!netStatusEl) return;
+
+    if (isOnline) {
+      netStatusEl.textContent = "LOCAL NET: STABLE";
+      netStatusEl.style.color = ""; // штатный цвет
+    } else {
+      netStatusEl.textContent = "LOCAL NET: ERROR";
+      netStatusEl.style.color = "var(--danger)"; // красная подсветка ошибки
+    }
+  }
+
   function pollServerData() {
     var token = localStorage.getItem("dnp_auth_token");
 
-    // 1. Проверка сессии с передачей токена в заголовке
+    // 1. Проверка сессии с передачей токена
     if (token) {
       fetch(SERVER_URL + "/api/auth/me", {
         headers: { "Authorization": "Bearer " + token }
       })
-      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
       .then(function(authRes) {
+        setNetStatus(true);
         if (authRes && authRes.authenticated) {
           localStorage.setItem("dnp_active_user", JSON.stringify(authRes.user));
           if (typeof window.renderAuthHeader === "function") {
             window.renderAuthHeader();
           }
         } else if (authRes && authRes.authenticated === false) {
-          // Удаляем только если сервер ответил, что токен недействителен
           localStorage.removeItem("dnp_active_user");
           localStorage.removeItem("dnp_auth_token");
           if (typeof window.renderAuthHeader === "function") {
@@ -27,14 +44,18 @@
         }
       })
       .catch(function() {
-        // При ошибке соединения НЕ стираем пользователя (сервер может просыпаться)
+        setNetStatus(false);
       });
     }
 
-    // 2. Поллинг данных Google Таблицы
+    // 2. Поллинг данных реестра сотрудников и проверка онлайн-статуса
     fetch(SERVER_URL + "/api/users/data")
-      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
       .then(function(data) {
+        setNetStatus(true);
         var currentHash = JSON.stringify(data);
 
         if (lastDataHash && lastDataHash !== currentHash) {
@@ -52,9 +73,12 @@
         lastDataHash = currentHash;
         window.employeeDb = data;
       })
-      .catch(function() {});
+      .catch(function() {
+        setNetStatus(false);
+      });
   }
 
+  // Опрос сервера каждые 10 секунд
   setInterval(pollServerData, 10000);
   window.addEventListener('DOMContentLoaded', pollServerData);
 })();
