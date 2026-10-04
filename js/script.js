@@ -540,6 +540,27 @@
     });
   }
 
+  function readFilesAsBase64(fileList) {
+    var promises = [];
+    for (var i = 0; i < fileList.length; i++) {
+      (function(file) {
+        promises.push(new Promise(function(resolve) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({
+              name: file.name,
+              type: file.type,
+              data: e.target.result
+            });
+          };
+          reader.onerror = function() { resolve(null); };
+          reader.readAsDataURL(file);
+        }));
+      })(fileList[i]);
+    }
+    return Promise.all(promises);
+  }
+
   function showFormsGui() {
     if (!modalBackdrop || !modalBody) return;
     modalTitle.textContent = "СИСТЕМА ПОДАЧИ ОБРАЩЕНИЙ И ФОРМ // DEINOPIDAE";
@@ -572,6 +593,117 @@
     var dynBox = document.getElementById("modal-dynamic-fields");
     var filesInput = document.getElementById("modal-form-files");
     var filesCount = document.getElementById("modal-files-count");
+
+    function renderFields() {
+      var val = typeSelect.value;
+      if (val === "Обращение к руководству") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ОБРАЩЕНИЯ:</label>',
+          '<textarea id="field-desc" rows="4" placeholder="Изложите суть обращения к руководству..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>'
+        ].join('');
+      } else if (val === "Жалоба") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ЖАЛОБЫ:</label>',
+          '<textarea id="field-desc" rows="3" placeholder="Опишите подробности нарушения..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+          '<label style="font-size: 11px; color: var(--line);">2. НИКНЕЙМ НА КОГО ЖАЛУЕТЕСЬ:</label>',
+          '<input type="text" id="field-target" placeholder="Игровой никнейм нарушителя" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+        ].join('');
+      } else if (val === "Изменение устава") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. ЧТО ИЗМЕНИТЬ:</label>',
+          '<textarea id="field-desc" rows="3" placeholder="Что конкретно предлагается изменить..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+          '<label style="font-size: 11px; color: var(--line);">2. КАКИЕ ПУНКТЫ УСТАВА:</label>',
+          '<input type="text" id="field-points" placeholder="Например: Раздел 2.2, пункт 4" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+        ].join('');
+      }
+    }
+
+    typeSelect.addEventListener("change", renderFields);
+    renderFields();
+
+    filesInput.addEventListener("change", function() {
+      if (filesInput.files.length > 10) {
+        alert("Максимальное количество прикрепляемых файлов — 10.");
+        filesInput.value = "";
+        filesCount.textContent = "Файлов выбрано: 0 / 10";
+        return;
+      }
+      filesCount.textContent = "Файлов выбрано: " + filesInput.files.length + " / 10";
+    });
+
+    document.getElementById("modal-form-submit").addEventListener("click", function() {
+      var statusBox = document.getElementById("modal-form-status");
+      if (!isAuth || !token) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
+        return;
+      }
+
+      var descEl = document.getElementById("field-desc");
+      var desc = descEl ? descEl.value.trim() : "";
+      var links = document.getElementById("modal-form-links").value.trim();
+      var targetEl = document.getElementById("field-target");
+      var pointsEl = document.getElementById("field-points");
+      var targetUser = targetEl ? targetEl.value.trim() : "";
+      var rulesPoints = pointsEl ? pointsEl.value.trim() : "";
+
+      if (!desc) {
+        statusBox.style.color = "var(--danger)";
+        statusBox.textContent = "[ОШИБКА] Заполните описание сути формы.";
+        return;
+      }
+
+      statusBox.style.color = "var(--line)";
+      statusBox.textContent = "[SYS] Подготовка и загрузка файлов...";
+
+      // Считывание файлов перед отправкой
+      var rawFiles = filesInput.files ? Array.from(filesInput.files) : [];
+      readFilesAsBase64(rawFiles).then(function(encodedFiles) {
+        var validFiles = (encodedFiles || []).filter(function(f) { return f !== null; });
+
+        statusBox.textContent = "[SYS] Передача формы на сервер...";
+
+        fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            token: token,
+            type: typeSelect.value,
+            description: desc,
+            targetUser: targetUser,
+            rulesPoints: rulesPoints,
+            links: links,
+            files: validFiles
+          })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.success) {
+            statusBox.style.color = "var(--ok)";
+            statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord с файлами!";
+            if (descEl) descEl.value = "";
+            if (targetEl) targetEl.value = "";
+            if (pointsEl) pointsEl.value = "";
+            document.getElementById("modal-form-links").value = "";
+            filesInput.value = "";
+            filesCount.textContent = "Файлов выбрано: 0 / 10";
+          } else {
+            statusBox.style.color = "var(--danger)";
+            statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
+          }
+        })
+        .catch(function() {
+          statusBox.style.color = "var(--danger)";
+          statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
+        });
+      });
+    });
+
+    modalBackdrop.style.display = "flex";
+  }
 
     function renderFields() {
       var val = typeSelect.value;
