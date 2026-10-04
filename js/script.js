@@ -300,10 +300,8 @@
   }
 
   // =========================================================
-  // ТЕРМИНАЛ: ЧИСТЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС
+  // ТЕРМИНАЛ И СИСТЕМА ФОРМ
   // =========================================================
-  var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
-
   var asciiLogo = [
     "    @@                                                        @@    ",
     "     @                                                         %     ",
@@ -338,13 +336,7 @@
     "                                       @@                                       "
   ].join("\n");
 
-  window.employeeDb = {
-    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "zzmalf4": { name: "zzmalf4", title: "Главный инженер", rank: "A RANK", mp: "0/1", hours: "0:00", equipment: "0", coins: "46", activity: "0", quota_status: "НЕ ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "Кэнсэки 1", promotion: "ПРИОСТАНОВЛЕНО (Действуют активные дисциплинарные взыскания)", lectures: { po: "НЕ ПРОЙДЕНА", so: "НЕ ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "НЕ СДАНА", b: "НЕ СДАНА", a: "НЕ СДАНА" } },
-    "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
-  };
+  window.employeeDb = {};
 
   var envVars = {
     "OS": "Deinopidae Terminal OS [Build 2026.4]",
@@ -368,7 +360,6 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
-  // Обновление личного кабинета в шапке
   window.renderAuthHeader = function() {
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
@@ -534,7 +525,7 @@
     scrollTerm();
   }
 
-  // МОДАЛЬНЫЕ ОКНА GUI
+  // МОДАЛЬНОЕ ОКНО GUI
   var modalBackdrop = document.getElementById("dnp-gui-modal");
   var modalTitle = document.getElementById("dnp-modal-title");
   var modalBody = document.getElementById("dnp-modal-body");
@@ -551,7 +542,7 @@
 
   function showFormsGui() {
     if (!modalBackdrop || !modalBody) return;
-    modalTitle.textContent = "СИСТЕМА ПОДАЧИ ОТЧЁТОВ // DEINOPIDAE";
+    modalTitle.textContent = "СИСТЕМА ПОДАЧИ ОБРАЩЕНИЙ И ФОРМ // DEINOPIDAE";
 
     var isAuth = !!localStorage.getItem("dnp_active_user");
     var token = localStorage.getItem("dnp_auth_token");
@@ -562,20 +553,62 @@
       '<div style="display: flex; flex-direction: column; gap: 10px;">',
       '  <label style="font-size: 11px; color: var(--line);">ВЫБЕРИТЕ КАТЕГОРИЮ:</label>',
       '  <select id="modal-form-type" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
-      '    <option value="Внеурочка">1. Внеурочка (Починка / Создание оборудования)</option>',
-      '    <option value="Изменения устава">2. Изменения устава (Предложение поправки)</option>',
-      '    <option value="Обращение к руководству">3. Обращение к руководству (Запрос / Жалоба / Вопрос)</option>',
+      '    <option value="Обращение к руководству">1. Обращение к руководству</option>',
+      '    <option value="Жалоба">2. Жалоба</option>',
+      '    <option value="Изменение устава">3. Изменение устава</option>',
       '  </select>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ТЕКСТ ОБРАЩЕНИЯ / ОПИСАНИЕ РАБОТЫ:</label>',
-      '  <textarea id="modal-form-text" rows="4" placeholder="Введите подробности..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ДОКАЗАТЕЛЬСТВА (ССЫЛКА):</label>',
-      '  <input type="text" id="modal-form-proof" placeholder="Ссылка на скриншоты (Imgur, Yapx, Drive)" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">',
+      '  <div id="modal-dynamic-fields" style="display: flex; flex-direction: column; gap: 10px;"></div>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ССЫЛКИ НА ДОКАЗАТЕЛЬСТВА (Яндекс.Диск, Imgur, Yapx и др.):</label>',
+      '  <textarea id="modal-form-links" rows="2" placeholder="Вставьте ссылки (каждая с новой строки)..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ПРИКРЕПИТЬ ФАЙЛЫ / ФОТО (ДО 10 ШТУК):</label>',
+      '  <input type="file" id="modal-form-files" multiple accept="image/*,.pdf,.txt,.doc,.docx" style="color: var(--muted); font-size: 11px;">',
+      '  <div id="modal-files-count" style="font-size: 11px; color: var(--muted);">Файлов выбрано: 0 / 10</div>',
       '  <button type="button" class="dnp-action" id="modal-form-submit" style="margin: 8px 0 0; align-self: flex-start;">ОТПРАВИТЬ ФОРМУ ↗</button>',
       '  <div id="modal-form-status" style="font-size: 11.5px; margin-top: 4px; font-weight: 700;"></div>',
       '</div>'
     ].join('');
 
-    modalBackdrop.style.display = "flex";
+    var typeSelect = document.getElementById("modal-form-type");
+    var dynBox = document.getElementById("modal-dynamic-fields");
+    var filesInput = document.getElementById("modal-form-files");
+    var filesCount = document.getElementById("modal-files-count");
+
+    function renderFields() {
+      var val = typeSelect.value;
+      if (val === "Обращение к руководству") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ОБРАЩЕНИЯ:</label>',
+          '<textarea id="field-desc" rows="4" placeholder="Изложите суть обращения к руководству..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>'
+        ].join('');
+      } else if (val === "Жалоба") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ЖАЛОБЫ:</label>',
+          '<textarea id="field-desc" rows="3" placeholder="Опишите подробности нарушения..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+          '<label style="font-size: 11px; color: var(--line);">2. НИКНЕЙМ НА КОГО ЖАЛУЕТЕСЬ:</label>',
+          '<input type="text" id="field-target" placeholder="Игровой никнейм нарушителя" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+        ].join('');
+      } else if (val === "Изменение устава") {
+        dynBox.innerHTML = [
+          '<label style="font-size: 11px; color: var(--line);">1. ЧТО ИЗМЕНИТЬ:</label>',
+          '<textarea id="field-desc" rows="3" placeholder="Что конкретно предлагается изменить..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
+          '<label style="font-size: 11px; color: var(--line);">2. КАКИЕ ПУНКТЫ УСТАВА:</label>',
+          '<input type="text" id="field-points" placeholder="Например: Раздел 2.2, пункт 4" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
+        ].join('');
+      }
+    }
+
+    typeSelect.addEventListener("change", renderFields);
+    renderFields();
+
+    filesInput.addEventListener("change", function() {
+      if (filesInput.files.length > 10) {
+        alert("Максимальное количество прикрепляемых файлов — 10.");
+        filesInput.value = "";
+        filesCount.textContent = "Файлов выбрано: 0 / 10";
+        return;
+      }
+      filesCount.textContent = "Файлов выбрано: " + filesInput.files.length + " / 10";
+    });
 
     document.getElementById("modal-form-submit").addEventListener("click", function() {
       var statusBox = document.getElementById("modal-form-status");
@@ -584,18 +617,23 @@
         statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
         return;
       }
-      var text = document.getElementById("modal-form-text").value.trim();
-      var type = document.getElementById("modal-form-type").value;
-      var proof = document.getElementById("modal-form-proof").value.trim();
 
-      if (!text) {
+      var descEl = document.getElementById("field-desc");
+      var desc = descEl ? descEl.value.trim() : "";
+      var links = document.getElementById("modal-form-links").value.trim();
+      var targetEl = document.getElementById("field-target");
+      var pointsEl = document.getElementById("field-points");
+      var targetUser = targetEl ? targetEl.value.trim() : "";
+      var rulesPoints = pointsEl ? pointsEl.value.trim() : "";
+
+      if (!desc) {
         statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[ОШИБКА] Заполните описание работы.";
+        statusBox.textContent = "[ОШИБКА] Заполните описание сути формы.";
         return;
       }
 
       statusBox.style.color = "var(--line)";
-      statusBox.textContent = "[SYS] Передача отчета на сервер...";
+      statusBox.textContent = "[SYS] Передача формы на сервер...";
 
       fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
         method: "POST",
@@ -605,18 +643,25 @@
         },
         body: JSON.stringify({
           token: token,
-          type: type,
-          description: text,
-          screenshots: proof
+          type: typeSelect.value,
+          description: desc,
+          targetUser: targetUser,
+          rulesPoints: rulesPoints,
+          links: links,
+          filesCount: filesInput.files ? filesInput.files.length : 0
         })
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
           statusBox.style.color = "var(--ok)";
-          statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " сохранена и отправлена в Discord!";
-          document.getElementById("modal-form-text").value = "";
-          document.getElementById("modal-form-proof").value = "";
+          statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
+          if (descEl) descEl.value = "";
+          if (targetEl) targetEl.value = "";
+          if (pointsEl) pointsEl.value = "";
+          document.getElementById("modal-form-links").value = "";
+          filesInput.value = "";
+          filesCount.textContent = "Файлов выбрано: 0 / 10";
         } else {
           statusBox.style.color = "var(--danger)";
           statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
@@ -627,9 +672,10 @@
         statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
       });
     });
+
+    modalBackdrop.style.display = "flex";
   }
 
-  // КОМАНДА Project Prisma: дешифровка с 2-секундной фиксацией
   function runProjectPrisma() {
     var chars = "ABCDEF0123456789!@#$%&*+=-_/?<>[]{}~";
     var targetText = "FORMS - NICK - TFP";
@@ -676,6 +722,50 @@
     }, 60);
   }
 
+  function sendTextForm(type, desc, extraField, links) {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) {
+      printLine("<span style='color:var(--danger);'>[ОТКАЗ] Отправка форм доступна только авторизованным сотрудникам. Войдите в Личный кабинет.</span>");
+      return;
+    }
+
+    var payload = {
+      token: token,
+      type: type,
+      description: desc,
+      links: links || 'Отсутствуют',
+      filesCount: 0
+    };
+
+    if (type === "Жалоба") {
+      payload.targetUser = extraField || "Не указан";
+    } else if (type === "Изменение устава") {
+      payload.rulesPoints = extraField || "Не указаны";
+    }
+
+    printLine("<span style='color:var(--line);'>[SYS] Отправка формы [" + type + "]...</span>");
+
+    fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        printLine("<span style='color:var(--ok);'>[УСПЕХ] Заявка [" + type + "] " + data.reportId + " зарегистрирована и отправлена в Discord!</span>");
+      } else {
+        printLine("<span style='color:var(--danger);'>[ОШИБКА] " + (data.error || "Сбой отправки") + "</span>");
+      }
+    })
+    .catch(function() {
+      printLine("<span style='color:var(--danger);'>[СБОЙ СЕТИ] Сервер недоступен.</span>");
+    });
+  }
+
   function executeCommand(raw) {
     var cmd = raw.trim();
     if (!cmd) return;
@@ -699,6 +789,7 @@
       return;
     }
 
+    // КОМАНДА FORMS: ТЕКСТОВЫЙ РЕЖИМ И GUI
     if (first === "FORMS") {
       var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
@@ -706,11 +797,55 @@
         printLine("[SYS] Графический интерфейс подачи форм активирован.");
         return;
       }
-      printLine("=== [СИСТЕМА ПОДАЧИ ОТЧЁТОВ И ФОРМ] ===");
-      printLine("  [1] Внеурочка (Починка / Создание оборудования)");
-      printLine("  [2] Изменения устава (Предложение поправки)");
-      printLine("  [3] Обращение к руководству (Запрос / Вопрос)");
-      printLine('Для графического интерфейса введите: FORMS -gui');
+
+      var subCmd = (parts[1] || "").toLowerCase();
+
+      // forms 1 "Суть обращения" "Ссылки/файлы"
+      if (subCmd === "1" || subCmd === "обращение") {
+        var desc1 = (parts[2] || "").replace(/^"|"$/g, "");
+        var links1 = (parts[3] || "").replace(/^"|"$/g, "");
+        if (!desc1) {
+          printLine("Синтаксис: forms 1 \"Суть обращения\" \"Ссылки на файлы (опционально)\"");
+          return;
+        }
+        sendTextForm("Обращение к руководству", desc1, "", links1);
+        return;
+      }
+
+      // forms 2 "Суть жалобы" "Никнейм нарушителя" "Ссылки/файлы"
+      if (subCmd === "2" || subCmd === "жалоба") {
+        var desc2 = (parts[2] || "").replace(/^"|"$/g, "");
+        var target = (parts[3] || "").replace(/^"|"$/g, "");
+        var links2 = (parts[4] || "").replace(/^"|"$/g, "");
+        if (!desc2 || !target) {
+          printLine("Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки на доказательства (опционально)\"");
+          return;
+        }
+        sendTextForm("Жалоба", desc2, target, links2);
+        return;
+      }
+
+      // forms 3 "Что изменить" "Какие пункты" "Ссылки/файлы"
+      if (subCmd === "3" || subCmd === "устав") {
+        var desc3 = (parts[2] || "").replace(/^"|"$/g, "");
+        var points = (parts[3] || "").replace(/^"|"$/g, "");
+        var links3 = (parts[4] || "").replace(/^"|"$/g, "");
+        if (!desc3 || !points) {
+          printLine("Синтаксис: forms 3 \"Что изменить\" \"Какие пункты устава\" \"Ссылки / Обоснование (опционально)\"");
+          return;
+        }
+        sendTextForm("Изменение устава", desc3, points, links3);
+        return;
+      }
+
+      printLine("=== [СИСТЕМА ПОДАЧИ ФОРМ И ОБРАЩЕНИЙ] ===");
+      printLine("  [1] Обращение к руководству");
+      printLine("      Синтаксис: forms 1 \"Суть обращения\" \"Ссылки на файлы\"");
+      printLine("  [2] Жалоба");
+      printLine("      Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки на доказательства\"");
+      printLine("  [3] Изменение устава");
+      printLine("      Синтаксис: forms 3 \"Что изменить\" \"Какие пункты\" \"Ссылки/обоснование\"");
+      printLine("Для графического окна с загрузкой до 10 файлов введите: FORMS -gui");
       return;
     }
 
@@ -718,12 +853,13 @@
       printLine("HELP                - Вызов списка доступных команд");
       printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
       printLine("FIND \"фраза\"        - Поиск данных");
-      printLine("FORMS               - Система подачи отчетов (флаг -gui для графики)");
+      printLine("FORMS               - Подача форм и рапортов (флаг -gui для графики)");
       printLine("PROJECT PRISMA      - Протокол дешифровки");
       printLine("CLS / CLEAR         - Очистить терминал");
       return;
     }
 
+    // КОМАНДА STAFF (БЕЗ РАМОК ===)
     if (first === "STAFF") {
       var isGuiStaff = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       var cleanParts = parts.filter(function(p) { return p.toLowerCase() !== "-gui"; });
@@ -762,33 +898,30 @@
           ].join('');
           printLine(cardHtml);
         } else {
-          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
-          printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
-          printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
-          printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
-          printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
-          printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
-          printLine("  ОТПУСК            : " + p.vacation);
+          // ЧИСТЫЙ ТЕКСТОВЫЙ ВЫВОД БЕЗ РАМОК ===
+          printLine("ПОЗЫВНОЙ / НИК    : " + p.name);
+          printLine("ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
+          printLine("НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+          printLine("СТАТУС НОРМЫ      : " + p.quota_status);
+          printLine("ПОВЫШЕНИЕ         : " + p.promotion);
+          printLine("ОТПУСК            : " + p.vacation);
           if (p.lectures) {
-            printLine("  ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+            printLine("ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
           }
           if (p.exams) {
-            printLine("  ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
+            printLine("ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
           }
-          printLine("  НАКАЗАНИЯ         : " + p.penalties);
-          printLine("  АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
-          printLine("======================================================");
+          printLine("НАКАЗАНИЯ         : " + p.penalties);
+          printLine("АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
         }
       } else {
         printLine("Позывной '" + nick + "' не найден в локальном реестре.");
-        printLine("Ведомость доступна по ссылке: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
       }
       return;
     }
 
     if (first === "FIND") {
       var query = (parts.slice(1).join(" ") || "").replace(/^"|"$/g, "").toLowerCase();
-
       if (!query) {
         printLine("Синтаксис: FIND \"фраза\"");
         return;
