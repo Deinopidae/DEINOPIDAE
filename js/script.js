@@ -300,7 +300,7 @@
   }
 
   // =========================================================
-  // ТЕРМИНАЛ И СИСТЕМА ФОРМ
+  // ТЕРМИНАЛ И ФОРМЫ
   // =========================================================
   var asciiLogo = [
     "    @@                                                        @@    ",
@@ -579,7 +579,7 @@
       '    <option value="Изменение устава">3. Изменение устава</option>',
       '  </select>',
       '  <div id="modal-dynamic-fields" style="display: flex; flex-direction: column; gap: 10px;"></div>',
-      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ССЫЛКИ НА ДОКАЗАТЕЛЬСТВА (Яндекс.Диск, Imgur, Yapx и др.):</label>',
+      '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ССЫЛКИ НА ДОКАЗАТЕЛЬСТВА (Диск, Imgur, Yapx и др.):</label>',
       '  <textarea id="modal-form-links" rows="2" placeholder="Вставьте ссылки (каждая с новой строки)..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
       '  <label style="font-size: 11px; color: var(--line); margin-top: 4px;">ПРИКРЕПИТЬ ФАЙЛЫ / ФОТО (ДО 10 ШТУК):</label>',
       '  <input type="file" id="modal-form-files" multiple accept="image/*,.pdf,.txt,.doc,.docx" style="color: var(--muted); font-size: 11px;">',
@@ -656,7 +656,6 @@
       statusBox.style.color = "var(--line)";
       statusBox.textContent = "[SYS] Подготовка и загрузка файлов...";
 
-      // Считывание файлов перед отправкой
       var rawFiles = filesInput.files ? Array.from(filesInput.files) : [];
       readFilesAsBase64(rawFiles).then(function(encodedFiles) {
         var validFiles = (encodedFiles || []).filter(function(f) { return f !== null; });
@@ -683,7 +682,7 @@
         .then(function(data) {
           if (data.success) {
             statusBox.style.color = "var(--ok)";
-            statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord с файлами!";
+            statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
             if (descEl) descEl.value = "";
             if (targetEl) targetEl.value = "";
             if (pointsEl) pointsEl.value = "";
@@ -705,155 +704,6 @@
     modalBackdrop.style.display = "flex";
   }
 
-    function renderFields() {
-      var val = typeSelect.value;
-      if (val === "Обращение к руководству") {
-        dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ОБРАЩЕНИЯ:</label>',
-          '<textarea id="field-desc" rows="4" placeholder="Изложите суть обращения к руководству..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>'
-        ].join('');
-      } else if (val === "Жалоба") {
-        dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. СУТЬ ЖАЛОБЫ:</label>',
-          '<textarea id="field-desc" rows="3" placeholder="Опишите подробности нарушения..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-          '<label style="font-size: 11px; color: var(--line);">2. НИКНЕЙМ НА КОГО ЖАЛУЕТЕСЬ:</label>',
-          '<input type="text" id="field-target" placeholder="Игровой никнейм нарушителя" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
-        ].join('');
-      } else if (val === "Изменение устава") {
-        dynBox.innerHTML = [
-          '<label style="font-size: 11px; color: var(--line);">1. ЧТО ИЗМЕНИТЬ:</label>',
-          '<textarea id="field-desc" rows="3" placeholder="Что конкретно предлагается изменить..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;"></textarea>',
-          '<label style="font-size: 11px; color: var(--line);">2. КАКИЕ ПУНКТЫ УСТАВА:</label>',
-          '<input type="text" id="field-points" placeholder="Например: Раздел 2.2, пункт 4" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: \'Roboto Mono\', monospace;">'
-        ].join('');
-      }
-    }
-
-    typeSelect.addEventListener("change", renderFields);
-    renderFields();
-
-    filesInput.addEventListener("change", function() {
-      if (filesInput.files.length > 10) {
-        alert("Максимальное количество прикрепляемых файлов — 10.");
-        filesInput.value = "";
-        filesCount.textContent = "Файлов выбрано: 0 / 10";
-        return;
-      }
-      filesCount.textContent = "Файлов выбрано: " + filesInput.files.length + " / 10";
-    });
-
-    document.getElementById("modal-form-submit").addEventListener("click", function() {
-      var statusBox = document.getElementById("modal-form-status");
-      if (!isAuth || !token) {
-        statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[ОТКАЗ] Отправка форм заблокирована без авторизации в Личном кабинете.";
-        return;
-      }
-
-      var descEl = document.getElementById("field-desc");
-      var desc = descEl ? descEl.value.trim() : "";
-      var links = document.getElementById("modal-form-links").value.trim();
-      var targetEl = document.getElementById("field-target");
-      var pointsEl = document.getElementById("field-points");
-      var targetUser = targetEl ? targetEl.value.trim() : "";
-      var rulesPoints = pointsEl ? pointsEl.value.trim() : "";
-
-      if (!desc) {
-        statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[ОШИБКА] Заполните описание сути формы.";
-        return;
-      }
-
-      statusBox.style.color = "var(--line)";
-      statusBox.textContent = "[SYS] Передача формы на сервер...";
-
-      fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({
-          token: token,
-          type: typeSelect.value,
-          description: desc,
-          targetUser: targetUser,
-          rulesPoints: rulesPoints,
-          links: links,
-          filesCount: filesInput.files ? filesInput.files.length : 0
-        })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.success) {
-          statusBox.style.color = "var(--ok)";
-          statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
-          if (descEl) descEl.value = "";
-          if (targetEl) targetEl.value = "";
-          if (pointsEl) pointsEl.value = "";
-          document.getElementById("modal-form-links").value = "";
-          filesInput.value = "";
-          filesCount.textContent = "Файлов выбрано: 0 / 10";
-        } else {
-          statusBox.style.color = "var(--danger)";
-          statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
-        }
-      })
-      .catch(function() {
-        statusBox.style.color = "var(--danger)";
-        statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
-      });
-    });
-
-    modalBackdrop.style.display = "flex";
-  }
-
-  function runProjectPrisma() {
-    var chars = "ABCDEF0123456789!@#$%&*+=-_/?<>[]{}~";
-    var targetText = "FORMS - NICK - TFP";
-    var len = targetText.length;
-
-    var line = document.createElement("div");
-    line.className = "dnp-term-resp-line";
-    line.style.fontFamily = "monospace";
-    line.style.letterSpacing = "2px";
-    line.style.color = "#00f0ff";
-    document.getElementById("term-output").appendChild(line);
-    scrollTerm();
-
-    var startTime = Date.now();
-
-    var interval = setInterval(function() {
-      var elapsed = Date.now() - startTime;
-
-      if (elapsed < 1200) {
-        var s = "";
-        for (var i = 0; i < len; i++) {
-          s += chars[Math.floor(Math.random() * chars.length)];
-        }
-        line.textContent = s;
-      } else if (elapsed >= 1200 && elapsed < 3200) {
-        line.textContent = targetText;
-        line.style.color = "#ffffff";
-        line.style.textShadow = "0 0 10px #00f0ff";
-      } else if (elapsed >= 3200 && elapsed < 4800) {
-        line.style.color = "#ff5252";
-        line.style.textShadow = "none";
-        var s2 = "";
-        for (var j = 0; j < len; j++) {
-          s2 += chars[Math.floor(Math.random() * chars.length)];
-        }
-        line.textContent = s2;
-      } else {
-        clearInterval(interval);
-        line.textContent = "[SIGNAL LOST // ENCRYPTION TERMINATED]";
-        line.style.color = "var(--muted)";
-        scrollTerm();
-      }
-      scrollTerm();
-    }, 60);
-  }
-
   function sendTextForm(type, desc, extraField, links) {
     var token = localStorage.getItem("dnp_auth_token");
     if (!token) {
@@ -866,7 +716,7 @@
       type: type,
       description: desc,
       links: links || 'Отсутствуют',
-      filesCount: 0
+      files: []
     };
 
     if (type === "Жалоба") {
@@ -916,12 +766,7 @@
       first = (parts[0] || "").toUpperCase();
     }
 
-    if (cmd.toUpperCase() === "PROJECT PRISMA" || (parts[0] && parts[0].toUpperCase() === "PROJECT" && parts[1] && parts[1].toUpperCase() === "PRISMA")) {
-      runProjectPrisma();
-      return;
-    }
-
-    // КОМАНДА FORMS: ТЕКСТОВЫЙ РЕЖИМ И GUI
+    // КОМАНДА FORMS
     if (first === "FORMS") {
       var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
@@ -932,7 +777,6 @@
 
       var subCmd = (parts[1] || "").toLowerCase();
 
-      // forms 1 "Суть обращения" "Ссылки/файлы"
       if (subCmd === "1" || subCmd === "обращение") {
         var desc1 = (parts[2] || "").replace(/^"|"$/g, "");
         var links1 = (parts[3] || "").replace(/^"|"$/g, "");
@@ -944,7 +788,6 @@
         return;
       }
 
-      // forms 2 "Суть жалобы" "Никнейм нарушителя" "Ссылки/файлы"
       if (subCmd === "2" || subCmd === "жалоба") {
         var desc2 = (parts[2] || "").replace(/^"|"$/g, "");
         var target = (parts[3] || "").replace(/^"|"$/g, "");
@@ -957,7 +800,6 @@
         return;
       }
 
-      // forms 3 "Что изменить" "Какие пункты" "Ссылки/файлы"
       if (subCmd === "3" || subCmd === "устав") {
         var desc3 = (parts[2] || "").replace(/^"|"$/g, "");
         var points = (parts[3] || "").replace(/^"|"$/g, "");
@@ -986,7 +828,6 @@
       printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
       printLine("FIND \"фраза\"        - Поиск данных");
       printLine("FORMS               - Подача форм и рапортов (флаг -gui для графики)");
-      printLine("PROJECT PRISMA      - Протокол дешифровки");
       printLine("CLS / CLEAR         - Очистить терминал");
       return;
     }
@@ -1030,7 +871,6 @@
           ].join('');
           printLine(cardHtml);
         } else {
-          // ЧИСТЫЙ ТЕКСТОВЫЙ ВЫВОД БЕЗ РАМОК ===
           printLine("ПОЗЫВНОЙ / НИК    : " + p.name);
           printLine("ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
           printLine("НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
@@ -1078,57 +918,6 @@
       } else {
         printLine("По запросу \"" + query + "\" данных не обнаружено.");
       }
-      return;
-    }
-
-    if (first === "SET") {
-      Object.keys(envVars).forEach(function (k) {
-        printLine(k + "=" + envVars[k]);
-      });
-      printLine("USER=" + getCurrentUser());
-      return;
-    }
-
-    if (first === "TITLE") {
-      var newTitle = cmd.substring(5).trim();
-      var topTitle = document.getElementById("term-top-title");
-      if (newTitle && topTitle) {
-        topTitle.textContent = newTitle;
-        printLine("Заголовок окна обновлен.");
-      } else {
-        printLine("Синтаксис: TITLE &lt;текст&gt;");
-      }
-      return;
-    }
-
-    if (first === "VER") {
-      printLine("Deinopidae Terminal OS [Версия 4.10.88 - 2026]");
-      return;
-    }
-
-    if (first === "DATE") {
-      printLine("Текущая дата: " + new Date().toLocaleDateString());
-      return;
-    }
-
-    if (first === "TIME") {
-      printLine("Текущее время: " + new Date().toLocaleTimeString());
-      return;
-    }
-
-    if (first === "WHOAMI") {
-      printLine('D:\\"' + getCurrentUser() + '"');
-      return;
-    }
-
-    if (first === "HOSTNAME") {
-      printLine("SE-DNP-NODE04-COMPLEX");
-      return;
-    }
-
-    if (first === "ECHO") {
-      var echoMsg = cmd.substring(4).trim();
-      printLine(echoMsg);
       return;
     }
 
