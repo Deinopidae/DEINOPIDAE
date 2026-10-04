@@ -52,8 +52,8 @@
   });
 
   document.getElementById("cfg-save-btn").addEventListener("click", function () {
-    msg.style.color = "#00f0ff";
-    msg.textContent = "[SYS] Запись изменений в dnp_auth_db...";
+    msg.style.color = "var(--line)";
+    msg.textContent = "[SYS] Запись в dnp_auth_db...";
 
     var actStatus = "В активе";
     var radios = document.getElementsByName("pda-act-status");
@@ -77,15 +77,15 @@
       .then(function (res) {
         if (res.success) {
           localStorage.setItem("dnp_active_user", JSON.stringify(res.user));
-          msg.style.color = "#4af626";
-          msg.textContent = "[УСПЕХ] Параметры КПК сохранены.";
+          msg.style.color = "var(--ok)";
+          msg.textContent = "[УСПЕХ] Параметры сохранены.";
         } else {
-          msg.style.color = "#ff5252";
+          msg.style.color = "var(--danger)";
           msg.textContent = "[ОТКАЗ] " + (res.error || "Ошибка сохранения");
         }
       })
       .catch(function () {
-        msg.style.color = "#ff5252";
+        msg.style.color = "var(--danger)";
         msg.textContent = "[СБОЙ СЕТИ] Сервер недоступен.";
       });
   });

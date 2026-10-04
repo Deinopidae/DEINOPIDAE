@@ -7,7 +7,10 @@
   var loaderWipe = document.getElementById("loader-wipe");
   var loaderContent = document.getElementById("loader-content");
 
-  if (loader && loaderBar && loaderPercent && loaderPin && loaderBg && loaderWipe) {
+  // Проверка сессии: если КПК уже загружался в этой вкладке, анимация пропускается
+  if (sessionStorage.getItem("dnp_pda_booted") === "true") {
+    if (loader) loader.style.display = "none";
+  } else if (loader && loaderBar && loaderPercent && loaderPin && loaderBg && loaderWipe) {
     var targetProgress = 15;
     var currentProgress = 0;
     var isFullyLoaded = false;
@@ -102,6 +105,7 @@
     }
 
     function completeLoadingSequence() {
+      sessionStorage.setItem("dnp_pda_booted", "true");
       loaderPercent.textContent = "100";
       loaderBar.style.height = "100%";
       loaderBg.style.filter = "blur(0px)";
@@ -258,9 +262,13 @@
     }
   });
 
-  var firstButton = root.querySelector('[data-screen].is-active') || root.querySelector('[data-screen]:not([disabled])');
-  if (firstButton) {
-    openScreen(firstButton.getAttribute("data-screen"));
+  if (window.location.search.indexOf("open=terminal") !== -1) {
+    openScreen("database");
+  } else {
+    var firstButton = root.querySelector('[data-screen].is-active') || root.querySelector('[data-screen]:not([disabled])');
+    if (firstButton) {
+      openScreen(firstButton.getAttribute("data-screen"));
+    }
   }
 
   var corruptModule = document.getElementById("corrupt-module");
@@ -299,9 +307,7 @@
     });
   }
 
-  // =========================================================
-  // ТЕРМИНАЛ И СИСТЕМА ПРОФИЛЯ
-  // =========================================================
+  // ТЕРМИНАЛ
   var asciiLogo = [
     "    @@                                                        @@    ",
     "     @                                                         %     ",
@@ -362,60 +368,6 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
-  // ОБНОВЛЕНИЕ ШАПКИ (ВЫПАДАЮЩЕЕ МЕНЮ С ССЫЛКАМИ НА СТРАНИЦЫ)
-  window.renderAuthHeader = function () {
-    var slot = document.getElementById("dnp-auth-header-slot");
-    if (!slot) return;
-
-    var rawUser = localStorage.getItem("dnp_active_user");
-    if (rawUser) {
-      try {
-        var u = JSON.parse(rawUser);
-        var avatarHtml = '';
-        if (u.avatar && u.avatar.length > 5) {
-          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
-        } else {
-          avatarHtml = (u.displayName || u.username || 'U')[0].toUpperCase();
-        }
-
-        slot.innerHTML = [
-          '<div class="dnp-user-pill" id="dnp-user-pill">',
-          '  <div class="dnp-user-avatar" style="border-radius: 50%; overflow: hidden;">' + avatarHtml + '</div>',
-          '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
-          '</div>',
-          '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <a href="pages/profile.html" class="dnp-dropdown-item">Профиль</a>',
-          '  <a href="pages/tickets.html" class="dnp-dropdown-item">Обращения</a>',
-          '  <a href="pages/settings.html" class="dnp-dropdown-item">Настройки</a>',
-          '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
-          '</div>'
-        ].join('');
-
-        var pill = document.getElementById("dnp-user-pill");
-        var dd = document.getElementById("dnp-user-dropdown");
-        pill.addEventListener("click", function (e) {
-          e.stopPropagation();
-          dd.style.display = dd.style.display === "none" ? "flex" : "none";
-        });
-
-        document.addEventListener("click", function () {
-          if (dd) dd.style.display = "none";
-        });
-
-        document.getElementById("dnp-menu-logout").addEventListener("click", function () {
-          localStorage.removeItem("dnp_active_user");
-          localStorage.removeItem("dnp_auth_token");
-          location.reload();
-        });
-        return;
-      } catch (e) {}
-    }
-
-    slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
-  };
-
-  window.addEventListener("DOMContentLoaded", window.renderAuthHeader);
-
   var termLoaded = false;
   var termBooting = false;
   var termStep = 0;
@@ -431,9 +383,7 @@
     var termPromptLabel = document.getElementById("term-prompt-label");
     var termInput = document.getElementById("term-input");
 
-    if (termPromptLabel) {
-      termPromptLabel.textContent = getPromptStr();
-    }
+    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
 
     if (termLoaded || termBooting) {
       if (termInput) termInput.focus({ preventScroll: true });
@@ -459,9 +409,7 @@
     for (var j = filled; j < totalDots; j++) str += "• ";
     str += "]";
 
-    if (termProgressLine) {
-      termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
-    }
+    if (termProgressLine) termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
 
     if (termStep >= 10) {
       finishTerminalBoot();
@@ -492,16 +440,9 @@
       termAscii.style.display = "block";
     }
 
-    if (termPromptLabel) {
-      termPromptLabel.textContent = getPromptStr();
-    }
-
-    if (termPromptLine) {
-      termPromptLine.style.display = "flex";
-    }
-    if (termInput) {
-      termInput.focus({ preventScroll: true });
-    }
+    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
+    if (termPromptLine) termPromptLine.style.display = "flex";
+    if (termInput) termInput.focus({ preventScroll: true });
   }
 
   var termBody = document.getElementById("term-body");
@@ -512,18 +453,14 @@
       } else {
         if (window.getSelection && window.getSelection().toString().length > 0) return;
         var input = document.getElementById("term-input");
-        if (input) {
-          input.focus({ preventScroll: true });
-        }
+        if (input) input.focus({ preventScroll: true });
       }
     });
   }
 
   function scrollTerm() {
     var b = document.getElementById("term-body");
-    if (b) {
-      b.scrollTop = b.scrollHeight;
-    }
+    if (b) b.scrollTop = b.scrollHeight;
   }
 
   function printLine(text) {
@@ -536,7 +473,7 @@
     scrollTerm();
   }
 
-  // МОДАЛЬНОЕ ОКНО ДЛЯ FORMS -gui
+  // МОДАЛЬНЫЙ GUI FORMS
   var modalBackdrop = document.getElementById("dnp-gui-modal");
   var modalTitle = document.getElementById("dnp-modal-title");
   var modalBody = document.getElementById("dnp-modal-body");
@@ -558,11 +495,7 @@
         promises.push(new Promise(function (resolve) {
           var reader = new FileReader();
           reader.onload = function (e) {
-            resolve({
-              name: file.name,
-              type: file.type,
-              data: e.target.result
-            });
+            resolve({ name: file.name, type: file.type, data: e.target.result });
           };
           reader.onerror = function () { resolve(null); };
           reader.readAsDataURL(file);
@@ -665,13 +598,11 @@
       }
 
       statusBox.style.color = "var(--line)";
-      statusBox.textContent = "[SYS] Подготовка и загрузка файлов...";
+      statusBox.textContent = "[SYS] Подготовка и отправка...";
 
       var rawFiles = filesInput.files ? Array.from(filesInput.files) : [];
       readFilesAsBase64(rawFiles).then(function (encodedFiles) {
         var validFiles = (encodedFiles || []).filter(function (f) { return f !== null; });
-
-        statusBox.textContent = "[SYS] Передача формы на сервер...";
 
         fetch("https://deinopidae-api.onrender.com/api/forms/submit", {
           method: "POST",
@@ -693,7 +624,7 @@
           .then(function (data) {
             if (data.success) {
               statusBox.style.color = "var(--ok)";
-              statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
+              statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована!";
               if (descEl) descEl.value = "";
               if (targetEl) targetEl.value = "";
               if (pointsEl) pointsEl.value = "";
@@ -718,7 +649,7 @@
   function sendTextForm(type, desc, extraField, links) {
     var token = localStorage.getItem("dnp_auth_token");
     if (!token) {
-      printLine("<span style='color:var(--danger);'>[ОТКАЗ] Отправка форм доступна только авторизованным сотрудникам. Войдите в Личный кабинет.</span>");
+      printLine("<span style='color:var(--danger);'>[ОТКАЗ] Требуется авторизация в Личном кабинете.</span>");
       return;
     }
 
@@ -730,11 +661,8 @@
       files: []
     };
 
-    if (type === "Жалоба") {
-      payload.targetUser = extraField || "Не указан";
-    } else if (type === "Изменение устава") {
-      payload.rulesPoints = extraField || "Не указаны";
-    }
+    if (type === "Жалоба") payload.targetUser = extraField || "Не указан";
+    else if (type === "Изменение устава") payload.rulesPoints = extraField || "Не указаны";
 
     printLine("<span style='color:var(--line);'>[SYS] Отправка формы [" + type + "]...</span>");
 
@@ -749,7 +677,7 @@
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (data.success) {
-          printLine("<span style='color:var(--ok);'>[УСПЕХ] Заявка [" + type + "] " + data.reportId + " зарегистрирована и отправлена в Discord!</span>");
+          printLine("<span style='color:var(--ok);'>[УСПЕХ] Форма [" + type + "] " + data.reportId + " зарегистрирована!</span>");
         } else {
           printLine("<span style='color:var(--danger);'>[ОШИБКА] " + (data.error || "Сбой отправки") + "</span>");
         }
@@ -777,7 +705,6 @@
       first = (parts[0] || "").toUpperCase();
     }
 
-    // КОМАНДА FORMS
     if (first === "FORMS") {
       var isGui = parts.some(function (p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
@@ -804,7 +731,7 @@
         var target = (parts[3] || "").replace(/^"|"$/g, "");
         var links2 = (parts[4] || "").replace(/^"|"$/g, "");
         if (!desc2 || !target) {
-          printLine("Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки на доказательства (опционально)\"");
+          printLine("Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки\"");
           return;
         }
         sendTextForm("Жалоба", desc2, target, links2);
@@ -816,7 +743,7 @@
         var points = (parts[3] || "").replace(/^"|"$/g, "");
         var links3 = (parts[4] || "").replace(/^"|"$/g, "");
         if (!desc3 || !points) {
-          printLine("Синтаксис: forms 3 \"Что изменить\" \"Какие пункты устава\" \"Ссылки / Обоснование (опционально)\"");
+          printLine("Синтаксис: forms 3 \"Что изменить\" \"Какие пункты\" \"Ссылки\"");
           return;
         }
         sendTextForm("Изменение устава", desc3, points, links3);
@@ -824,18 +751,15 @@
       }
 
       printLine("=== [СИСТЕМА ПОДАЧИ ФОРМ И ОБРАЩЕНИЙ] ===");
-      printLine("  [1] Обращение к руководству");
-      printLine("      Синтаксис: forms 1 \"Суть обращения\" \"Ссылки на файлы\"");
-      printLine("  [2] Жалоба");
-      printLine("      Синтаксис: forms 2 \"Суть жалобы\" \"Никнейм нарушителя\" \"Ссылки на доказательства\"");
-      printLine("  [3] Изменение устава");
-      printLine("      Синтаксис: forms 3 \"Что изменить\" \"Какие пункты\" \"Ссылки/обоснование\"");
-      printLine("Для графического окна с загрузкой до 10 файлов введите: FORMS -gui");
+      printLine("  [1] Обращение к руководству: forms 1 \"Суть\" \"Ссылки\"");
+      printLine("  [2] Жалоба: forms 2 \"Суть\" \"Никнейм нарушителя\" \"Ссылки\"");
+      printLine("  [3] Изменение устава: forms 3 \"Что изменить\" \"Пункты\" \"Ссылки\"");
+      printLine("Для вызова графического окна: FORMS -gui");
       return;
     }
 
     if (first === "HELP") {
-      printLine("HELP                - Вызов списка доступных команд");
+      printLine("HELP                - Вызов списка команд");
       printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
       printLine("FIND \"фраза\"        - Поиск данных");
       printLine("FORMS               - Подача форм и рапортов (флаг -gui для графики)");
@@ -843,7 +767,6 @@
       return;
     }
 
-    // КОМАНДА STAFF С МОДАЛЬНЫМ ЗАТЕМНЯЮЩИМ ДОСЬЕ
     if (first === "STAFF") {
       var isGuiStaff = parts.some(function (p) { return p.toLowerCase() === "-gui"; });
       var cleanParts = parts.filter(function (p) { return p.toLowerCase() !== "-gui"; });
@@ -859,7 +782,6 @@
 
       if (p) {
         if (isGuiStaff) {
-          // Создание всплывающего секретного досье с затемнением экрана
           var backdrop = document.createElement("div");
           backdrop.className = "dnp-dossier-backdrop";
           backdrop.innerHTML = [
@@ -891,13 +813,8 @@
           ].join('');
 
           document.body.appendChild(backdrop);
-
-          backdrop.querySelector("#close-dossier-btn").addEventListener("click", function () {
-            backdrop.remove();
-          });
-          backdrop.addEventListener("click", function (e) {
-            if (e.target === backdrop) backdrop.remove();
-          });
+          backdrop.querySelector("#close-dossier-btn").addEventListener("click", function () { backdrop.remove(); });
+          backdrop.addEventListener("click", function (e) { if (e.target === backdrop) backdrop.remove(); });
         } else {
           printLine("ПОЗЫВНОЙ / НИК    : " + p.name);
           printLine("ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
@@ -905,12 +822,8 @@
           printLine("СТАТУС НОРМЫ      : " + p.quota_status);
           printLine("ПОВЫШЕНИЕ         : " + p.promotion);
           printLine("ОТПУСК            : " + p.vacation);
-          if (p.lectures) {
-            printLine("ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
-          }
-          if (p.exams) {
-            printLine("ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
-          }
+          if (p.lectures) printLine("ЛЕКЦИИ            : ПО: " + p.lectures.po + " | СО: " + p.lectures.so + " | МП: " + p.lectures.mp);
+          if (p.exams) printLine("ПРОВЕРКИ          : C: " + p.exams.c + " | B: " + p.exams.b + " | A: " + p.exams.a);
           printLine("НАКАЗАНИЯ         : " + p.penalties);
           printLine("АКТИВ / КОЙНЫ     : Хихикойны: " + p.coins + " | Очки активности: " + p.activity);
         }
@@ -939,9 +852,7 @@
       });
 
       if (matches.length > 0) {
-        matches.forEach(function (m) {
-          printLine("  • " + m);
-        });
+        matches.forEach(function (m) { printLine("  • " + m); });
         printLine("Найдено записей: " + matches.length);
       } else {
         printLine("По запросу \"" + query + "\" данных не обнаружено.");

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEINOPIDAE S.E. // НАСТРОЙКИ СИСТЕМЫ</title>
+  <title>DEINOPIDAE S.E. // НАСТРОЙКИ</title>
   <link rel="icon" type="image/png" href="../assets/image/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/pda_pages.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
   <div class="dnp-scan"></div>
@@ -21,61 +21,99 @@
     </div>
   </header>
 
-  <div class="pda-standalone-container">
-    <nav class="pda-tabs-nav">
-      <a href="../index.html" class="pda-tab-link is-back">← В ТЕРМИНАЛ / УСТАВ</a>
-      <a href="profile.html" class="pda-tab-link">ЛИЧНЫЙ ПРОФИЛЬ</a>
-      <a href="tickets.html" class="pda-tab-link">ЖУРНАЛ ОБРАЩЕНИЙ</a>
-      <a href="settings.html" class="pda-tab-link is-active">НАСТРОЙКИ СИСТЕМЫ</a>
-    </nav>
-
-    <div class="dnp-screen-card">
-      <div class="dnp-screen-head">
-        <h2>КОНФИГУРАЦИЯ ПАРАМЕТРОВ ОПЕРАТОРА</h2>
-        <span>DATABASE: DNP_AUTH_DB</span>
+  <div class="dnp-layout" id="dnp-layout">
+    <aside class="dnp-sidebar" id="dnp-sidebar">
+      <div class="dnp-sidebar-title">
+        <div class="dnp-sidebar-title-left">
+          <span>База данных</span>
+        </div>
+        <em class="dnp-menu-tag">DATA</em>
       </div>
 
-      <div class="pda-form-container">
-        <div style="display: flex; gap: 24px; align-items: center;">
-          <div class="pda-avatar-circle" style="width: 100px; height: 100px; flex-shrink: 0;">
-            <img src="../assets/image/favicon.png" id="cfg-avatar-preview" alt="Preview">
-          </div>
-          <div class="pda-input-group" style="flex-grow: 1;">
-            <label>АВАТАР (ЗАГРУЗИТЬ ФАЙЛ ИЛИ ВСТАВИТЬ ССЫЛКУ):</label>
-            <input type="file" id="cfg-avatar-file" accept="image/*" style="font-size: 11px; color: #8aa0a8;">
-            <input type="text" id="cfg-avatar-url" class="pda-control-input" placeholder="https://..." style="margin-top: 6px;">
-          </div>
-        </div>
-
-        <div class="pda-input-group">
-          <label>ОТОБРАЖАЕМЫЙ ПОЗЫВНОЙ / НИКНЕЙМ:</label>
-          <input type="text" id="cfg-display-name" class="pda-control-input" placeholder="Введите позывной">
-        </div>
-
-        <div class="pda-input-group">
-          <label>СТАТУС АКТИВНОСТИ В ШТАТЕ:</label>
-          <div class="pda-options-row">
-            <label class="pda-option-label">
-              <input type="radio" name="pda-act-status" value="В активе" checked>
-              <span>В АКТИВЕ</span>
-            </label>
-            <label class="pda-option-label">
-              <input type="radio" name="pda-act-status" value="Инактив">
-              <span>ИНАКТИВ</span>
-            </label>
-          </div>
-        </div>
-
-        <button type="button" class="pda-submit-btn" id="cfg-save-btn">СОХРАНИТЬ КОНФИГУРАЦИЮ ↗</button>
-        <div id="cfg-status-msg" style="font-size: 12px; font-weight: 700; min-height: 18px;"></div>
+      <div class="dnp-sidebar-body">
+        <a href="../index.html" class="dnp-nav-btn">
+          <b>←</b>
+          <span>УСТАВ ДЕПАРТАМЕНТА</span>
+          <i>DOC</i>
+        </a>
+        <a href="../index.html?open=terminal" class="dnp-nav-btn">
+          <b>00</b>
+          <span>ТЕРМИНАЛ</span>
+          <i>CMD</i>
+        </a>
+        <a href="profile.html" class="dnp-nav-btn">
+          <b>01</b>
+          <span>ЛИЧНЫЙ ПРОФИЛЬ</span>
+          <i>USR</i>
+        </a>
+        <a href="tickets.html" class="dnp-nav-btn">
+          <b>02</b>
+          <span>ЖУРНАЛ ОБРАЩЕНИЙ</span>
+          <i>REP</i>
+        </a>
+        <a href="settings.html" class="dnp-nav-btn is-active">
+          <b>03</b>
+          <span>НАСТРОЙКИ СИСТЕМЫ</span>
+          <i>CFG</i>
+        </a>
       </div>
 
-      <div class="pda-footer-status">
+      <div class="dnp-terminal-note">
         <span>PDA-LINK: ONLINE // SYS.V-6</span>
         <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
+        <span>SYNC: 97%</span>
         <span>CORE TEMP: 36C</span>
       </div>
-    </div>
+    </aside>
+
+    <main class="dnp-main">
+      <section class="dnp-screen is-visible">
+        <header class="dnp-screen-head">
+          <div class="dnp-screen-head-left">
+            <span class="dnp-screen-code">03</span>
+            <h2>КОНФИГУРАЦИЯ ПАРАМЕТРОВ ОПЕРАТОРА</h2>
+          </div>
+          <span class="dnp-screen-status">DATABASE // AUTH</span>
+        </header>
+
+        <div class="dnp-screen-content">
+          <div class="dnp-block">
+            <div style="display: flex; gap: 24px; align-items: center; margin-bottom: 16px;">
+              <div style="width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--border-active); background: #02070a; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                <img src="../assets/image/favicon.png" id="cfg-avatar-preview" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+              <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-size: 11px; color: var(--line); font-weight: 700;">ФОТО АВАТАРА (ФАЙЛ ИЛИ ССЫЛКА):</label>
+                <input type="file" id="cfg-avatar-file" accept="image/*" style="font-size: 11px; color: var(--muted);">
+                <input type="text" id="cfg-avatar-url" placeholder="https://..." style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 7px 10px; font-family: 'Roboto Mono', monospace; font-size: 12px;">
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
+              <label style="font-size: 11px; color: var(--line); font-weight: 700;">ПОЗЫВНОЙ / НИКНЕЙМ:</label>
+              <input type="text" id="cfg-display-name" placeholder="Введите позывной" style="background: var(--panel-2); border: 1px solid var(--line); color: #fff; padding: 8px 10px; font-family: 'Roboto Mono', monospace; font-size: 12px;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
+              <label style="font-size: 11px; color: var(--line); font-weight: 700;">СТАТУС АКТИВНОСТИ:</label>
+              <div style="display: flex; gap: 24px; font-size: 12px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="pda-act-status" value="В активе" checked>
+                  <span>В АКТИВЕ</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="radio" name="pda-act-status" value="Инактив">
+                  <span>ИНАКТИВ</span>
+                </label>
+              </div>
+            </div>
+
+            <button type="button" class="dnp-action" id="cfg-save-btn" style="margin: 0;">СОХРАНИТЬ КОНФИГУРАЦИЮ ↗</button>
+            <div id="cfg-status-msg" style="font-size: 12px; font-weight: 700; margin-top: 10px; min-height: 16px;"></div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script src="../js/live_polling.js"></script>

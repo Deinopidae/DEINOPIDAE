@@ -29,7 +29,7 @@
         var u = JSON.parse(rawUser);
         var avatarHtml = '';
         if (u.avatar && u.avatar.length > 5) {
-          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;">';
+          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
         } else {
           avatarHtml = (u.displayName || u.username || 'U')[0].toUpperCase();
         }
