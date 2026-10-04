@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>НАСТРОЙКИ ПРОФИЛЯ // DEINOPIDAE</title>
+  <link rel="icon" type="image/png" href="../assets/image/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/profile.css">
+  <link rel="stylesheet" href="../css/settings.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="page-topbar">
+      <a href="../index.html" class="nav-back">← ВЕРНУТЬСЯ В КПК</a>
+      <div class="nav-links">
+        <a href="profile.html">ПРОФИЛЬ</a>
+        <a href="tickets.html">ОБРАЩЕНИЯ</a>
+        <a href="settings.html" class="is-active">НАСТРОЙКИ</a>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <h2>КОНФИГУРАЦИЯ ОПЕРАТОРА</h2>
+
+      <div class="settings-avatar-wrap">
+        <div class="settings-avatar-circle">
+          <img src="../assets/image/favicon.png" id="avatar-preview" alt="Preview">
+        </div>
+        <div class="avatar-controls">
+          <label>АВАТАР (ФОТО ИЛИ ПРЯМАЯ ССЫЛКА):</label>
+          <input type="file" id="avatar-file" accept="image/*">
+          <input type="text" id="avatar-url" placeholder="Или вставьте ссылку: https://...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ОТОБРАЖАЕМЫЙ ПОЗЫВНОЙ / НИКНЕЙМ:</label>
+        <input type="text" id="set-displayname" placeholder="Введите позывной">
+      </div>
+
+      <div class="form-group">
+        <label>СТАТУС АКТИВНОСТИ:</label>
+        <div class="status-options">
+          <label class="radio-label">
+            <input type="radio" name="activity-status" value="В активе" checked>
+            <span>В АКТИВЕ</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="activity-status" value="Инактив">
+            <span>ИНАКТИВ</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="button" class="save-btn" id="save-settings-btn">СОХРАНИТЬ ИЗМЕНЕНИЯ ↗</button>
+      <div id="settings-msg" class="msg-box"></div>
+    </div>
+  </div>
+  <script src="../js/settings.js"></script>
+</body>
+</html>

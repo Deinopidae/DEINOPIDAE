@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>ПРОФИЛЬ СОТРУДНИКА // DEINOPIDAE</title>
+  <link rel="icon" type="image/png" href="../assets/image/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/dossier.css">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="page-topbar">
+      <a href="../index.html" class="nav-back">← ВЕРНУТЬСЯ В КПК</a>
+      <div class="nav-links">
+        <a href="profile.html" class="is-active">ПРОФИЛЬ</a>
+        <a href="tickets.html">ОБРАЩЕНИЯ</a>
+        <a href="settings.html">НАСТРОЙКИ</a>
+      </div>
+    </div>
+
+    <div class="dnp-dossier-paper" id="profile-card">
+      <div class="dossier-stamp-classified">SECTOR S.E. // ACTIVE</div>
+      <div class="dossier-header">
+        <span class="dossier-header-sub">ЛИЧНЫЙ ПРОФИЛЬ ОПЕРАТОРА</span>
+        <h2 id="prof-name">ЗАГРУЗКА ДАННЫХ...</h2>
+      </div>
+
+      <div class="dossier-grid">
+        <div class="dossier-photo-col">
+          <div class="dossier-avatar-circle">
+            <img src="../assets/image/favicon.png" id="prof-avatar" alt="Avatar">
+          </div>
+          <div class="dossier-activity-badge is-active" id="prof-activity-status">В АКТИВЕ</div>
+        </div>
+
+        <div class="dossier-rows" id="prof-rows">
+          <div class="dossier-row"><span>Звание / Ранг</span><b id="p-rank">—</b></div>
+          <div class="dossier-row"><span>Норматив МП/Часы</span><b id="p-norm">—</b></div>
+          <div class="dossier-row"><span>Статус нормы</span><b id="p-quota">—</b></div>
+          <div class="dossier-row"><span>Повышение</span><b id="p-promo">—</b></div>
+          <div class="dossier-row"><span>Отпуск</span><b id="p-vacation">—</b></div>
+          <div class="dossier-row"><span>Дисциплинарные меры</span><b id="p-penalties">—</b></div>
+          <div class="dossier-row"><span>Хихикойны / Баллы</span><b id="p-coins">—</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../js/profile.js"></script>
+</body>
+</html>

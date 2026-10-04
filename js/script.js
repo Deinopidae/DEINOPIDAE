@@ -300,7 +300,7 @@
   }
 
   // =========================================================
-  // ТЕРМИНАЛ И ФОРМЫ
+  // ТЕРМИНАЛ И СИСТЕМА ПРОФИЛЯ
   // =========================================================
   var asciiLogo = [
     "    @@                                                        @@    ",
@@ -350,7 +350,9 @@
     if (user) {
       try {
         var parsed = JSON.parse(user);
-        if (parsed && parsed.username) return parsed.username.toUpperCase();
+        if (parsed && (parsed.displayName || parsed.username)) {
+          return (parsed.displayName || parsed.username).toUpperCase();
+        }
       } catch (e) {}
     }
     return "USER";
@@ -360,7 +362,8 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
-  window.renderAuthHeader = function() {
+  // ОБНОВЛЕНИЕ ШАПКИ (ВЫПАДАЮЩЕЕ МЕНЮ С ССЫЛКАМИ НА СТРАНИЦЫ)
+  window.renderAuthHeader = function () {
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
 
@@ -368,30 +371,38 @@
     if (rawUser) {
       try {
         var u = JSON.parse(rawUser);
+        var avatarHtml = '';
+        if (u.avatar && u.avatar.length > 5) {
+          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+        } else {
+          avatarHtml = (u.displayName || u.username || 'U')[0].toUpperCase();
+        }
+
         slot.innerHTML = [
           '<div class="dnp-user-pill" id="dnp-user-pill">',
-          '  <div class="dnp-user-avatar">' + (u.username ? u.username[0].toUpperCase() : 'U') + '</div>',
-          '  <span class="dnp-user-name">' + (u.username || 'OPERATOR') + '</span>',
+          '  <div class="dnp-user-avatar" style="border-radius: 50%; overflow: hidden;">' + avatarHtml + '</div>',
+          '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
           '</div>',
           '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <div class="dnp-dropdown-item" id="dnp-menu-profile">Профиль (' + (u.roblox || 'N/A') + ')</div>',
-          '  <div class="dnp-dropdown-item" id="dnp-menu-settings">Настройки</div>',
+          '  <a href="pages/profile.html" class="dnp-dropdown-item">Профиль</a>',
+          '  <a href="pages/tickets.html" class="dnp-dropdown-item">Обращения</a>',
+          '  <a href="pages/settings.html" class="dnp-dropdown-item">Настройки</a>',
           '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
           '</div>'
         ].join('');
 
         var pill = document.getElementById("dnp-user-pill");
         var dd = document.getElementById("dnp-user-dropdown");
-        pill.addEventListener("click", function(e) {
+        pill.addEventListener("click", function (e) {
           e.stopPropagation();
           dd.style.display = dd.style.display === "none" ? "flex" : "none";
         });
 
-        document.addEventListener("click", function() {
+        document.addEventListener("click", function () {
           if (dd) dd.style.display = "none";
         });
 
-        document.getElementById("dnp-menu-logout").addEventListener("click", function() {
+        document.getElementById("dnp-menu-logout").addEventListener("click", function () {
           localStorage.removeItem("dnp_active_user");
           localStorage.removeItem("dnp_auth_token");
           location.reload();
@@ -525,17 +536,17 @@
     scrollTerm();
   }
 
-  // МОДАЛЬНОЕ ОКНО GUI
+  // МОДАЛЬНОЕ ОКНО ДЛЯ FORMS -gui
   var modalBackdrop = document.getElementById("dnp-gui-modal");
   var modalTitle = document.getElementById("dnp-modal-title");
   var modalBody = document.getElementById("dnp-modal-body");
   var modalClose = document.getElementById("dnp-modal-close-btn");
 
   if (modalClose && modalBackdrop) {
-    modalClose.addEventListener("click", function() {
+    modalClose.addEventListener("click", function () {
       modalBackdrop.style.display = "none";
     });
-    modalBackdrop.addEventListener("click", function(e) {
+    modalBackdrop.addEventListener("click", function (e) {
       if (e.target === modalBackdrop) modalBackdrop.style.display = "none";
     });
   }
@@ -543,17 +554,17 @@
   function readFilesAsBase64(fileList) {
     var promises = [];
     for (var i = 0; i < fileList.length; i++) {
-      (function(file) {
-        promises.push(new Promise(function(resolve) {
+      (function (file) {
+        promises.push(new Promise(function (resolve) {
           var reader = new FileReader();
-          reader.onload = function(e) {
+          reader.onload = function (e) {
             resolve({
               name: file.name,
               type: file.type,
               data: e.target.result
             });
           };
-          reader.onerror = function() { resolve(null); };
+          reader.onerror = function () { resolve(null); };
           reader.readAsDataURL(file);
         }));
       })(fileList[i]);
@@ -621,7 +632,7 @@
     typeSelect.addEventListener("change", renderFields);
     renderFields();
 
-    filesInput.addEventListener("change", function() {
+    filesInput.addEventListener("change", function () {
       if (filesInput.files.length > 10) {
         alert("Максимальное количество прикрепляемых файлов — 10.");
         filesInput.value = "";
@@ -631,7 +642,7 @@
       filesCount.textContent = "Файлов выбрано: " + filesInput.files.length + " / 10";
     });
 
-    document.getElementById("modal-form-submit").addEventListener("click", function() {
+    document.getElementById("modal-form-submit").addEventListener("click", function () {
       var statusBox = document.getElementById("modal-form-status");
       if (!isAuth || !token) {
         statusBox.style.color = "var(--danger)";
@@ -657,8 +668,8 @@
       statusBox.textContent = "[SYS] Подготовка и загрузка файлов...";
 
       var rawFiles = filesInput.files ? Array.from(filesInput.files) : [];
-      readFilesAsBase64(rawFiles).then(function(encodedFiles) {
-        var validFiles = (encodedFiles || []).filter(function(f) { return f !== null; });
+      readFilesAsBase64(rawFiles).then(function (encodedFiles) {
+        var validFiles = (encodedFiles || []).filter(function (f) { return f !== null; });
 
         statusBox.textContent = "[SYS] Передача формы на сервер...";
 
@@ -678,26 +689,26 @@
             files: validFiles
           })
         })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (data.success) {
-            statusBox.style.color = "var(--ok)";
-            statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
-            if (descEl) descEl.value = "";
-            if (targetEl) targetEl.value = "";
-            if (pointsEl) pointsEl.value = "";
-            document.getElementById("modal-form-links").value = "";
-            filesInput.value = "";
-            filesCount.textContent = "Файлов выбрано: 0 / 10";
-          } else {
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.success) {
+              statusBox.style.color = "var(--ok)";
+              statusBox.textContent = "[УСПЕХ] Заявка " + data.reportId + " зарегистрирована и передана в Discord!";
+              if (descEl) descEl.value = "";
+              if (targetEl) targetEl.value = "";
+              if (pointsEl) pointsEl.value = "";
+              document.getElementById("modal-form-links").value = "";
+              filesInput.value = "";
+              filesCount.textContent = "Файлов выбрано: 0 / 10";
+            } else {
+              statusBox.style.color = "var(--danger)";
+              statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
+            }
+          })
+          .catch(function () {
             statusBox.style.color = "var(--danger)";
-            statusBox.textContent = "[ОШИБКА] " + (data.error || "Не удалось отправить");
-          }
-        })
-        .catch(function() {
-          statusBox.style.color = "var(--danger)";
-          statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
-        });
+            statusBox.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
+          });
       });
     });
 
@@ -735,17 +746,17 @@
       },
       body: JSON.stringify(payload)
     })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.success) {
-        printLine("<span style='color:var(--ok);'>[УСПЕХ] Заявка [" + type + "] " + data.reportId + " зарегистрирована и отправлена в Discord!</span>");
-      } else {
-        printLine("<span style='color:var(--danger);'>[ОШИБКА] " + (data.error || "Сбой отправки") + "</span>");
-      }
-    })
-    .catch(function() {
-      printLine("<span style='color:var(--danger);'>[СБОЙ СЕТИ] Сервер недоступен.</span>");
-    });
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success) {
+          printLine("<span style='color:var(--ok);'>[УСПЕХ] Заявка [" + type + "] " + data.reportId + " зарегистрирована и отправлена в Discord!</span>");
+        } else {
+          printLine("<span style='color:var(--danger);'>[ОШИБКА] " + (data.error || "Сбой отправки") + "</span>");
+        }
+      })
+      .catch(function () {
+        printLine("<span style='color:var(--danger);'>[СБОЙ СЕТИ] Сервер недоступен.</span>");
+      });
   }
 
   function executeCommand(raw) {
@@ -768,7 +779,7 @@
 
     // КОМАНДА FORMS
     if (first === "FORMS") {
-      var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
+      var isGui = parts.some(function (p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
         showFormsGui();
         printLine("[SYS] Графический интерфейс подачи форм активирован.");
@@ -832,10 +843,10 @@
       return;
     }
 
-    // КОМАНДА STAFF (БЕЗ РАМОК ===)
+    // КОМАНДА STAFF С МОДАЛЬНЫМ ЗАТЕМНЯЮЩИМ ДОСЬЕ
     if (first === "STAFF") {
-      var isGuiStaff = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
-      var cleanParts = parts.filter(function(p) { return p.toLowerCase() !== "-gui"; });
+      var isGuiStaff = parts.some(function (p) { return p.toLowerCase() === "-gui"; });
+      var cleanParts = parts.filter(function (p) { return p.toLowerCase() !== "-gui"; });
       var nick = (cleanParts[1] || "").replace(/^"|"$/g, "").toLowerCase();
 
       if (!nick) {
@@ -848,28 +859,45 @@
 
       if (p) {
         if (isGuiStaff) {
-          var cardHtml = [
-            '<div class="dnp-gui-dossier-card">',
-            '  <div class="dnp-gui-card-head">',
-            '    <b>' + p.name + ' // ДОСЬЕ КОМПЛЕКСА</b>',
-            '    <span>' + p.title + ' [' + p.rank + ']</span>',
+          // Создание всплывающего секретного досье с затемнением экрана
+          var backdrop = document.createElement("div");
+          backdrop.className = "dnp-dossier-backdrop";
+          backdrop.innerHTML = [
+            '<div class="dnp-dossier-paper">',
+            '  <button type="button" class="dnp-dossier-close" id="close-dossier-btn">✕</button>',
+            '  <div class="dossier-stamp-classified">SECTOR S.E. // CONFIDENTIAL</div>',
+            '  <div class="dossier-header">',
+            '    <span class="dossier-header-sub">ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE</span>',
+            '    <h2>' + p.name + '</h2>',
             '  </div>',
-            '  <div class="dnp-gui-card-body">',
-            '    <div class="dnp-gui-avatar-box">',
-            '      <img src="assets/image/favicon.png" alt="Avatar">',
+            '  <div class="dossier-grid">',
+            '    <div class="dossier-photo-col">',
+            '      <div class="dossier-avatar-circle">',
+            '        <img src="assets/image/favicon.png" alt="Avatar">',
+            '      </div>',
+            '      <div class="dossier-activity-badge is-active">В АКТИВЕ</div>',
             '    </div>',
-            '    <div class="dnp-gui-stats-grid">',
-            '      <div class="dnp-gui-stat-cell"><span>Норматив МП/Часы</span><b>' + p.mp + ' МП / ' + p.hours + ' ч.</b></div>',
-            '      <div class="dnp-gui-stat-cell"><span>Статус нормы</span><b>' + p.quota_status + '</b></div>',
-            '      <div class="dnp-gui-stat-cell"><span>Повышение</span><b>' + p.promotion + '</b></div>',
-            '      <div class="dnp-gui-stat-cell"><span>Отпуск</span><b>' + p.vacation + '</b></div>',
-            '      <div class="dnp-gui-stat-cell"><span>Дисциплина</span><b>' + p.penalties + '</b></div>',
-            '      <div class="dnp-gui-stat-cell"><span>Хихикойны / Актив</span><b>' + p.coins + ' / ' + p.activity + ' PTS</b></div>',
+            '    <div class="dossier-rows">',
+            '      <div class="dossier-row"><span>Звание / Ранг</span><b>' + p.title + ' [' + p.rank + ']</b></div>',
+            '      <div class="dossier-row"><span>Норматив МП/Часы</span><b>' + p.mp + ' МП / ' + p.hours + ' ч.</b></div>',
+            '      <div class="dossier-row"><span>Статус нормы</span><b>' + p.quota_status + '</b></div>',
+            '      <div class="dossier-row"><span>Повышение</span><b>' + p.promotion + '</b></div>',
+            '      <div class="dossier-row"><span>Отпуск</span><b>' + p.vacation + '</b></div>',
+            '      <div class="dossier-row"><span>Дисциплина</span><b>' + p.penalties + '</b></div>',
+            '      <div class="dossier-row"><span>Хихикойны / Баллы</span><b>' + p.coins + ' / ' + p.activity + ' PTS</b></div>',
             '    </div>',
             '  </div>',
             '</div>'
           ].join('');
-          printLine(cardHtml);
+
+          document.body.appendChild(backdrop);
+
+          backdrop.querySelector("#close-dossier-btn").addEventListener("click", function () {
+            backdrop.remove();
+          });
+          backdrop.addEventListener("click", function (e) {
+            if (e.target === backdrop) backdrop.remove();
+          });
         } else {
           printLine("ПОЗЫВНОЙ / НИК    : " + p.name);
           printLine("ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
@@ -934,7 +962,7 @@
   var termTyped = document.getElementById("term-typed");
 
   if (termInput) {
-    termInput.addEventListener("input", function() {
+    termInput.addEventListener("input", function () {
       if (termTyped) termTyped.textContent = termInput.value;
     });
 
