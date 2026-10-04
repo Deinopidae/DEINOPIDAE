@@ -1,0 +1,287 @@
+/* =========================================================
+   DEINOPIDAE S.E. // TACTICAL PDA MODULE SYSTEM
+   Единая приглушённая стилистика КПК
+   ========================================================= */
+
+:root {
+  --pda-bg: #04080b;
+  --pda-panel: rgba(9, 16, 21, 0.88);
+  --pda-panel-hover: rgba(14, 24, 32, 0.95);
+  --pda-border: rgba(95, 162, 181, 0.22);
+  --pda-border-active: rgba(95, 162, 181, 0.55);
+  --pda-accent: #6ba6b8;
+  --pda-accent-dim: #466e7a;
+  --pda-text-main: #ccd5d9;
+  --pda-text-muted: #6e848f;
+  --pda-status-ok: #5c996b;
+  --pda-status-err: #a6585c;
+}
+
+/* Обёртка модуля внутри экрана КПК */
+.pda-screen-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: var(--pda-panel);
+  border: 1px solid var(--pda-border);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.85);
+  min-height: calc(100vh - 120px);
+  animation: pdaFadeSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pdaFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Шапка активного модуля */
+.pda-head-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--pda-border);
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.pda-head-title {
+  margin: 0;
+  font: 800 18px "Exo 2", sans-serif;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.pda-head-tag {
+  font-size: 10.5px;
+  color: var(--pda-accent);
+  letter-spacing: 1.5px;
+  font-family: "Roboto Mono", monospace;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   ЛИЧНОЕ ДЕЛО И ПРОФИЛЬ
+   ========================================================= */
+.pda-dossier-layout {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  background: rgba(6, 12, 16, 0.6);
+  border: 1px solid var(--pda-border);
+  padding: 20px;
+}
+
+.pda-photo-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pda-avatar-frame {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid var(--pda-border-active);
+  background: #020507;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  transition: border-color 0.3s ease;
+}
+
+.pda-avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pda-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-family: "Roboto Mono", monospace;
+}
+
+.pda-badge.is-active {
+  background: rgba(92, 153, 107, 0.12);
+  border: 1px solid var(--pda-status-ok);
+  color: var(--pda-status-ok);
+}
+
+.pda-badge.is-inactive {
+  background: rgba(166, 88, 92, 0.12);
+  border: 1px solid var(--pda-status-err);
+  color: var(--pda-status-err);
+}
+
+.pda-dossier-table {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pda-table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 12px;
+  background: rgba(11, 20, 26, 0.5);
+  border-left: 2px solid var(--pda-accent-dim);
+  font-size: 11.5px;
+  transition: all 0.2s ease;
+}
+
+.pda-table-row:hover {
+  background: rgba(16, 28, 36, 0.7);
+  border-left-color: var(--pda-accent);
+}
+
+.pda-table-row span {
+  color: var(--pda-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pda-table-row b {
+  color: var(--pda-text-main);
+  font-family: "Exo 2", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================
+   РЕЕСТР ОБРАЩЕНИЙ И ТИКЕТОВ
+   ========================================================= */
+.pda-tickets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pda-ticket-card {
+  background: rgba(7, 14, 18, 0.6);
+  border: 1px solid var(--pda-border);
+  border-left: 3px solid var(--pda-accent-dim);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.pda-ticket-card:hover {
+  border-left-color: var(--pda-accent);
+  background: rgba(10, 20, 26, 0.75);
+}
+
+.pda-ticket-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pda-ticket-id {
+  font: 800 13px "Exo 2", sans-serif;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.pda-ticket-body {
+  font-size: 12px;
+  color: var(--pda-text-main);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pda-ticket-foot {
+  font-size: 10.5px;
+  color: var(--pda-text-muted);
+  border-top: 1px solid rgba(95, 162, 181, 0.1);
+  padding-top: 6px;
+}
+
+/* =========================================================
+   ФОРМА НАСТРОЕК
+   ========================================================= */
+.pda-form-box {
+  background: rgba(6, 12, 16, 0.6);
+  border: 1px solid var(--pda-border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pda-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pda-field label {
+  font-size: 10.5px;
+  color: var(--pda-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.pda-input {
+  background: #060b0e;
+  border: 1px solid var(--pda-border);
+  color: var(--pda-text-main);
+  padding: 8px 12px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pda-input:focus {
+  border-color: var(--pda-accent);
+}
+
+.pda-radio-row {
+  display: flex;
+  gap: 20px;
+}
+
+.pda-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  cursor: pointer;
+  color: var(--pda-text-main);
+}
+
+.pda-button {
+  background: #091319;
+  border: 1px solid var(--pda-border-active);
+  color: var(--pda-accent);
+  padding: 9px 18px;
+  font: 800 12px "Exo 2", sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+
+.pda-button:hover {
+  background: var(--pda-accent);
+  color: #030709;
+}

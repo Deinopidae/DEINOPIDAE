@@ -1,39 +1,42 @@
-(function() {
+(function () {
   var token = localStorage.getItem("dnp_auth_token");
-  if (!token) { window.location.href = "../auth.html"; return; }
+  if (!token) {
+    window.location.href = "../auth.html";
+    return;
+  }
 
-  var list = document.getElementById("tickets-list");
+  var feed = document.getElementById("tickets-feed");
 
   fetch("https://deinopidae-api.onrender.com/api/forms/my", {
     headers: { "Authorization": "Bearer " + token }
   })
-  .then(function(res) { return res.json(); })
-  .then(function(tickets) {
-    if (!tickets || tickets.length === 0) {
-      list.innerHTML = '<div class="ticket-empty">У вас пока нет зарегистрированных обращений.</div>';
-      return;
-    }
+    .then(function (r) { return r.json(); })
+    .then(function (tickets) {
+      if (!tickets || tickets.length === 0) {
+        feed.innerHTML = '<div style="font-size:12px; color: var(--pda-text-muted); padding: 16px;">Зарегистрированных обращений в dnp_tickets_db не обнаружено.</div>';
+        return;
+      }
 
-    list.innerHTML = "";
-    tickets.forEach(function(t) {
-      var card = document.createElement("div");
-      card.className = "ticket-card";
+      feed.innerHTML = "";
+      tickets.forEach(function (t) {
+        var card = document.createElement("div");
+        card.className = "pda-ticket-card";
 
-      var dateStr = new Date(t.submittedAt).toLocaleString("ru-RU");
+        var date = new Date(t.submittedAt).toLocaleString("ru-RU");
 
-      card.innerHTML = [
-        '<div class="ticket-head">',
-        '  <span class="ticket-id">[' + t.type + '] ' + t.reportId + '</span>',
-        '  <span class="ticket-status">' + (t.status || 'НА ПРОВЕРКЕ') + '</span>',
-        '</div>',
-        '<p class="ticket-desc">' + t.description + '</p>',
-        '<div class="ticket-meta">Дата подачи: ' + dateStr + ' | Доп. ссылки: ' + (t.links || 'Нет') + '</div>'
-      ].join('');
+        card.innerHTML = [
+          '<div class="pda-ticket-top">',
+          '  <span class="pda-ticket-id">[' + t.type + '] ' + t.reportId + '</span>',
+          '  <span class="pda-badge is-active">' + (t.status || 'НА ПРОВЕРКЕ') + '</span>',
+          '</div>',
+          '<p class="pda-ticket-body">' + t.description + '</p>',
+          '<div class="pda-ticket-foot">Дата регистрации: ' + date + ' | Доп. материалы: ' + (t.links || 'Отсутствуют') + '</div>'
+        ].join('');
 
-      list.appendChild(card);
+        feed.appendChild(card);
+      });
+    })
+    .catch(function () {
+      feed.innerHTML = '<div style="color: var(--pda-status-err); font-size:12px;">Ошибка доступа к базе dnp_tickets_db.</div>';
     });
-  })
-  .catch(function() {
-    list.innerHTML = '<div class="ticket-empty" style="color:#ff5252;">Ошибка соединения с dnp_tickets_db.</div>';
-  });
 })();

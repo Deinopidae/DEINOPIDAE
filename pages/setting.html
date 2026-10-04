@@ -2,60 +2,112 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>НАСТРОЙКИ ПРОФИЛЯ // DEINOPIDAE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEINOPIDAE S.E. // НАСТРОЙКИ</title>
   <link rel="icon" type="image/png" href="../assets/image/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/profile.css">
-  <link rel="stylesheet" href="../css/settings.css">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/pda_modules.css">
 </head>
 <body>
-  <div class="page-container">
-    <div class="page-topbar">
-      <a href="../index.html" class="nav-back">← ВЕРНУТЬСЯ В КПК</a>
-      <div class="nav-links">
-        <a href="profile.html">ПРОФИЛЬ</a>
-        <a href="tickets.html">ОБРАЩЕНИЯ</a>
-        <a href="settings.html" class="is-active">НАСТРОЙКИ</a>
-      </div>
+  <div class="dnp-scan"></div>
+
+  <header class="dnp-topbar">
+    <div class="dnp-brand">
+      <strong>DEINOPIDAE / ДЕИНОПИДЫ</strong>
+      <span>Департамент S.E. · Kurodzakura</span>
     </div>
-
-    <div class="settings-card">
-      <h2>КОНФИГУРАЦИЯ ОПЕРАТОРА</h2>
-
-      <div class="settings-avatar-wrap">
-        <div class="settings-avatar-circle">
-          <img src="../assets/image/favicon.png" id="avatar-preview" alt="Preview">
-        </div>
-        <div class="avatar-controls">
-          <label>АВАТАР (ФОТО ИЛИ ПРЯМАЯ ССЫЛКА):</label>
-          <input type="file" id="avatar-file" accept="image/*">
-          <input type="text" id="avatar-url" placeholder="Или вставьте ссылку: https://...">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>ОТОБРАЖАЕМЫЙ ПОЗЫВНОЙ / НИКНЕЙМ:</label>
-        <input type="text" id="set-displayname" placeholder="Введите позывной">
-      </div>
-
-      <div class="form-group">
-        <label>СТАТУС АКТИВНОСТИ:</label>
-        <div class="status-options">
-          <label class="radio-label">
-            <input type="radio" name="activity-status" value="В активе" checked>
-            <span>В АКТИВЕ</span>
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="activity-status" value="Инактив">
-            <span>ИНАКТИВ</span>
-          </label>
-        </div>
-      </div>
-
-      <button type="button" class="save-btn" id="save-settings-btn">СОХРАНИТЬ ИЗМЕНЕНИЯ ↗</button>
-      <div id="settings-msg" class="msg-box"></div>
+    <div class="dnp-top-meta">
+      <div id="dnp-auth-header-slot"></div>
     </div>
+  </header>
+
+  <div class="dnp-layout" id="dnp-layout">
+    <aside class="dnp-sidebar">
+      <div class="dnp-sidebar-title">
+        <div class="dnp-sidebar-title-left">
+          <span>Навигация КПК</span>
+        </div>
+        <em class="dnp-menu-tag">SYS</em>
+      </div>
+
+      <div class="dnp-sidebar-body">
+        <a href="../index.html" class="dnp-nav-btn">
+          <b>00</b>
+          <span>УСТАВ ДЕПАРТАМЕНТА</span>
+          <i>DOC</i>
+        </a>
+        <a href="profile.html" class="dnp-nav-btn">
+          <b>01</b>
+          <span>ЛИЧНЫЙ ПРОФИЛЬ</span>
+          <i>USR</i>
+        </a>
+        <a href="tickets.html" class="dnp-nav-btn">
+          <b>02</b>
+          <span>ЖУРНАЛ ОБРАЩЕНИЙ</span>
+          <i>REP</i>
+        </a>
+        <a href="settings.html" class="dnp-nav-btn is-active">
+          <b>03</b>
+          <span>НАСТРОЙКИ СИСТЕМЫ</span>
+          <i>CFG</i>
+        </a>
+      </div>
+
+      <div class="dnp-terminal-note">
+        <span>PDA-LINK: ONLINE // SYS.V-6</span>
+        <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
+        <span>SYNC: 97%</span>
+        <span>CORE TEMP: 36C</span>
+      </div>
+    </aside>
+
+    <main class="dnp-main">
+      <div class="pda-screen-viewport">
+        <div class="pda-head-strip">
+          <h2 class="pda-head-title">ПАРАМЕТРЫ ПРОФИЛЯ ОПЕРАТОРА</h2>
+          <span class="pda-head-tag">DATABASE: DNP_AUTH_DB</span>
+        </div>
+
+        <div class="pda-form-box">
+          <div style="display: flex; gap: 24px; align-items: center;">
+            <div class="pda-avatar-frame" style="width: 90px; height: 90px; flex-shrink: 0;">
+              <img src="../assets/image/favicon.png" id="cfg-avatar-preview" alt="Preview">
+            </div>
+            <div class="pda-field" style="flex-grow: 1;">
+              <label>ФОТО АВАТАРА (ФАЙЛ ИЛИ ПРЯМАЯ ССЫЛКА):</label>
+              <input type="file" id="cfg-avatar-file" accept="image/*" style="font-size: 11px; color: var(--pda-text-muted);">
+              <input type="text" id="cfg-avatar-url" class="pda-input" placeholder="https://..." style="margin-top: 6px;">
+            </div>
+          </div>
+
+          <div class="pda-field">
+            <label>ПОЗЫВНОЙ / ОТОБРАЖАЕМОЕ ИМЯ:</label>
+            <input type="text" id="cfg-display-name" class="pda-input" placeholder="Введите позывной">
+          </div>
+
+          <div class="pda-field">
+            <label>СТАТУС ВЕДОМОСТИ АКТИВА:</label>
+            <div class="pda-radio-row">
+              <label class="pda-radio-label">
+                <input type="radio" name="pda-act-status" value="В активе" checked>
+                <span>В АКТИВЕ</span>
+              </label>
+              <label class="pda-radio-label">
+                <input type="radio" name="pda-act-status" value="Инактив">
+                <span>ИНАКТИВ</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="button" class="pda-button" id="cfg-save-btn">СОХРАНИТЬ КОНФИГУРАЦИЮ ↗</button>
+          <div id="cfg-status-msg" style="font-size: 11.5px; font-weight: 700; min-height: 16px;"></div>
+        </div>
+      </div>
+    </main>
   </div>
+
+  <script src="../js/live_polling.js"></script>
   <script src="../js/settings.js"></script>
 </body>
 </html>
