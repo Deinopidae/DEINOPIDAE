@@ -31,7 +31,7 @@ a {
   outline: none;
 }
 
-/* ================= LOADER ================= */
+/* ================= LOADER (БЕЗ ЯРКОГО НЕОНА) ================= */
 .dnp-loader {
   position: fixed;
   inset: 0;
@@ -48,8 +48,8 @@ a {
   position: absolute;
   inset: -30px;
   background:
-    linear-gradient(rgba(30, 50, 65, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 50, 65, .035) 1px, transparent 1px),
+    linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px),
     #020507;
   background-size: 26px 26px, 26px 26px, auto;
   filter: blur(20px);
@@ -79,7 +79,7 @@ a {
   top: 0;
   bottom: 0;
   width: 4px;
-  background: rgba(45, 68, 82, 0.18);
+  background: rgba(138, 160, 168, 0.12);
 }
 
 .dnp-loader-bar {
@@ -88,7 +88,7 @@ a {
   left: 0;
   width: 100%;
   height: 0%;
-  background: #467686;
+  background: #8aa0a8;
   box-shadow: none;
 }
 
@@ -114,11 +114,11 @@ a {
   display: inline-block;
   width: 3px;
   height: 16px;
-  background: #467686;
+  background: #d4dee3;
 }
 
 .dnp-loader-num {
-  color: #c0cfd7;
+  color: #ffffff;
   font-family: "Exo 2", sans-serif;
   font-size: 22px;
   font-weight: 800;
@@ -127,7 +127,7 @@ a {
 }
 
 .dnp-loader-sub {
-  color: #5d7380;
+  color: #7d919a;
   font-family: "Roboto Mono", monospace;
   font-size: 11px;
   font-weight: 700;
@@ -140,7 +140,7 @@ a {
 }
 
 .dnp-loader-dots {
-  color: #467686;
+  color: #a4b4bb;
   font-size: 9px;
   letter-spacing: 1px;
 }
@@ -156,7 +156,7 @@ a {
 
 .dnp-loader-title {
   margin: 0;
-  color: #8fa5b0;
+  color: #b2c3ca;
   font-family: "Chakra Petch", "Roboto Mono", monospace;
   font-size: clamp(26px, 3.8vw, 46px);
   font-weight: 800;
@@ -171,7 +171,7 @@ a {
   bottom: 0;
   left: 0;
   width: 0%;
-  background: #11222b;
+  background: #111a20;
   z-index: 10;
   pointer-events: none;
 }
@@ -187,20 +187,20 @@ a {
   transition: left 0.45s cubic-bezier(0.65, 0, 0.15, 1);
 }
 
-/* ================= PDA КАРКАС И ПЕРЕМЕННЫЕ ================= */
+/* ================= PDA ПЕРЕМЕННЫЕ И ОСНОВА ================= */
 .dnp-pda {
   --bg: #020507;
-  --panel: #03070a;
-  --panel-2: #04090d;
-  --border-card: #132029;
-  --border-subtle: #192a35;
-  --border-active: #203746;
-  --line: #4f6774;
-  --line-soft: rgba(30, 50, 65, .25);
-  --text: #8fa2ad;
+  --panel: #04080b;
+  --panel-2: #050b0f;
+  --border-card: #14222b;
+  --border-subtle: #192b37;
+  --border-active: #233c4c;
+  --line: #526b79;
+  --line-soft: rgba(138, 160, 168, .2);
+  --text: #8ea3af;
   --text-white: #ffffff;
-  --muted: #5d7380;
-  --warn: #9e885c;
+  --muted: #5e7480;
+  --warn: #9e895e;
   --danger: #b25353;
   --ok: #5c8874;
   
@@ -213,14 +213,14 @@ a {
   overflow: visible; 
   
   background:
-    linear-gradient(rgba(30, 50, 65, .05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 50, 65, .04) 1px, transparent 1px),
+    linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px),
     var(--bg);
   background-size: 26px 26px, 26px 26px, auto;
   border: 1px solid var(--border-card);
   color: var(--text);
   font-family: "Roboto Mono", monospace;
-  box-shadow: 0 0 24px rgba(0, 0, 0, .8);
+  box-shadow: 0 0 20px rgba(0, 0, 0, .85);
 }
 
 .dnp-scan {
@@ -266,10 +266,11 @@ a {
   color: var(--text-white);
 }
 
+/* ЛОГОТИП В ЛЕВОМ УГЛУ (СДЕЛАН СПОКОЙНЫМ БЕЛЫМ И СЕРЫМ) */
 .dnp-brand strong {
   display: inline-block;
-  color: var(--text-white);
-  font: 800 15px "Exo 2", sans-serif;
+  color: #ffffff;
+  font: 800 14.5px "Exo 2", sans-serif;
   letter-spacing: 1.5px;
 }
 
@@ -277,7 +278,8 @@ a {
   display: inline-block;
   margin-left: 10px;
   font-size: 11px;
-  color: var(--line);
+  color: #556c7a;
+  letter-spacing: 0.8px;
 }
 
 .dnp-top-meta {
@@ -294,7 +296,7 @@ a {
   padding: 5px 12px;
   background: #050b0f;
   border: 1px solid var(--border-card);
-  color: #7d93a0;
+  color: #92a6b2;
   font: 800 11px "Exo 2", sans-serif;
   letter-spacing: 0.8px;
   cursor: pointer;
@@ -591,12 +593,12 @@ a {
   line-height: 1.7;
 }
 
-/* ================= ЗАГОЛОВОК РАЗДЕЛА (БЕЗ ПОЛОСОК) ================= */
+/* ================= ПОЛОСКИ СВЕРХУ И СНИЗУ ЗАГОЛОВКА РАЗДЕЛА ================= */
 .dnp-screen-head {
   grid-column: 2;
   grid-row: 1;
-  margin-bottom: 8px;
-  padding: 12px 0 16px 0;
+  margin-bottom: 16px;
+  padding: 0;
   border: none;
   background: transparent;
   text-align: center;
@@ -604,11 +606,30 @@ a {
   position: relative;
 }
 
+.dnp-screen-head p {
+  margin: 0 0 6px 0;
+  color: #556c7a;
+  font-size: 11px;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
 .dnp-screen-head h1 {
   margin: 0;
-  color: var(--text-white);
-  font: 800 clamp(22px, 3vw, 32px)/1.1 "Exo 2", sans-serif;
+  color: #ffffff;
+  font: 800 clamp(22px, 2.8vw, 32px)/1.1 "Exo 2", sans-serif;
   letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.dnp-screen-head span {
+  display: inline-block;
+  margin-top: 6px;
+  color: #556c7a;
+  font-size: 10.5px;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
 }
 
@@ -642,7 +663,6 @@ a {
   100% { opacity: 1; }
 }
 
-.dnp-screen-content.dnp-no-flicker,
 .dnp-screen-content { 
   animation: smoothFadeIn 0.15s ease both; 
 }
@@ -1146,7 +1166,7 @@ a {
   margin-left: 6px;
 }
 
-/* ================= СТРАНИЦА "КОРНИ" (ПОВРЕЖДЁННЫЙ СЕКТОР) ================= */
+/* ================= СТРАНИЦА "КОРНИ" ================= */
 .dnp-corrupt-module {
   position: relative;
   overflow: hidden;

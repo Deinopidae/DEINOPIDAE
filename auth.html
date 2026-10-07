@@ -15,22 +15,22 @@
       padding: 0;
       background: #020507;
       font-family: "Roboto Mono", monospace;
-      color: #b2c2ca;
+      color: #92a4af;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       background-image: 
-        linear-gradient(rgba(30, 50, 65, .07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30, 50, 65, .06) 1px, transparent 1px);
+        linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px);
       background-size: 26px 26px;
     }
     .auth-card {
       width: 100%;
       max-width: 440px;
       background: #04090d;
-      border: 1px solid #13222d;
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
+      border: 1px solid #14222b;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.95);
       padding: 32px 28px;
       display: flex;
       flex-direction: column;
@@ -56,7 +56,7 @@
     }
     .auth-header span {
       font-size: 11px;
-      color: #506774;
+      color: #556c7a;
       letter-spacing: 1px;
     }
     .auth-tabs {
@@ -64,7 +64,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       margin-bottom: 22px;
-      border-bottom: 1px solid #13222d;
+      border-bottom: 1px solid #14222b;
       padding-bottom: 4px;
     }
     .auth-tab-btn {
@@ -72,7 +72,7 @@
       border: none;
       padding: 8px;
       font: 800 12px "Exo 2", sans-serif;
-      color: #5c727f;
+      color: #556c7a;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -101,7 +101,7 @@
     }
     .auth-field input {
       background: #020609;
-      border: 1px solid #13222d;
+      border: 1px solid #14222b;
       padding: 10px 12px;
       color: #ffffff;
       font-family: "Roboto Mono", monospace;
@@ -110,13 +110,13 @@
       transition: border-color 0.15s ease;
     }
     .auth-field input:focus {
-      border-color: #243c4d;
+      border-color: #233c4c;
     }
     .auth-submit-btn {
       margin-top: 8px;
       background: #081218;
-      border: 1px solid #1a313f;
-      color: #b2c5cf;
+      border: 1px solid #192b37;
+      color: #a4b6bf;
       padding: 12px;
       font: 800 13px "Exo 2", sans-serif;
       letter-spacing: 1.5px;
@@ -126,7 +126,7 @@
     }
     .auth-submit-btn:hover {
       background: #0c1d27;
-      border-color: #2a4c62;
+      border-color: #233c4c;
       color: #ffffff;
     }
     .auth-msg {
@@ -142,7 +142,7 @@
       font-size: 11px;
     }
     .auth-back a {
-      color: #5c727f;
+      color: #556c7a;
       text-decoration: none;
       transition: color 0.15s ease;
     }
@@ -232,7 +232,6 @@
       msg.textContent = "";
     });
 
-    // Обработка регистрации
     formReg.addEventListener("submit", function(e) {
       e.preventDefault();
       var username = document.getElementById("reg-username").value.trim();
@@ -260,7 +259,7 @@
           localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-          msg.style.color = "#6ba879";
+          msg.style.color = "#5c8874";
           msg.textContent = "[УСПЕХ] Аккаунт создан! Переход в систему...";
           setTimeout(function() { window.location.href = "index.html"; }, 800);
         } else {
@@ -274,7 +273,6 @@
       });
     });
 
-    // Обработка входа
     formLogin.addEventListener("submit", function(e) {
       e.preventDefault();
       var ident = document.getElementById("login-identifier").value.trim();
@@ -294,7 +292,7 @@
           localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-          msg.style.color = "#6ba879";
+          msg.style.color = "#5c8874";
           msg.textContent = "[УСПЕХ] Доступ разрешен! Вход в систему...";
           setTimeout(function() { window.location.href = "index.html"; }, 600);
         } else {
