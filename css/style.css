@@ -31,7 +31,7 @@ a {
   outline: none;
 }
 
-/* ================= LOADER (СПОКОЙНЫЕ СЕРЫЕ И БЕЛЫЕ ТОНА) ================= */
+/* ================= LOADER ================= */
 .dnp-loader {
   position: fixed;
   inset: 0;
@@ -42,17 +42,16 @@ a {
   background-color: #020507;
   overflow: hidden;
   transition: opacity 0.3s ease;
-  cursor: pointer;
 }
 
 .dnp-loader-bg {
   position: absolute;
   inset: -30px;
   background:
-    linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px),
+    linear-gradient(rgba(30, 50, 65, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 50, 65, .035) 1px, transparent 1px),
     #020507;
-  background-size: 28px 28px, 28px 28px, auto;
+  background-size: 26px 26px, 26px 26px, auto;
   filter: blur(20px);
   will-change: filter;
   transition: filter 0.05s linear;
@@ -79,8 +78,8 @@ a {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 5px;
-  background: rgba(138, 160, 168, 0.12);
+  width: 4px;
+  background: rgba(45, 68, 82, 0.18);
 }
 
 .dnp-loader-bar {
@@ -89,7 +88,7 @@ a {
   left: 0;
   width: 100%;
   height: 0%;
-  background: #8aa0a8;
+  background: #467686;
   box-shadow: none;
 }
 
@@ -114,22 +113,21 @@ a {
 .dnp-loader-tick {
   display: inline-block;
   width: 3px;
-  height: 18px;
-  background: #8aa0a8;
+  height: 16px;
+  background: #467686;
 }
 
 .dnp-loader-num {
-  color: #ffffff;
+  color: #c0cfd7;
   font-family: "Exo 2", sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.5px;
-  text-shadow: none;
 }
 
 .dnp-loader-sub {
-  color: #7a8e97;
+  color: #5d7380;
   font-family: "Roboto Mono", monospace;
   font-size: 11px;
   font-weight: 700;
@@ -142,7 +140,7 @@ a {
 }
 
 .dnp-loader-dots {
-  color: #8aa0a8;
+  color: #467686;
   font-size: 9px;
   letter-spacing: 1px;
 }
@@ -158,14 +156,13 @@ a {
 
 .dnp-loader-title {
   margin: 0;
-  color: #9eb0b8;
+  color: #8fa5b0;
   font-family: "Chakra Petch", "Roboto Mono", monospace;
-  font-size: clamp(26px, 3.8vw, 48px);
+  font-size: clamp(26px, 3.8vw, 46px);
   font-weight: 800;
   line-height: 1.12;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  text-shadow: none;
 }
 
 .dnp-loader-wipe {
@@ -174,8 +171,7 @@ a {
   bottom: 0;
   left: 0;
   width: 0%;
-  background: #111a21;
-  box-shadow: none;
+  background: #11222b;
   z-index: 10;
   pointer-events: none;
 }
@@ -194,15 +190,17 @@ a {
 /* ================= PDA КАРКАС И ПЕРЕМЕННЫЕ ================= */
 .dnp-pda {
   --bg: #020507;
-  --panel: rgba(5, 9, 12, .96);
-  --panel-2: rgba(7, 13, 17, .92);
-  --line: #5a7382;
-  --line-soft: rgba(138, 160, 168, .2);
-  --border-card: #14222b;
-  --border-active: #243c4c;
-  --text: #8ea3af;
-  --muted: #5e7480;
-  --warn: #9e895e;
+  --panel: #03070a;
+  --panel-2: #04090d;
+  --border-card: #132029;
+  --border-subtle: #192a35;
+  --border-active: #203746;
+  --line: #4f6774;
+  --line-soft: rgba(30, 50, 65, .25);
+  --text: #8fa2ad;
+  --text-white: #ffffff;
+  --muted: #5d7380;
+  --warn: #9e885c;
   --danger: #b25353;
   --ok: #5c8874;
   
@@ -215,14 +213,14 @@ a {
   overflow: visible; 
   
   background:
-    linear-gradient(rgba(138, 160, 168, .025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 160, 168, .02) 1px, transparent 1px),
+    linear-gradient(rgba(30, 50, 65, .05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 50, 65, .04) 1px, transparent 1px),
     var(--bg);
   background-size: 26px 26px, 26px 26px, auto;
   border: 1px solid var(--border-card);
   color: var(--text);
   font-family: "Roboto Mono", monospace;
-  box-shadow: 0 0 18px rgba(0, 0, 0, .42);
+  box-shadow: 0 0 24px rgba(0, 0, 0, .8);
 }
 
 .dnp-scan {
@@ -242,7 +240,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   border-bottom: 1px solid var(--border-card);
   background: #020507;
   color: var(--muted);
@@ -254,7 +252,7 @@ a {
   border-top: 1px solid var(--border-card);
   border-bottom: 0;
   margin-top: auto;
-  padding: 6px 18px;
+  padding: 6px 20px;
 }
 
 .dnp-footer-link {
@@ -265,14 +263,13 @@ a {
 }
 
 .dnp-footer-link:hover {
-  color: #fff;
+  color: var(--text-white);
 }
 
-/* ЛОГОТИП В ЛЕВОМ УГЛУ: БЕЛЫЙ И СПОКОЙНЫЙ СЕРЫЙ */
 .dnp-brand strong {
   display: inline-block;
-  color: #ffffff;
-  font: 800 14.5px "Exo 2", sans-serif;
+  color: var(--text-white);
+  font: 800 15px "Exo 2", sans-serif;
   letter-spacing: 1.5px;
 }
 
@@ -280,8 +277,7 @@ a {
   display: inline-block;
   margin-left: 10px;
   font-size: 11px;
-  color: #556c7a;
-  letter-spacing: 0.8px;
+  color: var(--line);
 }
 
 .dnp-top-meta {
@@ -298,7 +294,7 @@ a {
   padding: 5px 12px;
   background: #050b0f;
   border: 1px solid var(--border-card);
-  color: #92a4af;
+  color: #7d93a0;
   font: 800 11px "Exo 2", sans-serif;
   letter-spacing: 0.8px;
   cursor: pointer;
@@ -308,7 +304,7 @@ a {
 .dnp-auth-btn:hover {
   border-color: var(--border-active);
   background: #09131a;
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .dnp-user-pill {
@@ -323,20 +319,19 @@ a {
 }
 
 .dnp-user-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
+  width: 22px;
+  height: 22px;
   background: var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   color: #000;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .dnp-user-name {
-  color: #fff;
+  color: var(--text-white);
   font: 800 11px "Exo 2", sans-serif;
   letter-spacing: 0.5px;
 }
@@ -348,7 +343,7 @@ a {
   margin-top: 6px;
   background: #04090d;
   border: 1px solid var(--border-card);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.85);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.85);
   display: flex;
   flex-direction: column;
   min-width: 160px;
@@ -356,8 +351,8 @@ a {
 }
 
 .dnp-dropdown-item {
-  padding: 9px 14px;
-  font-size: 11.5px;
+  padding: 8px 12px;
+  font-size: 11px;
   font-family: "Roboto Mono", monospace;
   color: var(--text);
   cursor: pointer;
@@ -371,7 +366,7 @@ a {
 
 .dnp-dropdown-item:hover {
   background: #081218;
-  color: #fff;
+  color: var(--text-white);
 }
 
 .dnp-dropdown-item.is-logout {
@@ -392,7 +387,7 @@ a {
   padding: 16px 0;
   flex-grow: 1;
   align-items: start;
-  transition: grid-template-columns 0.3s ease, max-width 0.3s ease, width 0.3s ease;
+  transition: grid-template-columns 0.25s ease, max-width 0.25s ease, width 0.25s ease;
 }
 
 .dnp-layout.is-terminal-mode {
@@ -423,10 +418,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 44px;
-  padding: 8px 12px;
+  min-height: 42px;
+  padding: 8px 14px;
   border-bottom: 1px solid var(--border-card);
-  background: #050a0e;
+  background: #050a0d;
   font-family: "Exo 2", sans-serif;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -439,7 +434,7 @@ a {
 }
 
 .dnp-sidebar-title-left span {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -469,14 +464,14 @@ a {
   gap: 8px;
   width: 100%;
   align-items: center;
-  min-height: 48px;
-  padding: 9px 12px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 0;
   border-bottom: 1px solid #0f1920;
   background: transparent;
   color: var(--text);
   cursor: pointer;
-  font: 700 13px "Roboto Mono", monospace;
+  font: 700 12.5px "Roboto Mono", monospace;
   text-align: left;
   list-style: none;
   transition: background 0.15s ease;
@@ -489,7 +484,7 @@ a {
 .dnp-nav-group summary:hover,
 .dnp-locked-main:hover:not(:disabled) {
   background: #060e13;
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .dnp-locked-main:disabled {
@@ -508,20 +503,21 @@ a {
   color: var(--line);
   font-size: 10.5px;
   font-style: normal;
+  font-family: "Roboto Mono", monospace;
 }
 
 .dnp-subnav {
   display: grid;
-  gap: 4px;
-  padding: 8px 10px 10px 14px;
+  gap: 3px;
+  padding: 6px 8px 8px 12px;
   background: #020406;
 }
 
 .dnp-subnav-category {
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
   color: var(--line);
-  margin: 10px 0 3px 0;
+  margin: 10px 0 4px 0;
   font-weight: 700;
   letter-spacing: 1.2px;
   font-family: "Roboto Mono", monospace;
@@ -532,26 +528,26 @@ a {
 }
 
 .dnp-subnav button {
-  min-height: 32px;
-  padding: 6px 9px;
+  min-height: 30px;
+  padding: 5px 10px;
   border: 1px solid transparent;
   background: transparent;
   color: #7b919e;
   cursor: pointer;
-  font: 700 11.5px "Roboto Mono", monospace;
+  font: 700 12px "Roboto Mono", monospace;
   text-align: left;
   transition: all .15s ease;
 }
 
 .dnp-subnav button:hover:not(:disabled) {
-  color: #ffffff;
+  color: var(--text-white);
   background: #071218;
 }
 
 .dnp-subnav button.is-active {
   background: #0c1922;
-  border-color: var(--border-active);
-  color: #ffffff;
+  border: 1px solid var(--border-active);
+  color: var(--text-white);
 }
 
 .dnp-subnav button:disabled {
@@ -565,41 +561,42 @@ a {
   gap: 8px;
   width: 100%;
   align-items: center;
-  min-height: 48px;
-  padding: 9px 12px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 0;
   border-bottom: 1px solid #0f1920;
   background: transparent;
   color: var(--text);
   cursor: pointer;
-  font: 700 13px "Roboto Mono", monospace;
+  font: 700 12.5px "Roboto Mono", monospace;
   text-align: left;
   transition: all .15s ease;
 }
 
 .dnp-nav-root-btn:hover {
   background: #060e13;
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .dnp-terminal-note {
   display: grid;
-  gap: 6px;
+  gap: 5px;
   padding: 12px 14px;
   color: var(--muted);
   font-size: 10px;
   text-transform: uppercase;
   border-top: 1px solid #0f1920;
   background: #020507;
+  font-family: "Roboto Mono", monospace;
   line-height: 1.7;
 }
 
-/* ================= ПОЛОСКИ СВЕРХУ И СНИЗУ ЗАГОЛОВКА РАЗДЕЛА ================= */
+/* ================= ЗАГОЛОВОК РАЗДЕЛА (БЕЗ ПОЛОСОК) ================= */
 .dnp-screen-head {
   grid-column: 2;
   grid-row: 1;
   margin-bottom: 8px;
-  padding: 8px 18px 12px 18px;
+  padding: 12px 0 16px 0;
   border: none;
   background: transparent;
   text-align: center;
@@ -607,32 +604,12 @@ a {
   position: relative;
 }
 
-.dnp-screen-head p {
-  margin: 0 0 6px;
-  color: #556c7a;
-  font-size: 11px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  font-family: "Roboto Mono", monospace;
-}
-
 .dnp-screen-head h1 {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-white);
   font: 800 clamp(22px, 3vw, 32px)/1.1 "Exo 2", sans-serif;
   letter-spacing: 2px;
   text-transform: uppercase;
-}
-
-.dnp-screen-head span {
-  display: inline-block;
-  margin-top: 6px;
-  color: #556c7a;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  font-family: "Roboto Mono", monospace;
 }
 
 .dnp-screen-content {
@@ -665,6 +642,7 @@ a {
   100% { opacity: 1; }
 }
 
+.dnp-screen-content.dnp-no-flicker,
 .dnp-screen-content { 
   animation: smoothFadeIn 0.15s ease both; 
 }
@@ -681,7 +659,7 @@ a {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: 38px;
   padding: 8px 14px;
   border-bottom: 1px solid var(--border-card);
   background: #050a0e;
@@ -697,7 +675,7 @@ a {
 }
 
 .dnp-module-title b {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -718,7 +696,7 @@ a {
 }
 
 .dnp-module strong {
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .dnp-muted {
@@ -727,14 +705,14 @@ a {
 
 .dnp-list {
   margin: 0;
-  padding: 11px 18px 13px 30px;
+  padding: 10px 18px 12px 28px;
   line-height: 1.55;
   font-size: 13px;
   color: var(--text);
 }
 
 .dnp-list li {
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
 
 /* ПЛАШКА БРУД */
@@ -752,7 +730,7 @@ a {
 }
 
 .dnp-brud-note strong {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 700;
 }
 
@@ -786,7 +764,7 @@ a {
 }
 
 .dnp-rank-info b {
-  color: #ffffff;
+  color: var(--text-white);
   font: 800 13.5px "Exo 2", sans-serif;
   display: block;
   margin-bottom: 3px;
@@ -803,7 +781,7 @@ a {
 /* КАРТОЧКИ НАКАЗАНИЙ */
 .dnp-card-grid {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   padding: 12px;
   grid-template-columns: repeat(3, 1fr);
 }
@@ -817,7 +795,7 @@ a {
 .dnp-card-grid b {
   display: block;
   margin-bottom: 6px;
-  color: #ffffff;
+  color: var(--text-white);
   font: 800 14px "Exo 2", sans-serif;
   text-transform: uppercase;
 }
@@ -838,7 +816,7 @@ a {
 
 /* СХЕМА ПЛАЦА */
 .dnp-platc-wrap {
-  margin: 14px 14px 10px;
+  margin: 12px 14px 10px;
   border: 1px solid var(--border-card);
   background: #020406;
   padding: 10px;
@@ -928,7 +906,7 @@ a {
 .dnp-scale-lvl {
   width: 58px;
   text-align: right;
-  color: #ffffff;
+  color: var(--text-white);
   font: 800 11.5px "Exo 2", sans-serif;
   letter-spacing: 0.5px;
 }
@@ -967,15 +945,15 @@ a {
 .dnp-subtle-resource-list {
   display: flex !important;
   flex-direction: column !important;
-  padding: 14px !important;
-  gap: 10px !important;
+  padding: 12px 14px !important;
+  gap: 8px !important;
 }
 
 .dnp-subtle-card {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  padding: 12px 16px !important;
+  padding: 11px 14px !important;
   background: #04080b !important;
   border: 1px solid var(--border-card) !important;
   text-decoration: none !important;
@@ -986,29 +964,29 @@ a {
 .dnp-subtle-card:hover {
   background: #081116 !important;
   border-color: var(--border-active) !important;
-  color: #ffffff !important;
+  color: var(--text-white) !important;
 }
 
 .dnp-subtle-card-main {
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 3px !important;
 }
 
 .dnp-subtle-card-main b {
-  color: #ffffff !important;
-  font: 800 13px "Exo 2", sans-serif !important;
+  color: var(--text-white) !important;
+  font: 800 12.5px "Exo 2", sans-serif !important;
   letter-spacing: 0.5px !important;
 }
 
 .dnp-subtle-card-main span {
   color: var(--muted) !important;
-  font-size: 11.5px !important;
+  font-size: 11px !important;
 }
 
 .dnp-subtle-card em {
   color: var(--line) !important;
-  font: normal 700 11px "Roboto Mono", monospace !important;
+  font: normal 700 10.5px "Roboto Mono", monospace !important;
   white-space: nowrap !important;
   margin-left: 14px !important;
 }
@@ -1063,7 +1041,7 @@ a {
 }
 
 .dnp-term-top-title {
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .dnp-term-body {
@@ -1072,11 +1050,10 @@ a {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   background: #000000;
   overflow-y: auto !important;
   cursor: text;
-  scroll-behavior: smooth;
 }
 
 .dnp-term-line.term-sub {
@@ -1091,7 +1068,7 @@ a {
 
 .dnp-term-ascii {
   margin: 10px 0;
-  color: #9eb0b8;
+  color: #a4b6bf;
   font-family: monospace;
   font-size: 9px;
   line-height: 1.05;
@@ -1104,7 +1081,7 @@ a {
 .dnp-term-output {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .dnp-term-prompt-line {
@@ -1116,7 +1093,7 @@ a {
 }
 
 .dnp-term-prompt {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 700;
   font-size: 13px;
   white-space: nowrap;
@@ -1132,14 +1109,14 @@ a {
 }
 
 .dnp-term-typed {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 700;
   font-size: 13px;
   white-space: pre;
 }
 
 .dnp-term-cursor {
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 700;
   font-size: 13px;
   animation: termBlink 1s step-end infinite;
@@ -1163,31 +1140,31 @@ a {
 }
 
 .dnp-term-link {
-  color: #8da4b0;
+  color: #7b9caa;
   text-decoration: underline;
   cursor: pointer;
   margin-left: 6px;
 }
 
-/* ================= СТРАНИЦА "КОРНИ" ================= */
+/* ================= СТРАНИЦА "КОРНИ" (ПОВРЕЖДЁННЫЙ СЕКТОР) ================= */
 .dnp-corrupt-module {
   position: relative;
   overflow: hidden;
-  border-color: rgba(178, 83, 83, 0.28) !important;
+  border-color: rgba(178, 83, 83, 0.25) !important;
 }
 
 .dnp-corrupt-overlay-img {
   position: absolute;
-  top: 42px;
+  top: 38px;
   left: 0;
   width: 100%;
-  height: calc(100% - 42px);
+  height: calc(100% - 38px);
   object-fit: fill;
-  opacity: 0.92;
-  border: 1px solid rgba(178, 83, 83, 0.45);
+  opacity: 0.9;
+  border: 1px solid rgba(178, 83, 83, 0.35);
   pointer-events: none;
   z-index: 6;
-  filter: contrast(1.15) brightness(0.95);
+  filter: contrast(1.1) brightness(0.95);
   transition: transform 0.08s ease-out;
 }
 
@@ -1198,12 +1175,12 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: #050a0d;
-  border: 1px solid rgba(178, 83, 83, 0.35);
+  border: 1px solid rgba(178, 83, 83, 0.3);
   color: var(--text);
   font-family: "Exo 2", sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   pointer-events: none;
@@ -1219,7 +1196,7 @@ a {
 }
 
 .dnp-corrupt-body p {
-  padding: 0 0 12px 0;
+  padding: 0 0 10px 0;
   line-height: 1.6;
   font-size: 13px;
   color: var(--text);
@@ -1259,18 +1236,18 @@ a {
 
 .dnp-corrupt-log {
   background: #020406;
-  border: 1px dashed rgba(178, 83, 83, .25);
-  padding: 10px 12px;
-  margin: 10px 0 14px;
+  border: 1px dashed rgba(178, 83, 83, .2);
+  padding: 8px 10px;
+  margin: 8px 0 12px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   font-size: 11px;
   color: var(--warn);
 }
 
 .dnp-redact {
-  background: rgba(138, 160, 168, 0.22);
+  background: rgba(82, 107, 122, 0.2);
   color: transparent;
   user-select: none;
   padding: 0 4px;
@@ -1298,24 +1275,24 @@ a {
 
 .dnp-modal-window {
   width: 100%;
-  max-width: 540px;
+  max-width: 520px;
   background: #04090d;
   border: 1px solid var(--border-card);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.95);
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
   display: flex;
   flex-direction: column;
 }
 
 .dnp-modal-header {
-  padding: 10px 16px;
+  padding: 10px 14px;
   background: #050a0e;
   border-bottom: 1px solid var(--border-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #ffffff;
+  color: var(--text-white);
   font: 800 13px "Exo 2", sans-serif;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
 .dnp-modal-close {
@@ -1332,10 +1309,31 @@ a {
 }
 
 .dnp-modal-body {
-  padding: 18px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+}
+
+.dnp-action {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: 1px solid var(--border-card);
+  background: #060d12;
+  color: var(--text-white);
+  font: 800 11.5px "Roboto Mono", monospace;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.dnp-action:hover {
+  border-color: var(--border-active);
+  background: #0a1721;
 }
 
 /* ================= МОБИЛЬНАЯ АДАПТИВНОСТЬ ================= */
@@ -1371,7 +1369,7 @@ a {
 
   .dnp-terminal-screen {
     height: 70vh !important;
-    min-height: 480px !important;
+    min-height: 460px !important;
   }
 
   .dnp-term-body {
