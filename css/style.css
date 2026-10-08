@@ -1621,7 +1621,7 @@ align-items: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
+  padding: 5px 12px;
   background: rgba(14, 21, 25, 0.9);
   border: 1px solid rgba(138, 160, 168, 0.35);
   color: var(--text);
@@ -1635,6 +1635,7 @@ align-items: flex-start;
 .dnp-notif-btn:hover {
   border-color: var(--line);
   background: rgba(22, 33, 40, 1);
+  box-shadow: 0 0 8px rgba(138, 160, 168, 0.2);
 }
 
 .dnp-notif-badge {
@@ -1647,6 +1648,73 @@ align-items: flex-start;
   border-radius: 2px;
 }
 
+.dnp-ticket-card {
+  background: #020507;
+  border: 1px solid var(--line-soft);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease;
+}
+
+.dnp-ticket-card:hover {
+  border-color: var(--line);
+}
+
+.dnp-ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+}
+
+.dnp-ticket-header b {
+  color: var(--text);
+  font: 800 13px "Exo 2", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.dnp-ticket-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  font-family: "Roboto Mono", monospace;
+}
+
+.dnp-ticket-status.st-pending {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+.dnp-ticket-status.st-work {
+  color: #00f0ff;
+  border-color: #00f0ff;
+}
+
+.dnp-ticket-status.st-ok {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+.dnp-ticket-status.st-reject {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.dnp-ticket-history {
+  display: none;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line-soft);
+  background: rgba(4, 8, 10, 0.65);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.dnp-ticket-card.is-open .dnp-ticket-history {
+  display: block;
+}
+
 .dnp-notif-card {
   background: #020507;
   border: 1px solid var(--line-soft);
@@ -1654,12 +1722,11 @@ align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: border-color 0.2s ease;
+  cursor: pointer;
 }
 
 .dnp-notif-card.is-unread {
   border-left: 3px solid var(--line);
-  background: #03080c;
 }
 
 .dnp-notif-head {
@@ -1670,7 +1737,7 @@ align-items: flex-start;
 
 .dnp-notif-head b {
   color: var(--text);
-  font: 800 13px "Exo 2", sans-serif;
+  font: 800 12.5px "Exo 2", sans-serif;
 }
 
 .dnp-notif-time {

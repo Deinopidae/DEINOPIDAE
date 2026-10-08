@@ -6,6 +6,9 @@
   var loaderBg = document.getElementById("loader-bg");
   var loaderWipe = document.getElementById("loader-wipe");
   var loaderContent = document.getElementById("loader-content");
+  var API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? ""
+    : "https://deinopidae-api.onrender.com";
 
   if (loader && loaderBar && loaderPercent && loaderPin && loaderBg && loaderWipe) {
     var targetProgress = 15;
@@ -153,104 +156,98 @@
 
   var isTransitioning = false;
 
-  function openScreen(name) {
-    if (isTransitioning) return;
+window.openScreen = function(name) {
+  if (isTransitioning) return;
 
-    var currentPanel = root.querySelector(".dnp-screen.is-visible");
-    var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
-    if (!targetPanel) return;
+  var currentPanel = root.querySelector(".dnp-screen.is-visible");
+  var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
+  if (!targetPanel) {
+    var altName = name.replace(/(\d+)$/, function(m) {
+      return m.length === 1 ? '0' + m : m.replace(/^0+/, '');
+    });
+    targetPanel = root.querySelector('[data-screen-panel="' + altName + '"]');
+  }
+  if (!targetPanel) return;
 
-    if (layout) {
-      if (name === "database") {
-        layout.classList.add("is-terminal-mode");
-      } else {
-        layout.classList.remove("is-terminal-mode");
-      }
-    }
+  var isExternal = ["forms-gui", "tickets", "notifications", "profile", "settings"].indexOf(name) !== -1;
+  var ustavNav = document.getElementById("dnp-nav-ustav");
+  var ustavStatus = document.getElementById("dnp-ustav-status");
 
-    if (currentPanel && currentPanel !== targetPanel) {
-      isTransitioning = true;
-      var curHead = currentPanel.querySelector(".dnp-screen-head");
+  if (isExternal && ustavNav) {
+    ustavNav.removeAttribute("open");
+    if (ustavStatus) ustavStatus.textContent = "CLOSED";
+    buttons.forEach(function(b) {
+      b.classList.remove("is-active");
+      b.setAttribute("aria-selected", "false");
+    });
+  }
 
-      if (curHead) {
-        curHead.classList.remove("head-slide-in");
-        curHead.classList.add("head-slide-out");
-      }
-
-      setTimeout(function () {
-        try {
-          panels.forEach(function (panel) {
-            var isActive = panel === targetPanel;
-            panel.classList.toggle("is-visible", isActive);
-            if (isActive) {
-              panel.removeAttribute("aria-hidden");
-            } else {
-              panel.setAttribute("aria-hidden", "true");
-            }
-          });
-
-          if (curHead) {
-            curHead.classList.remove("head-slide-out");
-          }
-
-          var newHead = targetPanel.querySelector(".dnp-screen-head");
-          if (newHead) {
-            newHead.classList.remove("head-slide-in");
-            void newHead.offsetWidth;
-            newHead.classList.add("head-slide-in");
-          }
-
-          var newContent = targetPanel.querySelector(".dnp-screen-content");
-          if (newContent) {
-            newContent.classList.remove("dnp-flicker-1", "dnp-flicker-2", "dnp-flicker-3", "dnp-no-flicker");
-            void newContent.offsetWidth;
-
-            var willFlicker = Math.random() < 0.6;
-            if (willFlicker) {
-              var blinks = Math.floor(Math.random() * 3) + 1;
-              newContent.classList.add("dnp-flicker-" + blinks);
-            } else {
-              newContent.classList.add("dnp-no-flicker");
-            }
-          }
-
-          buttons.forEach(function (button) {
-            var isActive = button.getAttribute("data-screen") === name;
-            button.classList.toggle("is-active", isActive);
-            button.setAttribute("aria-selected", isActive ? "true" : "false");
-          });
-
-          if (name === "database") {
-            initTerminalBoot();
-          }
-        } finally {
-          isTransitioning = false;
-        }
-      }, 240);
+  if (layout) {
+    if (name === "database") {
+      layout.classList.add("is-terminal-mode");
     } else {
-      panels.forEach(function (panel) {
-        var isActive = panel === targetPanel;
-        panel.classList.toggle("is-visible", isActive);
-        if (isActive) {
-          panel.removeAttribute("aria-hidden");
-        } else {
-          panel.setAttribute("aria-hidden", "true");
-        }
-      });
-
-      buttons.forEach(function (button) {
-        var isActive = button.getAttribute("data-screen") === name;
-        button.classList.toggle("is-active", isActive);
-        button.setAttribute("aria-selected", isActive ? "true" : "false");
-      });
-
-      if (name === "database") {
-        initTerminalBoot();
-      }
+      layout.classList.remove("is-terminal-mode");
     }
   }
 
-  root.addEventListener("click", function (event) {
+  function applyScreenSwitch() {
+    panels.forEach(function (panel) {
+      var isActive = panel === targetPanel;
+      panel.classList.toggle("is-visible", isActive);
+      if (isActive) {
+        panel.removeAttribute("aria-hidden");
+      } else {
+        panel.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    buttons.forEach(function (button) {
+      var isActive = button.getAttribute("data-screen") === name;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    if (name === "database") {
+      initTerminalBoot();
+    } else if (name === "profile") {
+      renderProfilePanel();
+    } else if (name === "settings") {
+      renderSettingsPanel();
+    } else if (name === "tickets") {
+      loadMyTickets();
+    } else if (name === "notifications") {
+      loadNotifications();
+    }
+  }
+
+  if (currentPanel && currentPanel !== targetPanel) {
+    isTransitioning = true;
+    var curHead = currentPanel.querySelector(".dnp-screen-head");
+
+    if (curHead) {
+      curHead.classList.remove("head-slide-in");
+      curHead.classList.add("head-slide-out");
+    }
+
+    setTimeout(function () {
+      try {
+        applyScreenSwitch();
+        if (curHead) curHead.classList.remove("head-slide-out");
+
+        var newHead = targetPanel.querySelector(".dnp-screen-head");
+        if (newHead) {
+          newHead.classList.remove("head-slide-in");
+          void newHead.offsetWidth;
+          newHead.classList.add("head-slide-in");
+        }
+      } finally {
+        isTransitioning = false;
+      }
+    }, 200);
+  } else {
+    applyScreenSwitch();
+  }
+};
     var trigger = event.target.closest("[data-screen]");
     if (trigger && !trigger.disabled) {
       var screenName = trigger.getAttribute("data-screen");
@@ -343,7 +340,7 @@
     "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
   };
 
-  var envVars = {
+var envVars = {
     "OS": "Deinopidae Terminal OS [Build 2026.4]",
     "DRIVE": "D:\\",
     "SYSTEM_NODE": "DEINOPIDAE S.E. // CORE",
@@ -355,7 +352,9 @@
     if (user) {
       try {
         var parsed = JSON.parse(user);
-        if (parsed && parsed.username) return parsed.username.toUpperCase();
+        if (parsed && (parsed.displayName || parsed.username)) {
+          return (parsed.displayName || parsed.username).toUpperCase();
+        }
       } catch (e) {}
     }
     return "USER";
@@ -379,10 +378,8 @@
           '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
           '</div>',
           '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <div class="dnp-dropdown-item" id="dnp-menu-profile">Профиль (' + (u.roblox || 'N/A') + ')</div>',
-          '  <div class="dnp-dropdown-item" id="dnp-menu-notifs">Уведомления</div>',
           '  <div class="dnp-dropdown-item" id="dnp-menu-tickets">Обращения</div>',
-          '  <div class="dnp-dropdown-item" id="dnp-menu-settings">Настройки</div>',
+          '  <div class="dnp-dropdown-item" id="dnp-menu-notifs">Уведомления</div>',
           '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
           '</div>'
         ].join('');
@@ -394,14 +391,16 @@
           dd.style.display = dd.style.display === "none" ? "flex" : "none";
         });
 
-        document.getElementById("dnp-menu-notifs").addEventListener("click", function() {
-          openScreen("notifications");
-        });
-
         document.addEventListener("click", function() {
           if (dd) dd.style.display = "none";
         });
 
+        document.getElementById("dnp-menu-tickets").addEventListener("click", function() {
+          openScreen("tickets");
+        });
+        document.getElementById("dnp-menu-notifs").addEventListener("click", function() {
+          openScreen("notifications");
+        });
         document.getElementById("dnp-menu-logout").addEventListener("click", function() {
           localStorage.removeItem("dnp_active_user");
           localStorage.removeItem("dnp_auth_token");
@@ -702,15 +701,27 @@
     if (first === "FORMS") {
       var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
       if (isGui) {
-        showFormsGui();
-        printLine("[SYS] Графический интерфейс подачи форм активирован.");
+        openScreen("forms-gui");
+        printLine('[SYS] Переход в графический модуль подачи обращений.');
         return;
       }
+
+      if (parts.length >= 3) {
+        var catNum = parts[1].replace(/^"|"$/g, "");
+        var desc = parts[2].replace(/^"|"$/g, "");
+        var links = (parts[3] || "").replace(/^"|"$/g, "");
+        submitFormConsole(catNum, desc, links);
+        return;
+      }
+
       printLine("=== [СИСТЕМА ПОДАЧИ ОТЧЁТОВ И ФОРМ] ===");
+      printLine("Категории обращений:");
       printLine("  [1] Внеурочка (Починка / Создание оборудования)");
-      printLine("  [2] Изменения устава (Предложение поправки)");
-      printLine("  [3] Обращение к руководству (Запрос / Вопрос)");
-      printLine('Для графического интерфейса введите: FORMS -gui');
+      printLine("  [2] Изменение устава (Предложение поправки)");
+      printLine("  [3] Обращение к руководству (Запрос / Жалоба / Вопрос)");
+      printLine("");
+      printLine('Отправка через консоль: FORMS &lt;1-3&gt; "&lt;текст&gt;" "&lt;ссылка&gt;"');
+      printLine('Графический интерфейс: FORMS -gui');
       return;
     }
 
@@ -994,4 +1005,202 @@
   setInterval(window.loadNotifications, 30000);
   window.addEventListener("DOMContentLoaded", window.loadNotifications);
   
+  window.submitFormFromGui = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    var statusMsg = document.getElementById("gui-form-status-msg");
+    var warning = document.getElementById("forms-auth-warning");
+
+    if (!token) {
+      if (warning) warning.style.display = "block";
+      statusMsg.style.color = "var(--danger)";
+      statusMsg.textContent = "[ОТКАЗ] Необходима авторизация в Личном кабинете.";
+      return;
+    }
+
+    var category = document.getElementById("gui-form-category").value;
+    var desc = document.getElementById("gui-form-desc").value.trim();
+    var links = document.getElementById("gui-form-links").value.trim();
+    var targetUser = document.getElementById("gui-form-target").value.trim();
+    var rulesPoints = document.getElementById("gui-form-rules").value.trim();
+
+    if (!desc) {
+      statusMsg.style.color = "var(--danger)";
+      statusMsg.textContent = "[ОШИБКА] Заполните описание обращения.";
+      return;
+    }
+
+    statusMsg.style.color = "var(--line)";
+    statusMsg.textContent = "[SYS] Передача рапорта в базу...";
+
+    try {
+      var res = await fetch(API_BASE + "/api/forms/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          type: category,
+          description: desc,
+          links: links || "Отсутствуют",
+          targetUser: targetUser,
+          rulesPoints: rulesPoints
+        })
+      });
+
+      var data = await res.json();
+      if (res.ok && data.success) {
+        statusMsg.style.color = "var(--ok)";
+        statusMsg.textContent = "[УСПЕХ] Обращение #" + data.reportId + " зарегистрировано!";
+        document.getElementById("gui-form-desc").value = "";
+        document.getElementById("gui-form-links").value = "";
+        loadNotifications();
+      } else {
+        statusMsg.style.color = "var(--danger)";
+        statusMsg.textContent = "[ОТКАЗ] " + (data.error || "Не удалось отправить");
+      }
+    } catch (e) {
+      statusMsg.style.color = "var(--danger)";
+      statusMsg.textContent = "[СБОЙ СЕТИ] Ошибка соединения с сервером.";
+    }
+  };
+
+  var submitBtn = document.getElementById("gui-form-submit-btn");
+  if (submitBtn) {
+    submitBtn.addEventListener("click", window.submitFormFromGui);
+  }
+
+  window.loadMyTickets = async function() {
+    var cont = document.getElementById("tickets-list-container");
+    if (!cont) return;
+
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) {
+      cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px;">Авторизуйтесь для просмотра ваших обращений.</div>';
+      return;
+    }
+
+    cont.innerHTML = '<div style="color:var(--line); font-size:12.5px;">Загрузка реестра обращений...</div>';
+
+    try {
+      var res = await fetch(API_BASE + "/api/forms/my", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var list = await res.json();
+
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:12px 0;">Обращений нету.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(t) {
+        var stClass = "st-pending";
+        if (t.status === "В РАБОТЕ") stClass = "st-work";
+        if (t.status === "ОДОБРЕНО") stClass = "st-ok";
+        if (t.status === "ОТКЛОНЕНО") stClass = "st-reject";
+
+        var dateSubmit = t.submittedAt ? new Date(t.submittedAt).toLocaleDateString() + " " + new Date(t.submittedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
+        var dateUpdate = t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() + " " + new Date(t.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
+
+        return [
+          '<div class="dnp-ticket-card" onclick="this.classList.toggle(\'is-open\')">',
+          '  <div class="dnp-ticket-header">',
+          '    <div>',
+          '      <b>' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
+          '    </div>',
+          '    <span class="dnp-ticket-status ' + stClass + '">' + (t.status || "НА ПРОВЕРКЕ") + '</span>',
+          '  </div>',
+          '  <div class="dnp-ticket-history">',
+          '    <div><span style="color:var(--line);">Дата подачи:</span> ' + dateSubmit + '</div>',
+          '    <div><span style="color:var(--line);">Суть обращения:</span> ' + t.description + '</div>',
+          t.links && t.links !== "Отсутствуют" ? '    <div><span style="color:var(--line);">Материалы:</span> <a href="' + t.links + '" target="_blank" style="color:#00f0ff; text-decoration:underline;">Открыть ссылку ↗</a></div>' : '',
+          t.officer ? '    <div style="margin-top:6px; border-top:1px dashed var(--line-soft); padding-top:6px;"><span style="color:var(--line);">Офицер:</span> ' + t.officer + ' (' + dateUpdate + ')</div>' : '',
+          t.officerComment ? '    <div><span style="color:var(--line);">Вердикт / Комментарий:</span> <b style="color:#fff;">' + t.officerComment + '</b></div>' : '',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:12.5px;">Сбой при загрузке обращений.</div>';
+    }
+  };
+
+  window.loadNotifications = async function() {
+    var cont = document.getElementById("notifications-list-container");
+    var counter = document.getElementById("dnp-notif-counter");
+    var notifBtn = document.getElementById("dnp-notif-toggle-btn");
+    var token = localStorage.getItem("dnp_auth_token");
+
+    if (!token) {
+      if (notifBtn) notifBtn.style.display = "none";
+      return;
+    }
+
+    if (notifBtn) notifBtn.style.display = "inline-flex";
+
+    try {
+      var res = await fetch(API_BASE + "/api/notifications/my", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var list = await res.json();
+
+      var unread = list.filter(function(n) { return !n.isRead; }).length;
+      if (counter) {
+        if (unread > 0) {
+          counter.textContent = unread;
+          counter.style.display = "inline-block";
+        } else {
+          counter.style.display = "none";
+        }
+      }
+
+      if (!cont) return;
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px;">Уведомлений нету.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(n) {
+        var unreadClass = n.isRead ? "" : "is-unread";
+        var dateStr = new Date(n.createdAt).toLocaleDateString() + " " + new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return [
+          '<div class="dnp-notif-card ' + unreadClass + '" onclick="markNotificationRead(\'' + n._id + '\')">',
+          '  <div class="dnp-notif-head">',
+          '    <b>' + n.title + '</b>',
+          '    <span class="dnp-notif-time">' + dateStr + '</span>',
+          '  </div>',
+          '  <p>' + n.message + '</p>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {}
+  };
+
+  window.markNotificationRead = async function(id) {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch(API_BASE + "/api/notifications/read/" + id, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (e) {}
+  };
+
+  window.markAllNotificationsRead = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch(API_BASE + "/api/notifications/read-all", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (e) {}
+  };
+
+  setInterval(window.loadNotifications, 30000);
+  window.addEventListener("DOMContentLoaded", window.loadNotifications);
+
 })();
