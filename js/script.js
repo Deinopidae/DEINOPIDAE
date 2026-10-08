@@ -299,7 +299,6 @@
     });
   }
 
-  // ================= ТЕРМИНАЛ =================
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
   var asciiLogo = [
@@ -711,10 +710,9 @@
 
     if (first === "HELP") {
       printLine("HELP                - Вызов списка доступных команд");
-      printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для графики)");
+      printLine("STAFF &lt;никнейм&gt;     - Личное дело сотрудника (флаг -gui для интерфейса)");
       printLine("FIND \"фраза\"        - Поиск данных");
-      printLine("FORMS               - Система подачи отчетов (флаг -gui для графики)");
-      printLine("PROJECT PRISMA      - Протокол дешифровки");
+      printLine("FORMS               - Система подачи отчетов (флаг -gui для интерфейса)");
       printLine("CLS / CLEAR         - Очистить терминал");
       return;
     }
@@ -757,7 +755,7 @@
           ].join('');
           printLine(cardHtml);
         } else {
-          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+          printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА] ===");
           printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
           printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
           printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
@@ -832,7 +830,12 @@
     }
 
     if (first === "VER") {
-      printLine("Deinopidae Terminal OS [Версия 4.10.88 - 2026]");
+      printLine("UNKNOWN");
+      return;
+    }
+
+    if (first === "BRADAR") {
+      printLine("WHAT DA FAK IS BRADAR");
       return;
     }
 
@@ -852,7 +855,7 @@
     }
 
     if (first === "HOSTNAME") {
-      printLine("SE-DNP-NODE04-COMPLEX");
+      printLine("UNKNOWN");
       return;
     }
 
