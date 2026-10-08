@@ -299,9 +299,7 @@
     });
   }
 
-  // =========================================================
-  // ТЕРМИНАЛ: ЧИСТЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС
-  // =========================================================
+  // ================= ТЕРМИНАЛ =================
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
   var asciiLogo = [
@@ -368,7 +366,6 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
-  // Обновление личного кабинета в шапке
   window.renderAuthHeader = function() {
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
@@ -534,7 +531,6 @@
     scrollTerm();
   }
 
-  // МОДАЛЬНЫЕ ОКНА GUI
   var modalBackdrop = document.getElementById("dnp-gui-modal");
   var modalTitle = document.getElementById("dnp-modal-title");
   var modalBody = document.getElementById("dnp-modal-body");
@@ -629,7 +625,6 @@
     });
   }
 
-  // КОМАНДА Project Prisma: дешифровка с 2-секундной фиксацией
   function runProjectPrisma() {
     var chars = "ABCDEF0123456789!@#$%&*+=-_/?<>[]{}~";
     var targetText = "FORMS - NICK - TFP";

@@ -13,24 +13,24 @@
     body {
       margin: 0;
       padding: 0;
-      background: #020507;
+      background: #02070a;
       font-family: "Roboto Mono", monospace;
-      color: #b2c2ca;
+      color: #d9e1e4;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       background-image: 
-        linear-gradient(rgba(30, 50, 65, .07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30, 50, 65, .06) 1px, transparent 1px);
+        linear-gradient(rgba(138, 160, 168, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 160, 168, .025) 1px, transparent 1px);
       background-size: 26px 26px;
     }
     .auth-card {
       width: 100%;
       max-width: 440px;
-      background: #04090d;
-      border: 1px solid #13222d;
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
+      background: rgba(8, 13, 16, 0.96);
+      border: 1px solid rgba(138, 160, 168, 0.3);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 16px rgba(138, 160, 168, 0.05);
       padding: 32px 28px;
       display: flex;
       flex-direction: column;
@@ -41,22 +41,21 @@
       margin-bottom: 24px;
     }
     .auth-header img {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       object-fit: contain;
-      margin-bottom: 12px;
-      opacity: 0.9;
+      margin-bottom: 10px;
     }
     .auth-header h1 {
       margin: 0;
       font: 800 20px "Exo 2", sans-serif;
       letter-spacing: 2px;
-      color: #ffffff;
+      color: #fff;
       text-transform: uppercase;
     }
     .auth-header span {
       font-size: 11px;
-      color: #506774;
+      color: #829199;
       letter-spacing: 1px;
     }
     .auth-tabs {
@@ -64,23 +63,23 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       margin-bottom: 22px;
-      border-bottom: 1px solid #13222d;
-      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(138, 160, 168, 0.2);
+      padding-bottom: 8px;
     }
     .auth-tab-btn {
       background: transparent;
       border: none;
       padding: 8px;
       font: 800 12px "Exo 2", sans-serif;
-      color: #5c727f;
+      color: #829199;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: color 0.15s ease, border-color 0.15s ease;
+      transition: all 0.2s ease;
     }
     .auth-tab-btn.is-active {
-      color: #ffffff;
-      border-bottom: 2px solid #b58428;
+      color: #00f0ff;
+      border-bottom: 2px solid #00f0ff;
     }
     .auth-form {
       display: flex;
@@ -95,39 +94,40 @@
     .auth-field label {
       font-size: 10.5px;
       font-weight: 700;
-      color: #6d8492;
+      color: #8aa0a8;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .auth-field input {
-      background: #020609;
-      border: 1px solid #13222d;
+      background: #0d1519;
+      border: 1px solid rgba(138, 160, 168, 0.25);
       padding: 10px 12px;
-      color: #ffffff;
+      color: #fff;
       font-family: "Roboto Mono", monospace;
       font-size: 13px;
       outline: none;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.2s ease;
     }
     .auth-field input:focus {
-      border-color: #243c4d;
+      border-color: #00f0ff;
+      box-shadow: inset 2px 0 0 #00f0ff;
     }
     .auth-submit-btn {
       margin-top: 8px;
-      background: #081218;
-      border: 1px solid #1a313f;
-      color: #b2c5cf;
+      background: #111a20;
+      border: 1px solid #00f0ff;
+      color: #00f0ff;
       padding: 12px;
       font: 800 13px "Exo 2", sans-serif;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
     .auth-submit-btn:hover {
-      background: #0c1d27;
-      border-color: #2a4c62;
-      color: #ffffff;
+      background: #00f0ff;
+      color: #000;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
     }
     .auth-msg {
       font-size: 11.5px;
@@ -142,12 +142,11 @@
       font-size: 11px;
     }
     .auth-back a {
-      color: #5c727f;
-      text-decoration: none;
-      transition: color 0.15s ease;
+      color: #829199;
+      text-decoration: underline;
     }
     .auth-back a:hover {
-      color: #ffffff;
+      color: #fff;
     }
   </style>
 </head>
@@ -232,7 +231,6 @@
       msg.textContent = "";
     });
 
-    // Обработка регистрации
     formReg.addEventListener("submit", function(e) {
       e.preventDefault();
       var username = document.getElementById("reg-username").value.trim();
@@ -241,12 +239,12 @@
       var pass2 = document.getElementById("reg-pass2").value;
 
       if (pass !== pass2) {
-        msg.style.color = "#bd5353";
+        msg.style.color = "#ff5252";
         msg.textContent = "[ОШИБКА] Введенные пароли не совпадают.";
         return;
       }
 
-      msg.style.color = "#7b919e";
+      msg.style.color = "#00f0ff";
       msg.textContent = "[SYS] Регистрация аккаунта в комплексе...";
 
       fetch(SERVER_URL + "/api/auth/register", {
@@ -260,27 +258,26 @@
           localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-          msg.style.color = "#6ba879";
+          msg.style.color = "#4af626";
           msg.textContent = "[УСПЕХ] Аккаунт создан! Переход в систему...";
           setTimeout(function() { window.location.href = "index.html"; }, 800);
         } else {
-          msg.style.color = "#bd5353";
+          msg.style.color = "#ff5252";
           msg.textContent = "[ОТКАЗ] " + (data.error || "Ошибка регистрации");
         }
       })
       .catch(function() {
-        msg.style.color = "#bd5353";
+        msg.style.color = "#ff5252";
         msg.textContent = "[СБОЙ СЕТИ] Сервер просыпается... Повторите через 15 секунд.";
       });
     });
 
-    // Обработка входа
     formLogin.addEventListener("submit", function(e) {
       e.preventDefault();
       var ident = document.getElementById("login-identifier").value.trim();
       var pass = document.getElementById("login-pass").value;
 
-      msg.style.color = "#7b919e";
+      msg.style.color = "#00f0ff";
       msg.textContent = "[SYS] Проверка учетных данных...";
 
       fetch(SERVER_URL + "/api/auth/login", {
@@ -294,16 +291,16 @@
           localStorage.setItem("dnp_auth_token", data.user.token);
           localStorage.setItem("dnp_active_user", JSON.stringify(data.user));
 
-          msg.style.color = "#6ba879";
+          msg.style.color = "#4af626";
           msg.textContent = "[УСПЕХ] Доступ разрешен! Вход в систему...";
           setTimeout(function() { window.location.href = "index.html"; }, 600);
         } else {
-          msg.style.color = "#bd5353";
+          msg.style.color = "#ff5252";
           msg.textContent = "[ОТКАЗ] " + (data.error || "Неверный логин или пароль");
         }
       })
       .catch(function() {
-        msg.style.color = "#bd5353";
+        msg.style.color = "#ff5252";
         msg.textContent = "[СБОЙ СЕТИ] Сервер просыпается... Повторите через 15 секунд.";
       });
     });
