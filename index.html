@@ -50,7 +50,11 @@
         <strong>DEINOPIDAE / ДЕИНОПИДЫ</strong>
         <span>Департамент S.E. · Kurodzakura</span>
       </div>
-      <div class="dnp-top-meta">
+       <div class="dnp-top-meta">
+        <button type="button" class="dnp-notif-btn" id="dnp-notif-toggle-btn" style="display: none;" onclick="openScreen('notifications')">
+          <span>ПОЧТА</span>
+          <span class="dnp-notif-badge" id="dnp-notif-counter" style="display: none;">0</span>
+        </button>
         <div id="dnp-auth-header-slot">
           <a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>
         </div>
@@ -962,6 +966,30 @@
                 <span>1.2</span>
                 <b>Задачи отдела</b>
                 <em>AURUM CORP</em>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dnp-screen" data-screen-panel="notifications">
+          <div class="dnp-screen-head">
+            <h1>Уведомления // Входящие</h1>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>N.1</span>
+                <b>Внутренняя почта оператора</b>
+                <em>INBOX</em>
+              </div>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <button type="button" class="dnp-action" style="margin: 0;" onclick="markAllNotificationsRead()">ПРОЧИТАТЬ ВСЕ</button>
+                  <button type="button" class="dnp-action" style="margin: 0; border-color: var(--line-soft);" onclick="loadNotifications()">ОБНОВИТЬ ⟳</button>
+                </div>
+
+                <div id="notifications-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
               </div>
             </article>
           </div>

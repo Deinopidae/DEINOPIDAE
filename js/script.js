@@ -376,10 +376,12 @@
         slot.innerHTML = [
           '<div class="dnp-user-pill" id="dnp-user-pill">',
           '  <div class="dnp-user-avatar">' + (u.username ? u.username[0].toUpperCase() : 'U') + '</div>',
-          '  <span class="dnp-user-name">' + (u.username || 'OPERATOR') + '</span>',
+          '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
           '</div>',
           '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
           '  <div class="dnp-dropdown-item" id="dnp-menu-profile">Профиль (' + (u.roblox || 'N/A') + ')</div>',
+          '  <div class="dnp-dropdown-item" id="dnp-menu-notifs">Уведомления</div>',
+          '  <div class="dnp-dropdown-item" id="dnp-menu-tickets">Обращения</div>',
           '  <div class="dnp-dropdown-item" id="dnp-menu-settings">Настройки</div>',
           '  <div class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</div>',
           '</div>'
@@ -390,6 +392,10 @@
         pill.addEventListener("click", function(e) {
           e.stopPropagation();
           dd.style.display = dd.style.display === "none" ? "flex" : "none";
+        });
+
+        document.getElementById("dnp-menu-notifs").addEventListener("click", function() {
+          openScreen("notifications");
         });
 
         document.addEventListener("click", function() {
@@ -907,4 +913,85 @@
       }
     });
   }
+
+  window.loadNotifications = async function() {
+    var cont = document.getElementById("notifications-list-container");
+    var counter = document.getElementById("dnp-notif-counter");
+    var notifBtn = document.getElementById("dnp-notif-toggle-btn");
+    var token = localStorage.getItem("dnp_auth_token");
+
+    if (!token) {
+      if (notifBtn) notifBtn.style.display = "none";
+      if (cont) cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px;">Авторизуйтесь для доступа к почте.</div>';
+      return;
+    }
+
+    if (notifBtn) notifBtn.style.display = "inline-flex";
+
+    try {
+      var res = await fetch("/api/notifications/my", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (!res.ok) return;
+      var list = await res.json();
+
+      var unread = list.filter(function(n) { return !n.isRead; }).length;
+      if (counter) {
+        if (unread > 0) {
+          counter.textContent = unread;
+          counter.style.display = "inline-block";
+        } else {
+          counter.style.display = "none";
+        }
+      }
+
+      if (!cont) return;
+      if (list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px;">Нет новых сообщений.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(n) {
+        var unreadClass = n.isRead ? "" : "is-unread";
+        var dateStr = new Date(n.createdAt).toLocaleDateString() + " " + new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return [
+          '<div class="dnp-notif-card ' + unreadClass + '" onclick="markNotificationRead(\'' + n._id + '\')">',
+          '  <div class="dnp-notif-head">',
+          '    <b>' + n.title + '</b>',
+          '    <span class="dnp-notif-time">' + dateStr + '</span>',
+          '  </div>',
+          '  <p>' + n.message + '</p>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {}
+  };
+
+  window.markNotificationRead = async function(id) {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch("/api/notifications/read/" + id, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (e) {}
+  };
+
+  window.markAllNotificationsRead = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch("/api/notifications/read-all", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (e) {}
+  };
+
+  setInterval(window.loadNotifications, 30000);
+  window.addEventListener("DOMContentLoaded", window.loadNotifications);
+  
 })();

@@ -1616,4 +1616,74 @@ grid-template-columns: 1fr;
 flex-direction: column;
 align-items: flex-start;
 }
+
+.dnp-notif-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(14, 21, 25, 0.9);
+  border: 1px solid rgba(138, 160, 168, 0.35);
+  color: var(--text);
+  font: 800 11px "Exo 2", sans-serif;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+.dnp-notif-btn:hover {
+  border-color: var(--line);
+  background: rgba(22, 33, 40, 1);
+}
+
+.dnp-notif-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 2px;
+}
+
+.dnp-notif-card {
+  background: #020507;
+  border: 1px solid var(--line-soft);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.dnp-notif-card.is-unread {
+  border-left: 3px solid var(--line);
+  background: #03080c;
+}
+
+.dnp-notif-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dnp-notif-head b {
+  color: var(--text);
+  font: 800 13px "Exo 2", sans-serif;
+}
+
+.dnp-notif-time {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.dnp-notif-card p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
 }
