@@ -163,7 +163,7 @@
     var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
     if (!targetPanel) return;
 
-    var isExternal = ["forms-gui", "tickets", "notifications"].indexOf(name) !== -1;
+    var isExternal = ["forms-gui", "tickets", "notifications", "admin-panel"].indexOf(name) !== -1;
     var ustavNav = document.getElementById("dnp-nav-ustav");
     var ustavStatus = document.getElementById("dnp-ustav-status");
 
@@ -409,7 +409,7 @@
         return;
       } catch (e) {}
     }
-
+   checkOfficerStatus();
     slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
   };
 
@@ -1012,4 +1012,267 @@
       loadNotifications();
     } catch (e) {}
   };
+
+  async function checkOfficerStatus() {
+    var token = localStorage.getItem("dnp_auth_token");
+    var navBtn = document.getElementById("dnp-nav-admin");
+    if (!token || !navBtn) return;
+    try {
+      var res = await fetch(API_BASE + "/api/admin/check", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var data = await res.json();
+      if (data.isOfficer) {
+        navBtn.style.display = "grid";
+      } else {
+        navBtn.style.display = "none";
+      }
+    } catch (e) {
+      navBtn.style.display = "none";
+    }
+  }
+
+  document.querySelectorAll(".dnp-admin-tab-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".dnp-admin-tab-btn").forEach(function(b) { b.classList.remove("is-active"); });
+      document.querySelectorAll(".dnp-admin-panel-view").forEach(function(v) { v.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      var tab = btn.getAttribute("data-admin-tab");
+      var view = document.getElementById("adm-view-" + tab);
+      if (view) view.classList.add("is-active");
+
+      if (tab === "tickets") loadAdminTickets();
+      if (tab === "ustav") loadAdminUstav();
+      if (tab === "users") loadAdminUsers();
+      if (tab === "officers") loadAdminOfficers();
+    });
+  });
+
+  window.loadAdminTickets = async function() {
+    var cont = document.getElementById("adm-tickets-list");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!cont || !token) return;
+    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка тикетов...</div>';
+    try {
+      var res = await fetch(API_BASE + "/api/admin/tickets", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var list = await res.json();
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Обращений нет.</div>';
+        return;
+      }
+      cont.innerHTML = list.map(function(t) {
+        return [
+          '<div style="background:#020507; border:1px solid var(--line-soft); padding:10px; display:flex; flex-direction:column; gap:6px;">',
+          '  <div style="display:flex; justify-content:space-between; align-items:center;">',
+          '    <b>#' + t.reportId + ' // ' + t.type + ' (' + t.username + ' / ' + t.roblox + ')</b>',
+          '    <span style="font-size:10px; padding:2px 6px; border:1px solid var(--line);">' + t.status + '</span>',
+          '  </div>',
+          '  <div style="font-size:12px; color:var(--text);">' + t.description + '</div>',
+          t.links && t.links !== "Отсутствуют" ? '<div style="font-size:11px;"><a href="' + t.links + '" target="_blank" style="color:#00f0ff; text-decoration:underline;">Материалы ↗</a></div>' : '',
+          '  <div style="display:flex; gap:6px; margin-top:4px; align-items:center;">',
+          '    <input type="text" id="adm-comment-' + t.reportId + '" placeholder="Комментарий офицера" value="' + (t.officerComment || '') + '" style="flex:1; background:#04090d; border:1px solid var(--line-soft); color:#fff; padding:4px 8px; font-size:11px; font-family:monospace;">',
+          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px; border-color:var(--ok); color:var(--ok);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОДОБРЕНО\')">ОДОБРИТЬ</button>',
+          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px; border-color:var(--danger); color:var(--danger);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОТКЛОНЕНО\')">ОТКЛОНИТЬ</button>',
+          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка загрузки тикетов.</div>';
+    }
+  };
+
+  window.respondAdminTicket = async function(reportId, status) {
+    var token = localStorage.getItem("dnp_auth_token");
+    var commentInput = document.getElementById("adm-comment-" + reportId);
+    var comment = commentInput ? commentInput.value.trim() : "";
+    try {
+      await fetch(API_BASE + "/api/admin/tickets/respond", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ reportId: reportId, status: status, officerComment: comment })
+      });
+      loadAdminTickets();
+    } catch (e) {}
+  };
+
+  window.deleteAdminTicket = async function(reportId) {
+    if (!confirm("Удалить тикет " + reportId + "?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/tickets/" + reportId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadAdminTickets();
+    } catch (e) {}
+  };
+
+  window.loadAdminUsers = async function() {
+    var tbody = document.querySelector("#adm-users-table tbody");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!tbody || !token) return;
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">Загрузка аккаунтов...</td></tr>';
+    try {
+      var res = await fetch(API_BASE + "/api/admin/users", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var users = await res.json();
+      tbody.innerHTML = users.map(function(u) {
+        return [
+          '<tr>',
+          '  <td><b>' + (u.displayName || u.username) + '</b></td>',
+          '  <td>' + u.roblox + '</td>',
+          '  <td>' + (u.activityStatus || 'В активе') + '</td>',
+          '  <td>' + new Date(u.registeredAt).toLocaleDateString() + '</td>',
+          '  <td><button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="deleteAdminUser(\'' + u._id + '\')">УДАЛИТЬ</button></td>',
+          '</tr>'
+        ].join('');
+      }).join('');
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка загрузки пользователей.</td></tr>';
+    }
+  };
+
+  window.deleteAdminUser = async function(id) {
+    if (!confirm("Удалить аккаунт пользователя?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/users/" + id, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadAdminUsers();
+    } catch (e) {}
+  };
+
+  window.loadAdminOfficers = async function() {
+    var cont = document.getElementById("adm-officers-list");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!cont || !token) return;
+    try {
+      var res = await fetch(API_BASE + "/api/admin/officers", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var list = await res.json();
+      cont.innerHTML = list.map(function(o) {
+        return [
+          '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">',
+          '  <div><b style="color:#fff;">' + o.roblox + '</b><span style="font-size:10.5px; color:var(--muted); margin-left:8px;">(Добавил: ' + o.addedBy + ')</span></div>',
+          '  <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="removeAdminOfficer(\'' + o.roblox + '\')">СНЯТЬ</button>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {}
+  };
+
+  window.addAdminOfficer = async function() {
+    var input = document.getElementById("adm-new-officer-roblox");
+    var nick = input ? input.value.trim() : "";
+    if (!nick) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/officers/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ roblox: nick })
+      });
+      var data = await res.json();
+      if (res.ok) {
+        input.value = "";
+        loadAdminOfficers();
+      } else {
+        alert(data.error || "Ошибка");
+      }
+    } catch (e) {}
+  };
+
+  window.removeAdminOfficer = async function(nick) {
+    if (!confirm("Снять статус офицера с " + nick + "?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/officers/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ roblox: nick })
+      });
+      loadAdminOfficers();
+    } catch (e) {}
+  };
+
+  window.loadAdminUstav = async function() {
+    var cont = document.getElementById("adm-ustav-list");
+    if (!cont) return;
+    try {
+      var res = await fetch(API_BASE + "/api/ustav");
+      var list = await res.json();
+      cont.innerHTML = list.map(function(item) {
+        return [
+          '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 10px; display:flex; justify-content:space-between; align-items:flex-start;">',
+          '  <div>',
+          '    <b>' + item.num + ' ' + item.title + '</b> <span style="font-size:10px; color:var(--line);">[' + item.sectionId + ' | ' + item.tag + ']</span>',
+          '    <div style="font-size:11.5px; color:var(--text); margin-top:2px;">' + item.text + '</div>',
+          '  </div>',
+          '  <div style="display:flex; gap:4px; margin-left:8px;">',
+          '    <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px;" onclick=\'editAdminUstav(' + JSON.stringify(item) + ')\'>ИЗМ</button>',
+          '    <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="deleteAdminUstav(\'' + item._id + '\')">УДЛ</button>',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {}
+  };
+
+  window.editAdminUstav = function(item) {
+    document.getElementById("adm-ustav-id").value = item._id;
+    document.getElementById("adm-ustav-section").value = item.sectionId;
+    document.getElementById("adm-ustav-num").value = item.num;
+    document.getElementById("adm-ustav-tag").value = item.tag;
+    document.getElementById("adm-ustav-title").value = item.title;
+    document.getElementById("adm-ustav-text").value = item.text;
+  };
+
+  window.resetAdminUstavForm = function() {
+    document.getElementById("adm-ustav-id").value = "";
+    document.getElementById("adm-ustav-num").value = "";
+    document.getElementById("adm-ustav-tag").value = "";
+    document.getElementById("adm-ustav-title").value = "";
+    document.getElementById("adm-ustav-text").value = "";
+  };
+
+  window.saveAdminUstav = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    var id = document.getElementById("adm-ustav-id").value;
+    var sectionId = document.getElementById("adm-ustav-section").value;
+    var num = document.getElementById("adm-ustav-num").value.trim();
+    var tag = document.getElementById("adm-ustav-tag").value.trim();
+    var title = document.getElementById("adm-ustav-title").value.trim();
+    var text = document.getElementById("adm-ustav-text").value.trim();
+    if (!num || !title || !text) return;
+    try {
+      await fetch(API_BASE + "/api/admin/ustav/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ id: id, sectionId: sectionId, num: num, tag: tag, title: title, text: text })
+      });
+      resetAdminUstavForm();
+      loadAdminUstav();
+    } catch (e) {}
+  };
+
+  window.deleteAdminUstav = async function(id) {
+    if (!confirm("Удалить этот пункт устава?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/ustav/" + id, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadAdminUstav();
+    } catch (e) {}
+  };
+  
 })();
