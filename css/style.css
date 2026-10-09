@@ -1706,19 +1706,19 @@ a {
 
 .dnp-admin-tabs {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   border-bottom: 1px solid var(--line-soft);
-  padding-bottom: 8px;
-  margin-bottom: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .dnp-admin-tab-btn {
-  background: transparent;
+  background: var(--panel-2);
   border: 1px solid var(--line-soft);
   color: var(--muted);
   font: 700 11.5px "Roboto Mono", monospace;
-  padding: 6px 12px;
+  padding: 8px 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -1729,7 +1729,7 @@ a {
 }
 
 .dnp-admin-tab-btn.is-active {
-  background: #1b2328;
+  background: #182229;
   border-color: var(--line);
   box-shadow: inset 3px 0 0 var(--line);
   color: #fff;
@@ -1738,11 +1738,118 @@ a {
 .dnp-admin-panel-view {
   display: none;
   flex-direction: column;
-  gap: 12px;
 }
 
 .dnp-admin-panel-view.is-active {
   display: flex;
+}
+
+.dnp-admin-box {
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  padding: 14px 16px;
+}
+
+.dnp-admin-box-title {
+  font: 800 11px "Exo 2", sans-serif;
+  color: var(--line);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(138, 160, 168, 0.15);
+  padding-bottom: 5px;
+}
+
+.dnp-admin-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.dnp-admin-input {
+  width: 100%;
+  background: #020507;
+  border: 1px solid var(--line-soft);
+  color: #fff;
+  padding: 8px 10px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dnp-admin-input:focus {
+  border-color: var(--line);
+}
+
+.dnp-action.is-secondary {
+  border-color: var(--line-soft);
+  color: var(--muted);
+}
+.dnp-action.is-secondary:hover {
+  color: #fff;
+  border-color: var(--line);
+}
+
+.dnp-action.is-danger {
+  border-color: rgba(169, 100, 104, 0.6);
+  color: #ff8e92;
+}
+.dnp-action.is-danger:hover {
+  background: rgba(169, 100, 104, 0.2);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.dnp-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.st-pending {
+  color: #f1c40f;
+  background: rgba(241, 196, 15, 0.12);
+  border: 1px solid rgba(241, 196, 15, 0.4);
+}
+
+.st-work {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+.st-ok {
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+.st-reject {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.st-deleted {
+  color: #95a5a6;
+  background: rgba(149, 165, 166, 0.12);
+  border: 1px solid rgba(149, 165, 166, 0.4);
+}
+
+.dnp-ticket-verdict-box {
+  background: rgba(10, 16, 20, 0.9);
+  border-left: 3px solid var(--line);
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 6px;
 }
 
 .dnp-admin-table {
@@ -1753,7 +1860,7 @@ a {
 
 .dnp-admin-table th {
   text-align: left;
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: #03080c;
   border-bottom: 1px solid var(--line-soft);
   color: var(--line);
@@ -1762,7 +1869,7 @@ a {
 }
 
 .dnp-admin-table td {
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-bottom: 1px solid rgba(138, 160, 168, 0.1);
   color: var(--text);
 }

@@ -1103,46 +1103,87 @@
                 </div>
 
                 <div class="dnp-admin-panel-view is-active" id="adm-view-tickets">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <b style="color: #fff; font-size: 13px;">Входящие тикеты состава:</b>
-                    <button type="button" class="dnp-action" style="margin: 0; padding: 4px 8px; font-size: 11px;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
+                    <button type="button" class="dnp-action" style="margin: 0;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
                   </div>
-                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
-                  <div style="background: var(--panel-2); border: 1px solid var(--line-soft); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
-                    <b style="color: #fff; font-size: 12.5px;">Добавить / Изменить пункт устава:</b>
-                    <input type="hidden" id="adm-ustav-id">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                      <select id="adm-ustav-section" style="background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
-                        <option value="ustav-01">Раздел 1 Основа</option>
-                        <option value="ustav-02">Раздел 2 Правила</option>
-                        <option value="ustav-03">Раздел 3 Иерархия</option>
-                        <option value="ustav-04">Раздел 4 Норма</option>
-                        <option value="ustav-05">Раздел 5 Задания</option>
-                        <option value="ustav-06">Раздел 6 Проверки</option>
-                        <option value="ustav-07">Раздел 7 Активности</option>
-                        <option value="ustav-08">Раздел 8 Прочее</option>
-                        <option value="ustav-09">Раздел 9 Конец</option>
-                      </select>
-                      <input type="text" id="adm-ustav-num" placeholder="Номер (напр. 1.3)" style="background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
-                      <input type="text" id="adm-ustav-tag" placeholder="Тег (напр. RULES)" style="background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
+                  <div class="dnp-admin-box">
+                    <div class="dnp-admin-box-title">УПРАВЛЕНИЕ РАЗДЕЛАМИ УСТАВА</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                      <div>
+                        <label class="dnp-admin-label">Выбрать раздел для редактирования:</label>
+                        <select id="adm-section-selector" class="dnp-admin-input" onchange="selectAdminSectionForEdit()">
+                          <option value="">-- Создать новый раздел --</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="dnp-admin-label">Идентификатор (ID):</label>
+                        <input type="text" id="adm-sec-id" class="dnp-admin-input" placeholder="ustav-10">
+                      </div>
                     </div>
-                    <input type="text" id="adm-ustav-title" placeholder="Заголовок пункта" style="background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
-                    <textarea id="adm-ustav-text" rows="3" placeholder="Содержание пункта..." style="background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;"></textarea>
+                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 10px; margin-bottom: 10px;">
+                      <div>
+                        <label class="dnp-admin-label">Название в меню:</label>
+                        <input type="text" id="adm-sec-title" class="dnp-admin-input" placeholder="Раздел 10 Протоколы">
+                      </div>
+                      <div>
+                        <label class="dnp-admin-label">Заголовок страницы:</label>
+                        <input type="text" id="adm-sec-head" class="dnp-admin-input" placeholder="Раздел 10 — Протоколы">
+                      </div>
+                      <div>
+                        <label class="dnp-admin-label">Порядок:</label>
+                        <input type="number" id="adm-sec-order" class="dnp-admin-input" placeholder="10">
+                      </div>
+                    </div>
                     <div style="display: flex; gap: 8px;">
-                      <button type="button" class="dnp-action" style="margin: 0; padding: 5px 10px;" onclick="saveAdminUstav()">СОХРАНИТЬ В УСТАВ ↗</button>
-                      <button type="button" class="dnp-action" style="margin: 0; padding: 5px 10px; border-color: var(--line-soft);" onclick="resetAdminUstavForm()">ОЧИСТИТЬ</button>
+                      <button type="button" class="dnp-action" style="margin: 0;" onclick="saveAdminSection()">СОХРАНИТЬ РАЗДЕЛ ↗</button>
+                      <button type="button" class="dnp-action is-secondary" style="margin: 0;" onclick="resetAdminSectionForm()">ОЧИСТИТЬ</button>
+                      <button type="button" class="dnp-action is-danger" id="adm-sec-del-btn" style="margin: 0; display: none;" onclick="deleteAdminSection()">УДАЛИТЬ РАЗДЕЛ</button>
                     </div>
                   </div>
-                  <div id="adm-ustav-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;"></div>
+
+                  <div class="dnp-admin-box" style="margin-top: 14px;">
+                    <div class="dnp-admin-box-title">ДОБАВИТЬ / ИЗМЕНИТЬ ПУНКТ УСТАВА</div>
+                    <input type="hidden" id="adm-ustav-id">
+                    <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                      <div>
+                        <label class="dnp-admin-label">Раздел устава:</label>
+                        <select id="adm-ustav-section" class="dnp-admin-input"></select>
+                      </div>
+                      <div>
+                        <label class="dnp-admin-label">Номер пункта:</label>
+                        <input type="text" id="adm-ustav-num" class="dnp-admin-input" placeholder="1.3">
+                      </div>
+                      <div>
+                        <label class="dnp-admin-label">Тег-метка:</label>
+                        <input type="text" id="adm-ustav-tag" class="dnp-admin-input" placeholder="RULES">
+                      </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                      <label class="dnp-admin-label">Заголовок статьи:</label>
+                      <input type="text" id="adm-ustav-title" class="dnp-admin-input" placeholder="Заголовок">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                      <label class="dnp-admin-label">Текст статьи:</label>
+                      <textarea id="adm-ustav-text" rows="3" class="dnp-admin-input" placeholder="Содержание статьи..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                      <button type="button" class="dnp-action" style="margin: 0;" onclick="saveAdminUstav()">СОХРАНИТЬ ПУНКТ ↗</button>
+                      <button type="button" class="dnp-action is-secondary" style="margin: 0;" onclick="resetAdminUstavForm()">ОЧИСТИТЬ</button>
+                    </div>
+                  </div>
+
+                  <div id="adm-ustav-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;"></div>
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-users">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <b style="color: #fff; font-size: 13px;">Зарегистрированные аккаунты базы:</b>
-                    <button type="button" class="dnp-action" style="margin: 0; padding: 4px 8px; font-size: 11px;" onclick="loadAdminUsers()">ОБНОВИТЬ ⟳</button>
+                    <button type="button" class="dnp-action" style="margin: 0;" onclick="loadAdminUsers()">ОБНОВИТЬ ⟳</button>
                   </div>
                   <div style="overflow-x: auto;">
                     <table class="dnp-admin-table" id="adm-users-table">
@@ -1151,7 +1192,7 @@
                           <th>Позывной</th>
                           <th>Roblox</th>
                           <th>Статус</th>
-                          <th>Дата</th>
+                          <th>Дата регистрации</th>
                           <th>Действие</th>
                         </tr>
                       </thead>
@@ -1161,11 +1202,14 @@
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-officers">
-                  <div style="background: var(--panel-2); border: 1px solid var(--line-soft); padding: 12px; display: flex; gap: 8px;">
-                    <input type="text" id="adm-new-officer-roblox" placeholder="Roblox никнейм сотрудника" style="flex: 1; background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
-                    <button type="button" class="dnp-action" style="margin: 0; padding: 5px 12px;" onclick="addAdminOfficer()">НАЗНАЧИТЬ ОФИЦЕРОМ ↗</button>
+                  <div class="dnp-admin-box" style="margin-bottom: 12px;">
+                    <div class="dnp-admin-box-title">НАЗНАЧЕНИЕ НОВОГО ОФИЦЕРА</div>
+                    <div style="display: flex; gap: 10px;">
+                      <input type="text" id="adm-new-officer-roblox" class="dnp-admin-input" placeholder="Введите Roblox никнейм" style="flex: 1;">
+                      <button type="button" class="dnp-action" style="margin: 0;" onclick="addAdminOfficer()">НАЗНАЧИТЬ ↗</button>
+                    </div>
                   </div>
-                  <div id="adm-officers-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;"></div>
+                  <div id="adm-officers-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
                 </div>
               </div>
             </article>

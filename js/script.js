@@ -1082,44 +1082,69 @@ window.loadAdminTickets = async function() {
     var token = localStorage.getItem("dnp_auth_token");
     if (!cont) return;
     if (!token) {
-      cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Требуется повторный вход в Личный кабинет.</div>';
+      cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">Требуется авторизация в Личном кабинете.</div>';
       return;
     }
-    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка тикетов...</div>';
+    cont.innerHTML = '<div style="color:var(--line); font-size:12px;">Загрузка журнала тикетов...</div>';
     try {
       var res = await fetch(API_BASE + "/api/admin/tickets", {
         headers: { "Authorization": "Bearer " + token }
       });
       if (!res.ok) {
         var errObj = await res.json().catch(function() { return {}; });
-        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка доступа: ' + (errObj.error || res.statusText) + '</div>';
+        cont.innerHTML = '<div style="color:var(--danger); font-size:12px;">Ошибка доступа: ' + (errObj.error || res.statusText) + '</div>';
         return;
       }
       var list = await res.json();
       if (!list || !Array.isArray(list) || list.length === 0) {
-        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Обращений нет.</div>';
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px;">Обращений нет.</div>';
         return;
       }
       cont.innerHTML = list.map(function(t) {
+        var isClosed = (t.status === 'ОДОБРЕНО' || t.status === 'ОТКЛОНЕНО');
+        var stClass = 'st-pending';
+        if (t.status === 'В РАБОТЕ') stClass = 'st-work';
+        if (t.status === 'ОДОБРЕНО') stClass = 'st-ok';
+        if (t.status === 'ОТКЛОНЕНО') stClass = 'st-reject';
+
+        var actionsHtml = '';
+        if (isClosed) {
+          actionsHtml = [
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">',
+            '  <div class="dnp-ticket-verdict-box" style="flex:1; margin-right:12px;">',
+            '    <span style="color:var(--line);">Решение (' + (t.officer || 'Офицер') + '):</span> <b style="color:#fff;">' + (t.officerComment || 'Без комментария') + '</b>',
+            '  </div>',
+            '  <button type="button" class="dnp-action is-danger" style="margin:0;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
+            '</div>'
+          ].join('');
+        } else {
+          actionsHtml = [
+            '<div style="display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;">',
+            '  <input type="text" id="adm-comment-' + t.reportId + '" placeholder="Комментарий / вердикт офицера" value="' + (t.officerComment || '') + '" class="dnp-admin-input" style="flex:1; min-width:200px;">',
+            '  <button type="button" class="dnp-action" style="margin:0; border-color:var(--ok); color:var(--ok);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОДОБРЕНО\')">ОДОБРИТЬ</button>',
+            '  <button type="button" class="dnp-action is-danger" style="margin:0;" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОТКЛОНЕНО\')">ОТКЛОНИТЬ</button>',
+            '  <button type="button" class="dnp-action is-secondary" style="margin:0;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
+            '</div>'
+          ].join('');
+        }
+
         return [
-          '<div style="background:#020507; border:1px solid var(--line-soft); padding:10px; display:flex; flex-direction:column; gap:6px;">',
+          '<div style="background:var(--panel-2); border:1px solid var(--line-soft); padding:12px; display:flex; flex-direction:column; gap:6px;">',
           '  <div style="display:flex; justify-content:space-between; align-items:center;">',
-          '    <b>#' + t.reportId + ' // ' + t.type + ' (' + t.username + ' / ' + t.roblox + ')</b>',
-          '    <span style="font-size:10px; padding:2px 6px; border:1px solid var(--line);">' + t.status + '</span>',
+          '    <div>',
+          '      <b style="color:#fff; font-size:13px;">' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
+          '      <span style="color:var(--line); font-size:11.5px; margin-left:8px;">' + t.username + ' (' + t.roblox + ')</span>',
+          '    </div>',
+          '    <span class="dnp-badge ' + stClass + '">' + t.status + '</span>',
           '  </div>',
-          '  <div style="font-size:12px; color:var(--text);">' + t.description + '</div>',
-          t.links && t.links !== "Отсутствуют" ? '<div style="font-size:11px;"><a href="' + t.links + '" target="_blank" style="color:#00f0ff; text-decoration:underline;">Материалы ↗</a></div>' : '',
-          '  <div style="display:flex; gap:6px; margin-top:4px; align-items:center;">',
-          '    <input type="text" id="adm-comment-' + t.reportId + '" placeholder="Комментарий офицера" value="' + (t.officerComment || '') + '" style="flex:1; background:#04090d; border:1px solid var(--line-soft); color:#fff; padding:4px 8px; font-size:11px; font-family:monospace;">',
-          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px; border-color:var(--ok); color:var(--ok);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОДОБРЕНО\')">ОДОБРИТЬ</button>',
-          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px; border-color:var(--danger); color:var(--danger);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОТКЛОНЕНО\')">ОТКЛОНИТЬ</button>',
-          '    <button type="button" class="dnp-action" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
-          '  </div>',
+          '  <div style="font-size:12.5px; color:var(--text); line-height:1.5;">' + t.description + '</div>',
+          t.links && t.links !== 'Отсутствуют' ? '<div style="font-size:11.5px;"><a href="' + t.links + '" target="_blank" style="color:#00f0ff; text-decoration:underline;">Материалы к обращению ↗</a></div>' : '',
+          actionsHtml,
           '</div>'
         ].join('');
       }).join('');
     } catch (e) {
-      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером. Повторите попытку через 10 секунд.</div>';
+      cont.innerHTML = '<div style="color:var(--danger); font-size:12px;">Ошибка соединения с сервером.</div>';
     }
   };
 
@@ -1143,16 +1168,23 @@ window.loadAdminTickets = async function() {
       alert("Ошибка соединения с сервером");
     }
   };
+
   window.deleteAdminTicket = async function(reportId) {
-    if (!confirm("Удалить тикет " + reportId + "?")) return;
+    if (!confirm("Удалить обращение #" + reportId + "? Статус в Discord сменится на УДАЛЕНО.")) return;
     var token = localStorage.getItem("dnp_auth_token");
     try {
-      await fetch(API_BASE + "/api/admin/tickets/" + reportId, {
+      var res = await fetch(API_BASE + "/api/admin/tickets/" + reportId, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
       });
-      loadAdminTickets();
-    } catch (e) {}
+      if (res.ok) {
+        loadAdminTickets();
+      } else {
+        alert("Не удалось удалить тикет");
+      }
+    } catch (e) {
+      alert("Ошибка сети");
+    }
   };
 
   window.loadAdminUsers = async function() {
@@ -1169,8 +1201,7 @@ window.loadAdminTickets = async function() {
         headers: { "Authorization": "Bearer " + token }
       });
       if (!res.ok) {
-        var errObj = await res.json().catch(function() { return {}; });
-        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка доступа: ' + (errObj.error || res.statusText) + '</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка доступа.</td></tr>';
         return;
       }
       var users = await res.json();
@@ -1179,23 +1210,24 @@ window.loadAdminTickets = async function() {
         return;
       }
       tbody.innerHTML = users.map(function(u) {
+        var actClass = u.activityStatus === 'В активе' ? 'st-ok' : 'st-pending';
         return [
           '<tr>',
           '  <td><b>' + (u.displayName || u.username) + '</b></td>',
           '  <td>' + u.roblox + '</td>',
-          '  <td>' + (u.activityStatus || 'В активе') + '</td>',
+          '  <td><span class="dnp-badge ' + actClass + '">' + (u.activityStatus || 'В активе') + '</span></td>',
           '  <td>' + new Date(u.registeredAt).toLocaleDateString() + '</td>',
-          '  <td><button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="deleteAdminUser(\'' + u._id + '\')">УДАЛИТЬ</button></td>',
+          '  <td><button type="button" class="dnp-action is-danger" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick="deleteAdminUser(\'' + u._id + '\')">УДАЛИТЬ</button></td>',
           '</tr>'
         ].join('');
       }).join('');
     } catch (e) {
-      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка соединения с сервером.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка соединения.</td></tr>';
     }
   };
 
   window.deleteAdminUser = async function(id) {
-    if (!confirm("Удалить аккаунт пользователя?")) return;
+    if (!confirm("Удалить аккаунт пользователя из базы?")) return;
     var token = localStorage.getItem("dnp_auth_token");
     try {
       await fetch(API_BASE + "/api/admin/users/" + id, {
@@ -1210,36 +1242,20 @@ window.loadAdminTickets = async function() {
     var cont = document.getElementById("adm-officers-list");
     var token = localStorage.getItem("dnp_auth_token");
     if (!cont) return;
-    if (!token) {
-      cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Требуется авторизация.</div>';
-      return;
-    }
-    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка офицеров...</div>';
     try {
       var res = await fetch(API_BASE + "/api/admin/officers", {
         headers: { "Authorization": "Bearer " + token }
       });
-      if (!res.ok) {
-        var errObj = await res.json().catch(function() { return {}; });
-        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка доступа: ' + (errObj.error || res.statusText) + '</div>';
-        return;
-      }
       var list = await res.json();
-      if (!list || !Array.isArray(list) || list.length === 0) {
-        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Офицеров не найдено.</div>';
-        return;
-      }
       cont.innerHTML = list.map(function(o) {
         return [
-          '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">',
-          '  <div><b style="color:#fff;">' + o.roblox + '</b><span style="font-size:10.5px; color:var(--muted); margin-left:8px;">(Добавил: ' + o.addedBy + ')</span></div>',
-          '  <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="removeAdminOfficer(\'' + o.roblox + '\')">СНЯТЬ</button>',
+          '<div style="background:var(--panel-2); border:1px solid var(--line-soft); padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">',
+          '  <div><b style="color:#fff;">' + o.roblox + '</b><span style="font-size:11px; color:var(--muted); margin-left:10px;">(Назначил: ' + o.addedBy + ')</span></div>',
+          '  <button type="button" class="dnp-action is-danger" style="margin:0; padding:3px 8px; font-size:10.5px;" onclick="removeAdminOfficer(\'' + o.roblox + '\')">СНЯТЬ</button>',
           '</div>'
         ].join('');
       }).join('');
-    } catch (e) {
-      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером.</div>';
-    }
+    } catch (e) {}
   };
 
   window.addAdminOfficer = async function() {
@@ -1276,37 +1292,196 @@ window.loadAdminTickets = async function() {
     } catch (e) {}
   };
 
+  var allUstavSections = [];
+
+  window.loadUstavSections = async function() {
+    try {
+      var res = await fetch(API_BASE + "/api/ustav/sections");
+      if (!res.ok) return;
+      allUstavSections = await res.json();
+      renderUstavNavigation();
+      populateSectionSelectors();
+    } catch (e) {}
+  };
+
+  function renderUstavNavigation() {
+    var subnav = document.querySelector(".dnp-subnav");
+    if (!subnav || allUstavSections.length === 0) return;
+
+    allUstavSections.forEach(function(sec) {
+      var btn = subnav.querySelector('[data-screen="' + sec.sectionId + '"]');
+      if (btn) {
+        btn.textContent = sec.title;
+      } else {
+        var newBtn = document.createElement("button");
+        newBtn.type = "button";
+        newBtn.setAttribute("data-screen", sec.sectionId);
+        newBtn.textContent = sec.title;
+        newBtn.addEventListener("click", function() { openScreen(sec.sectionId); });
+        subnav.appendChild(newBtn);
+      }
+
+      var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"]');
+      if (panel) {
+        var headH1 = panel.querySelector(".dnp-screen-head h1");
+        if (headH1) headH1.textContent = sec.headTitle || sec.title;
+      } else {
+        var main = document.querySelector("main.dnp-main");
+        if (main) {
+          var newSec = document.createElement("section");
+          newSec.className = "dnp-screen";
+          newSec.setAttribute("data-screen-panel", sec.sectionId);
+          newSec.innerHTML = [
+            '<div class="dnp-screen-head"><h1>' + (sec.headTitle || sec.title) + '</h1></div>',
+            '<div class="dnp-screen-content">',
+            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Раздел открыт для сотрудников департамента.</span></div>',
+            '</div>'
+          ].join('');
+          main.insertBefore(newSec, document.querySelector('[data-screen-panel="forms-gui"]') || null);
+        }
+      }
+    });
+  }
+
+  function populateSectionSelectors() {
+    var selSelector = document.getElementById("adm-section-selector");
+    var ustavSecSel = document.getElementById("adm-ustav-section");
+    if (!selSelector || !ustavSecSel) return;
+
+    var curSelVal = selSelector.value;
+    var curUstavVal = ustavSecSel.value;
+
+    selSelector.innerHTML = '<option value="">-- Создать новый раздел --</option>' + allUstavSections.map(function(s) {
+      return '<option value="' + s.sectionId + '">' + s.title + ' (' + s.sectionId + ')</option>';
+    }).join('');
+
+    ustavSecSel.innerHTML = allUstavSections.map(function(s) {
+      return '<option value="' + s.sectionId + '">' + s.title + '</option>';
+    }).join('');
+
+    if (curSelVal) selSelector.value = curSelVal;
+    if (curUstavVal) ustavSecSel.value = curUstavVal;
+  }
+
+  window.selectAdminSectionForEdit = function() {
+    var sel = document.getElementById("adm-section-selector");
+    var secId = sel ? sel.value : "";
+    var delBtn = document.getElementById("adm-sec-del-btn");
+    if (!secId) {
+      resetAdminSectionForm();
+      if (delBtn) delBtn.style.display = "none";
+      return;
+    }
+    var found = allUstavSections.find(function(s) { return s.sectionId === secId; });
+    if (!found) return;
+
+    document.getElementById("adm-sec-id").value = found.sectionId;
+    document.getElementById("adm-sec-id").disabled = true;
+    document.getElementById("adm-sec-title").value = found.title;
+    document.getElementById("adm-sec-head").value = found.headTitle || found.title;
+    document.getElementById("adm-sec-order").value = found.order || 0;
+
+    if (delBtn) delBtn.style.display = found.isCustom ? "inline-flex" : "none";
+  };
+
+  window.resetAdminSectionForm = function() {
+    var sel = document.getElementById("adm-section-selector");
+    if (sel) sel.value = "";
+    var idInput = document.getElementById("adm-sec-id");
+    if (idInput) {
+      idInput.value = "";
+      idInput.disabled = false;
+    }
+    document.getElementById("adm-sec-title").value = "";
+    document.getElementById("adm-sec-head").value = "";
+    document.getElementById("adm-sec-order").value = "";
+    var delBtn = document.getElementById("adm-sec-del-btn");
+    if (delBtn) delBtn.style.display = "none";
+  };
+
+  window.saveAdminSection = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    var secId = document.getElementById("adm-sec-id").value.trim().toLowerCase();
+    var title = document.getElementById("adm-sec-title").value.trim();
+    var head = document.getElementById("adm-sec-head").value.trim();
+    var order = parseInt(document.getElementById("adm-sec-order").value, 10);
+
+    if (!secId || !title) {
+      alert("Укажите ID раздела и название в меню");
+      return;
+    }
+
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: secId, title: title, headTitle: head, order: isNaN(order) ? 99 : order })
+      });
+      var data = await res.json();
+      if (res.ok) {
+        resetAdminSectionForm();
+        loadUstavSections();
+      } else {
+        alert(data.error || "Ошибка сохранения");
+      }
+    } catch (e) {
+      alert("Ошибка сети");
+    }
+  };
+
+  window.deleteAdminSection = async function() {
+    var secId = document.getElementById("adm-sec-id").value.trim();
+    if (!secId) return;
+    if (!confirm("Удалить раздел " + secId + " и все связанные с ним статьи?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/" + secId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var data = await res.json();
+      if (res.ok) {
+        resetAdminSectionForm();
+        loadUstavSections();
+      } else {
+        alert(data.error || "Ошибка удаления");
+      }
+    } catch (e) {
+      alert("Ошибка сети");
+    }
+  };
+
   window.loadAdminUstav = async function() {
     var cont = document.getElementById("adm-ustav-list");
     if (!cont) return;
-    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка устава...</div>';
+    cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">Загрузка статей устава...</div>';
     try {
       var res = await fetch(API_BASE + "/api/ustav");
       if (!res.ok) {
-        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка получения устава.</div>';
+        cont.innerHTML = '<div style="color:var(--danger); font-size:12px;">Ошибка получения устава.</div>';
         return;
       }
       var list = await res.json();
       if (!list || !Array.isArray(list) || list.length === 0) {
-        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Дополнительных пунктов нет.</div>';
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">Дополнительных статей пока нет.</div>';
         return;
       }
       cont.innerHTML = list.map(function(item) {
         return [
-          '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 10px; display:flex; justify-content:space-between; align-items:flex-start;">',
+          '<div style="background:var(--panel-2); border:1px solid var(--line-soft); padding:10px 14px; display:flex; justify-content:space-between; align-items:flex-start;">',
           '  <div>',
-          '    <b>' + item.num + ' ' + item.title + '</b> <span style="font-size:10px; color:var(--line);">[' + item.sectionId + ' | ' + item.tag + ']</span>',
-          '    <div style="font-size:11.5px; color:var(--text); margin-top:2px;">' + item.text + '</div>',
+          '    <b style="color:#fff;">' + item.num + ' ' + item.title + '</b> <span style="font-size:10.5px; color:var(--line); margin-left:6px;">[' + item.sectionId + ' | ' + item.tag + ']</span>',
+          '    <div style="font-size:12px; color:var(--text); margin-top:4px; line-height:1.5;">' + item.text + '</div>',
           '  </div>',
-          '  <div style="display:flex; gap:4px; margin-left:8px;">',
-          '    <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px;" onclick=\'editAdminUstav(' + JSON.stringify(item) + ')\'>ИЗМ</button>',
-          '    <button type="button" class="dnp-action" style="margin:0; padding:2px 6px; font-size:10px; border-color:var(--danger); color:var(--danger);" onclick="deleteAdminUstav(\'' + item._id + '\')">УДЛ</button>',
+          '  <div style="display:flex; gap:6px; margin-left:12px; flex-shrink:0;">',
+          '    <button type="button" class="dnp-action is-secondary" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick=\'editAdminUstav(' + JSON.stringify(item) + ')\'>ИЗМЕНИТЬ</button>',
+          '    <button type="button" class="dnp-action is-danger" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick="deleteAdminUstav(\'' + item._id + '\')">УДАЛИТЬ</button>',
           '  </div>',
           '</div>'
         ].join('');
       }).join('');
     } catch (e) {
-      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером.</div>';
+      cont.innerHTML = '<div style="color:var(--danger); font-size:12px;">Ошибка сети.</div>';
     }
   };
 
@@ -1335,7 +1510,10 @@ window.loadAdminTickets = async function() {
     var tag = document.getElementById("adm-ustav-tag").value.trim();
     var title = document.getElementById("adm-ustav-title").value.trim();
     var text = document.getElementById("adm-ustav-text").value.trim();
-    if (!num || !title || !text) return;
+    if (!num || !title || !text) {
+      alert("Заполните номер, заголовок и текст статьи");
+      return;
+    }
     try {
       await fetch(API_BASE + "/api/admin/ustav/save", {
         method: "POST",
@@ -1360,7 +1538,7 @@ window.loadAdminTickets = async function() {
       loadDynamicUstav();
     } catch (e) {}
   };
-  
+
   async function loadDynamicUstav() {
     try {
       var res = await fetch(API_BASE + "/api/ustav");
@@ -1383,6 +1561,10 @@ window.loadAdminTickets = async function() {
     } catch (e) {}
   }
 
+  loadUstavSections();
   loadDynamicUstav();
-  setInterval(loadDynamicUstav, 30000);
+  setInterval(function() {
+    loadUstavSections();
+    loadDynamicUstav();
+  }, 30000);
 })();
