@@ -2,7 +2,7 @@
   var SERVER_URL = "https://deinopidae-api.onrender.com";
   var lastDataHash = "";
 
-  function setNetStatus(isOnline) {
+  function setNetStatus(isOnline, errCode) {
     var netStatusEl = document.getElementById("dnp-local-net-status");
     if (!netStatusEl) return;
 
@@ -10,10 +10,19 @@
       netStatusEl.textContent = "LOCAL NET: STABLE";
       netStatusEl.style.color = "";
     } else {
-      netStatusEl.textContent = "LOCAL NET: ERROR";
+      var code = errCode || "SERVER_DISCONN";
+      netStatusEl.textContent = "LOCAL NET: ERROR(" + code + ")";
       netStatusEl.style.color = "#ff5252";
     }
   }
+  window.setNetStatus = setNetStatus;
+
+  window.addEventListener('offline', function () {
+    setNetStatus(false, 'OFFLINE');
+  });
+  window.addEventListener('online', function () {
+    setNetStatus(true);
+  });
 
   window.renderAuthHeader = function () {
     var slot = document.getElementById("dnp-auth-header-slot");
@@ -36,9 +45,8 @@
           '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
           '</div>',
           '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <button type="button" class="dnp-dropdown-item" data-screen="profile">Профиль</button>',
-          '  <button type="button" class="dnp-dropdown-item" data-screen="tickets">Обращения</button>',
-          '  <button type="button" class="dnp-dropdown-item" data-screen="settings">Настройки</button>',
+          '  <button type="button" class="dnp-dropdown-item" onclick="openScreen(\'tickets\')">Обращения</button>',
+          '  <button type="button" class="dnp-dropdown-item" onclick="openScreen(\'notifications\')">Уведомления</button>',
           '  <button type="button" class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</button>',
           '</div>'
         ].join('');
@@ -60,23 +68,32 @@
           localStorage.removeItem("dnp_auth_token");
           window.renderAuthHeader();
           if (window.openScreen) window.openScreen("ustav-01");
+          location.reload();
         });
         return;
       } catch (e) {}
     }
 
-    slot.innerHTML = '<button type="button" class="dnp-auth-btn" data-screen="auth">ЛИЧНЫЙ КАБИНЕТ</button>';
+    slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
   };
 
   function pollServerData() {
     var token = localStorage.getItem("dnp_auth_token");
+
+    if (!navigator.onLine) {
+      setNetStatus(false, 'OFFLINE');
+      return;
+    }
 
     if (token) {
       fetch(SERVER_URL + "/api/auth/me", {
         headers: { "Authorization": "Bearer " + token }
       })
         .then(function (res) {
-          if (!res.ok) throw new Error("HTTP error " + res.status);
+          if (!res.ok) {
+            setNetStatus(false, "HTTP_" + res.status);
+            throw new Error("HTTP " + res.status);
+          }
           return res.json();
         })
         .then(function (authRes) {
@@ -90,8 +107,9 @@
             window.renderAuthHeader();
           }
         })
-        .catch(function () {
-          setNetStatus(false);
+        .catch(function (err) {
+          if (err.message && err.message.indexOf("HTTP") === 0) return;
+          setNetStatus(false, "CONN_LOST");
         });
     } else {
       window.renderAuthHeader();
@@ -99,7 +117,10 @@
 
     fetch(SERVER_URL + "/api/users/data")
       .then(function (res) {
-        if (!res.ok) throw new Error("HTTP error " + res.status);
+        if (!res.ok) {
+          setNetStatus(false, "HTTP_" + res.status);
+          throw new Error("HTTP " + res.status);
+        }
         return res.json();
       })
       .then(function (data) {
@@ -111,11 +132,15 @@
         lastDataHash = currentHash;
         window.employeeDb = data;
       })
-      .catch(function () {
-        setNetStatus(false);
+      .catch(function (err) {
+        if (!navigator.onLine) {
+          setNetStatus(false, "OFFLINE");
+        } else if (err.message && err.message.indexOf("HTTP") !== 0) {
+          setNetStatus(false, "CONN_TIMEOUT");
+        }
       });
   }
 
-  setInterval(pollServerData, 10000);
+  setInterval(pollServerData, 12000);
   window.addEventListener('DOMContentLoaded', pollServerData);
 })();
