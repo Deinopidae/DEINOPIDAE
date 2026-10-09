@@ -142,7 +142,9 @@
 
   buttons.forEach(function (button) {
     var screenName = button.getAttribute("data-screen");
-    button.id = "tab-" + screenName;
+    if (!button.id) {
+      button.id = "tab-" + screenName;
+    }
     button.setAttribute("aria-controls", "panel-" + screenName);
     button.setAttribute("role", "tab");
     button.setAttribute("aria-selected", "false");
@@ -203,14 +205,15 @@
         button.setAttribute("aria-selected", isActive ? "true" : "false");
       });
 
-      if (name === "database") {
+  if (name === "database") {
         initTerminalBoot();
       } else if (name === "tickets") {
         loadMyTickets();
       } else if (name === "notifications") {
         loadNotifications();
+      } else if (name === "admin-panel") {
+        loadAdminTickets();
       }
-    }
 
     if (currentPanel && currentPanel !== targetPanel) {
       isTransitioning = true;
@@ -364,7 +367,7 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
-  window.renderAuthHeader = function() {
+window.renderAuthHeader = function() {
     var slot = document.getElementById("dnp-auth-header-slot");
     if (!slot) return;
 
@@ -406,47 +409,13 @@
           localStorage.removeItem("dnp_auth_token");
           location.reload();
         });
+        checkOfficerStatus();
         return;
       } catch (e) {}
     }
-    
-   async function checkOfficerStatus() {
-    var navBtn = document.getElementById("dnp-nav-admin");
-    if (!navBtn) return;
 
-    var rawUser = localStorage.getItem("dnp_active_user");
-    var token = localStorage.getItem("dnp_auth_token");
-    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130"];
-
-    if (rawUser) {
-      try {
-        var u = JSON.parse(rawUser);
-        var rNick = (u.roblox || "").trim().toLowerCase();
-        if (defaultOfficers.indexOf(rNick) !== -1) {
-          navBtn.style.display = "grid";
-        }
-      } catch (e) {}
-    }
-
-    if (!token) return;
-
-    try {
-      var res = await fetch(API_BASE + "/api/admin/check", {
-        headers: { "Authorization": "Bearer " + token }
-      });
-      var data = await res.json();
-      if (data && data.isOfficer) {
-        navBtn.style.display = "grid";
-      } else if (rawUser) {
-        var u2 = JSON.parse(rawUser);
-        var rNick2 = (u2.roblox || "").trim().toLowerCase();
-        if (defaultOfficers.indexOf(rNick2) === -1) {
-          navBtn.style.display = "none";
-        }
-      }
-    } catch (err) {}
-  }
     slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
+    checkOfficerStatus();
   };
 
   window.addEventListener("DOMContentLoaded", window.renderAuthHeader);
@@ -1050,23 +1019,44 @@
   };
 
   async function checkOfficerStatus() {
+    var navBtn = document.getElementById("dnp-nav-admin") || document.querySelector('[data-screen="admin-panel"]');
+    if (!navBtn) return;
+
+    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130"];
+    var rawUser = localStorage.getItem("dnp_active_user");
     var token = localStorage.getItem("dnp_auth_token");
-    var navBtn = document.getElementById("dnp-nav-admin");
-    if (!token || !navBtn) return;
+
+    if (rawUser) {
+      try {
+        var u = JSON.parse(rawUser);
+        var rNick = (u.roblox || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick) !== -1) {
+          navBtn.style.display = "grid";
+        }
+      } catch (e) {}
+    }
+
+    if (!token) return;
+
     try {
       var res = await fetch(API_BASE + "/api/admin/check", {
         headers: { "Authorization": "Bearer " + token }
       });
       var data = await res.json();
-      if (data.isOfficer) {
+      if (data && data.isOfficer) {
         navBtn.style.display = "grid";
-      } else {
-        navBtn.style.display = "none";
+      } else if (rawUser) {
+        var u2 = JSON.parse(rawUser);
+        var rNick2 = (u2.roblox || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick2) === -1) {
+          navBtn.style.display = "none";
+        }
       }
-    } catch (e) {
-      navBtn.style.display = "none";
-    }
+    } catch (err) {}
   }
+
+  checkOfficerStatus();
+  window.addEventListener("DOMContentLoaded", checkOfficerStatus);
 
   document.querySelectorAll(".dnp-admin-tab-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
@@ -1311,4 +1301,27 @@
     } catch (e) {}
   };
   
+  async function loadDynamicUstav() {
+    try {
+      var res = await fetch(API_BASE + "/api/ustav");
+      var list = await res.json();
+      if (!list || !Array.isArray(list)) return;
+      document.querySelectorAll(".dnp-dyn-module").forEach(function(el) { el.remove(); });
+      list.forEach(function(item) {
+        var panel = document.querySelector('[data-screen-panel="' + item.sectionId + '"] .dnp-screen-content');
+        if (!panel) return;
+        var art = document.createElement("article");
+        art.className = "dnp-module dnp-dyn-module";
+        art.innerHTML = '<div class="dnp-module-title"><span>' + item.num + '</span><b>' + item.title + '</b><em>' + item.tag + '</em></div><p>' + item.text + '</p>';
+        var note = panel.querySelector(".dnp-brud-note");
+        if (note) {
+          panel.insertBefore(art, note);
+        } else {
+          panel.appendChild(art);
+        }
+      });
+    } catch (e) {}
+  }
+
+  loadDynamicUstav();
 })();
