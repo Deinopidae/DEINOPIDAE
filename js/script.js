@@ -409,7 +409,43 @@
         return;
       } catch (e) {}
     }
-   checkOfficerStatus();
+    
+   async function checkOfficerStatus() {
+    var navBtn = document.getElementById("dnp-nav-admin");
+    if (!navBtn) return;
+
+    var rawUser = localStorage.getItem("dnp_active_user");
+    var token = localStorage.getItem("dnp_auth_token");
+    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130"];
+
+    if (rawUser) {
+      try {
+        var u = JSON.parse(rawUser);
+        var rNick = (u.roblox || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick) !== -1) {
+          navBtn.style.display = "grid";
+        }
+      } catch (e) {}
+    }
+
+    if (!token) return;
+
+    try {
+      var res = await fetch(API_BASE + "/api/admin/check", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var data = await res.json();
+      if (data && data.isOfficer) {
+        navBtn.style.display = "grid";
+      } else if (rawUser) {
+        var u2 = JSON.parse(rawUser);
+        var rNick2 = (u2.roblox || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick2) === -1) {
+          navBtn.style.display = "none";
+        }
+      }
+    } catch (err) {}
+  }
     slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
   };
 
