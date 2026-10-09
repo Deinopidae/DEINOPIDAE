@@ -1044,26 +1044,12 @@
                 <em>STATUS</em>
               </div>
               <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-                
-                <div class="dnp-hud-toolbar">
-                  <div class="dnp-hud-filters" id="tickets-filter-bar">
-                    <button type="button" class="dnp-filter-chip is-active" data-ticket-filter="ALL">ВСЕ (<span id="t-count-all">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-ticket-filter="НА ПРОВЕРКЕ">НА ПРОВЕРКЕ (<span id="t-count-pending">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-ticket-filter="В РАБОТЕ">В РАБОТЕ (<span id="t-count-work">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-ticket-filter="ОДОБРЕНО">ОДОБРЕНО (<span id="t-count-approved">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-ticket-filter="ОТКЛОНЕНО">ОТКЛОНЕНО (<span id="t-count-rejected">0</span>)</button>
-                  </div>
-                  <div class="dnp-hud-actions">
-                    <button type="button" class="dnp-action" style="margin: 0;" onclick="openScreen('forms-gui')">+ ПОДАТЬ ОБРАЩЕНИЕ</button>
-                    <button type="button" class="dnp-action is-secondary" style="margin: 0;" onclick="loadMyTickets()">ОБНОВИТЬ ⟳</button>
-                  </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <button type="button" class="dnp-action" style="margin: 0;" onclick="openScreen('forms-gui')">+ ПОДАТЬ НОВОЕ ОБРАЩЕНИЕ</button>
+                  <button type="button" class="dnp-action" style="margin: 0; border-color: var(--line-soft);" onclick="loadMyTickets()">ОБНОВИТЬ ⟳</button>
                 </div>
 
-                <div class="dnp-search-bar-wrap">
-                  <input type="text" id="tickets-search-input" class="dnp-admin-input" placeholder="🔍 Поиск по номеру тикета, описанию или офицеру..." oninput="filterRenderTickets()">
-                </div>
-
-                <div id="tickets-list-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                <div id="tickets-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
               </div>
             </article>
           </div>
@@ -1082,21 +1068,12 @@
                 <em>INBOX</em>
               </div>
               <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-                
-                <div class="dnp-hud-toolbar">
-                  <div class="dnp-hud-filters" id="notifs-filter-bar">
-                    <button type="button" class="dnp-filter-chip is-active" data-notif-filter="ALL">ВСЕ (<span id="n-count-all">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-notif-filter="UNREAD">НЕПРОЧИТАННЫЕ (<span id="n-count-unread">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-notif-filter="TICKET">ТИКЕТЫ (<span id="n-count-ticket">0</span>)</button>
-                    <button type="button" class="dnp-filter-chip" data-notif-filter="SYSTEM">СИСТЕМНЫЕ (<span id="n-count-sys">0</span>)</button>
-                  </div>
-                  <div class="dnp-hud-actions">
-                    <button type="button" class="dnp-action" style="margin: 0;" onclick="markAllNotificationsRead()">ПРОЧИТАТЬ ВСЕ</button>
-                    <button type="button" class="dnp-action is-secondary" style="margin: 0;" onclick="loadNotifications()">ОБНОВИТЬ ⟳</button>
-                  </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <button type="button" class="dnp-action" style="margin: 0;" onclick="markAllNotificationsRead()">ПРОЧИТАТЬ ВСЕ</button>
+                  <button type="button" class="dnp-action" style="margin: 0; border-color: var(--line-soft);" onclick="loadNotifications()">ОБНОВИТЬ ⟳</button>
                 </div>
 
-                <div id="notifications-list-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                <div id="notifications-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
               </div>
             </article>
           </div>

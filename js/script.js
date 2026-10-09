@@ -273,7 +273,6 @@
     openScreen(firstButton.getAttribute("data-screen"));
   }
 
-  // Очистка формы обращений
   window.clearGuiForm = function() {
     var desc = document.getElementById("gui-form-desc");
     var links = document.getElementById("gui-form-links");
@@ -351,7 +350,6 @@
     submitBtn.addEventListener("click", window.submitFormFromGui);
   }
 
-  // --- УПРАВЛЕНИЕ ТИКЕТАМИ ПОЛЬЗОВАТЕЛЯ ---
   var myTicketsCache = [];
   var currentTicketFilter = 'ALL';
 
@@ -372,8 +370,41 @@
         headers: { "Authorization": "Bearer " + token }
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
-      myTicketsCache = await res.json();
-      filterRenderTickets();
+      var list = await res.json();
+
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:12px 0;">Обращений нет.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(t) {
+        var stClass = "st-pending";
+        if (t.status === "В РАБОТЕ") stClass = "st-work";
+        if (t.status === "ОДОБРЕНО") stClass = "st-ok";
+        if (t.status === "ОТКЛОНЕНО") stClass = "st-reject";
+        if (t.status === "УДАЛЕНО") stClass = "st-deleted";
+
+        var dateSubmit = t.submittedAt ? new Date(t.submittedAt).toLocaleDateString() + " " + new Date(t.submittedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
+        var dateUpdate = t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() + " " + new Date(t.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
+
+        return [
+          '<div class="dnp-ticket-card" onclick="this.classList.toggle(\'is-open\')">',
+          '  <div class="dnp-ticket-header">',
+          '    <div>',
+          '      <b>' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
+          '      <span style="color:var(--muted); font-size:11px; margin-left:8px;">' + dateSubmit + '</span>',
+          '    </div>',
+          '    <span class="dnp-ticket-status ' + stClass + '">' + (t.status || "НА ПРОВЕРКЕ") + '</span>',
+          '  </div>',
+          '  <div class="dnp-ticket-history">',
+          '    <div><span style="color:var(--line);">Суть:</span> ' + t.description + '</div>',
+          t.links && t.links !== "Отсутствуют" ? '    <div><span style="color:var(--line);">Материалы:</span> <a href="' + t.links + '" target="_blank" class="dnp-brud-link">Открыть вложение ↗</a></div>' : '',
+          t.officer ? '    <div style="margin-top:4px; padding-top:6px; border-top:1px dashed var(--line-soft);"><span style="color:var(--line);">Офицер:</span> ' + t.officer + ' (' + dateUpdate + ')</div>' : '',
+          t.officerComment ? '    <div class="dnp-ticket-verdict-box"><span style="color:var(--line);">Вердикт офицера:</span> <b style="color:#fff;">' + t.officerComment + '</b></div>' : '',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
     } catch (e) {
       cont.innerHTML = '<div style="color:var(--danger); font-size:12.5px;">Сбой при загрузке обращений.</div>';
     }
@@ -392,7 +423,6 @@
       return matchStatus && matchQuery;
     });
 
-    // Счётчики
     document.getElementById("t-count-all").textContent = myTicketsCache.length;
     document.getElementById("t-count-pending").textContent = myTicketsCache.filter(t => t.status === 'НА ПРОВЕРКЕ').length;
     document.getElementById("t-count-work").textContent = myTicketsCache.filter(t => t.status === 'В РАБОТЕ').length;
@@ -443,7 +473,6 @@
     });
   });
 
-  // --- УВЕДОМЛЕНИЯ ---
   var myNotifsCache = [];
   var currentNotifFilter = 'ALL';
 
@@ -456,8 +485,24 @@
       var res = await fetch(API_BASE + "/api/notifications/my", {
         headers: { "Authorization": "Bearer " + token }
       });
-      myNotifsCache = await res.json();
-      filterRenderNotifs();
+      var list = await res.json();
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:12px 0;">Уведомлений нет.</div>';
+        return;
+      }
+      cont.innerHTML = list.map(function(n) {
+        var unreadClass = n.isRead ? "" : "is-unread";
+        var dateStr = new Date(n.createdAt).toLocaleDateString() + " " + new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return [
+          '<div class="dnp-notif-box ' + unreadClass + '" onclick="markNotificationRead(\'' + n._id + '\')">',
+          '  <div class="dnp-notif-top">',
+          '    <b>' + n.title + '</b>',
+          '    <span class="dnp-notif-time">' + dateStr + '</span>',
+          '  </div>',
+          '  <div class="dnp-notif-msg">' + n.message + '</div>',
+          '</div>'
+        ].join('');
+      }).join('');
     } catch (e) {
       if (cont) cont.innerHTML = '<div style="color:var(--danger); font-size:12.5px;">Ошибка загрузки уведомлений.</div>';
     }
@@ -532,7 +577,6 @@
     } catch (e) {}
   };
 
-  // --- АДМИН ПАНЕЛЬ: ТИКЕТЫ, СОСТАВ, ОФИЦЕРЫ ---
   async function checkOfficerStatus() {
     var navBtn = document.getElementById("dnp-nav-admin") || document.querySelector('[data-screen="admin-panel"]');
     if (!navBtn) return;
@@ -775,7 +819,6 @@
     } catch (e) {}
   };
 
-  // --- СПИСОК ПРАВОК В УСТАВЕ ОНЛАЙН ---
   window.loadAdminUstav = async function() {
     var cont = document.getElementById("adm-ustav-list");
     if (!cont) return;
@@ -822,7 +865,6 @@
     } catch (e) {}
   };
 
-  // --- НЕЗАВИСИМОЕ ПЛАВАЮЩЕЕ ОКНО РЕДАКТИРОВАНИЯ УСТАВА (FLOAT HUD) ---
   var floatEditor = document.getElementById("dnp-floating-editor");
   var floatHeader = document.getElementById("dnp-float-hud-header");
   var floatMinBtn = document.getElementById("dnp-float-min-btn");
@@ -832,7 +874,6 @@
   var allUstavSections = [];
   var allUstavItemsCache = [];
 
-  // Логика перетаскивания (Drag & Drop)
   var isDragging = false;
   var dragOffsetX = 0;
   var dragOffsetY = 0;
@@ -852,7 +893,6 @@
       var newLeft = e.clientX - dragOffsetX;
       var newTop = e.clientY - dragOffsetY;
 
-      // Ограничения экраном
       newLeft = Math.max(10, Math.min(window.innerWidth - floatEditor.offsetWidth - 10, newLeft));
       newTop = Math.max(10, Math.min(window.innerHeight - floatEditor.offsetHeight - 10, newTop));
 
@@ -900,15 +940,23 @@
 
   async function loadFloatData() {
     try {
-      var [secRes, artRes] = await Promise.all([
-        fetch(API_BASE + "/api/ustav/sections"),
-        fetch(API_BASE + "/api/ustav")
-      ]);
-      allUstavSections = await secRes.json();
-      allUstavItemsCache = await artRes.json();
-      renderFloatSections();
-      renderFloatArticles();
+      var secRes = await fetch(API_BASE + "/api/ustav/sections");
+      if (secRes.ok) {
+        var sData = await secRes.json();
+        if (Array.isArray(sData) && sData.length > 0) allUstavSections = sData;
+      }
     } catch (e) {}
+
+    try {
+      var artRes = await fetch(API_BASE + "/api/ustav");
+      if (artRes.ok) {
+        var aData = await artRes.json();
+        if (Array.isArray(aData)) allUstavItemsCache = aData;
+      }
+    } catch (e) {}
+
+    renderFloatSections();
+    renderFloatArticles();
   }
 
   function renderFloatSections() {
@@ -1126,7 +1174,6 @@
     } catch (e) {}
   };
 
-  // --- ДИНАМИЧЕСКИЙ РЕНДЕР СТАТЕЙ И РАЗДЕЛОВ НА САЙТЕ ---
   var DEFAULT_SECTIONS = [
     { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
     { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
