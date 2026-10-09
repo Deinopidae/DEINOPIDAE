@@ -1128,15 +1128,21 @@ window.loadAdminTickets = async function() {
     var commentInput = document.getElementById("adm-comment-" + reportId);
     var comment = commentInput ? commentInput.value.trim() : "";
     try {
-      await fetch(API_BASE + "/api/admin/tickets/respond", {
+      var res = await fetch(API_BASE + "/api/admin/tickets/respond", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({ reportId: reportId, status: status, officerComment: comment })
       });
-      loadAdminTickets();
-    } catch (e) {}
+      var data = await res.json().catch(function() { return {}; });
+      if (res.ok && data.success) {
+        loadAdminTickets();
+      } else {
+        alert("Ошибка: " + (data.error || "Не удалось изменить статус"));
+      }
+    } catch (e) {
+      alert("Ошибка соединения с сервером");
+    }
   };
-
   window.deleteAdminTicket = async function(reportId) {
     if (!confirm("Удалить тикет " + reportId + "?")) return;
     var token = localStorage.getItem("dnp_auth_token");
