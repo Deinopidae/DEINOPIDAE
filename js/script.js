@@ -1077,17 +1077,26 @@ window.renderAuthHeader = function() {
     });
   });
 
-  window.loadAdminTickets = async function() {
+window.loadAdminTickets = async function() {
     var cont = document.getElementById("adm-tickets-list");
     var token = localStorage.getItem("dnp_auth_token");
-    if (!cont || !token) return;
+    if (!cont) return;
+    if (!token) {
+      cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Требуется повторный вход в Личный кабинет.</div>';
+      return;
+    }
     cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка тикетов...</div>';
     try {
       var res = await fetch(API_BASE + "/api/admin/tickets", {
         headers: { "Authorization": "Bearer " + token }
       });
+      if (!res.ok) {
+        var errObj = await res.json().catch(function() { return {}; });
+        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка доступа: ' + (errObj.error || res.statusText) + '</div>';
+        return;
+      }
       var list = await res.json();
-      if (!list || list.length === 0) {
+      if (!list || !Array.isArray(list) || list.length === 0) {
         cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Обращений нет.</div>';
         return;
       }
@@ -1110,7 +1119,7 @@ window.renderAuthHeader = function() {
         ].join('');
       }).join('');
     } catch (e) {
-      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка загрузки тикетов.</div>';
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером. Повторите попытку через 10 секунд.</div>';
     }
   };
 
@@ -1143,13 +1152,26 @@ window.renderAuthHeader = function() {
   window.loadAdminUsers = async function() {
     var tbody = document.querySelector("#adm-users-table tbody");
     var token = localStorage.getItem("dnp_auth_token");
-    if (!tbody || !token) return;
+    if (!tbody) return;
+    if (!token) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">Требуется авторизация.</td></tr>';
+      return;
+    }
     tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">Загрузка аккаунтов...</td></tr>';
     try {
       var res = await fetch(API_BASE + "/api/admin/users", {
         headers: { "Authorization": "Bearer " + token }
       });
+      if (!res.ok) {
+        var errObj = await res.json().catch(function() { return {}; });
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка доступа: ' + (errObj.error || res.statusText) + '</td></tr>';
+        return;
+      }
       var users = await res.json();
+      if (!users || !Array.isArray(users) || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">Аккаунты не найдены.</td></tr>';
+        return;
+      }
       tbody.innerHTML = users.map(function(u) {
         return [
           '<tr>',
@@ -1162,7 +1184,7 @@ window.renderAuthHeader = function() {
         ].join('');
       }).join('');
     } catch (e) {
-      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка загрузки пользователей.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Ошибка соединения с сервером.</td></tr>';
     }
   };
 
@@ -1181,12 +1203,26 @@ window.renderAuthHeader = function() {
   window.loadAdminOfficers = async function() {
     var cont = document.getElementById("adm-officers-list");
     var token = localStorage.getItem("dnp_auth_token");
-    if (!cont || !token) return;
+    if (!cont) return;
+    if (!token) {
+      cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Требуется авторизация.</div>';
+      return;
+    }
+    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка офицеров...</div>';
     try {
       var res = await fetch(API_BASE + "/api/admin/officers", {
         headers: { "Authorization": "Bearer " + token }
       });
+      if (!res.ok) {
+        var errObj = await res.json().catch(function() { return {}; });
+        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка доступа: ' + (errObj.error || res.statusText) + '</div>';
+        return;
+      }
       var list = await res.json();
+      if (!list || !Array.isArray(list) || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Офицеров не найдено.</div>';
+        return;
+      }
       cont.innerHTML = list.map(function(o) {
         return [
           '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">',
@@ -1195,7 +1231,9 @@ window.renderAuthHeader = function() {
           '</div>'
         ].join('');
       }).join('');
-    } catch (e) {}
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером.</div>';
+    }
   };
 
   window.addAdminOfficer = async function() {
@@ -1235,9 +1273,18 @@ window.renderAuthHeader = function() {
   window.loadAdminUstav = async function() {
     var cont = document.getElementById("adm-ustav-list");
     if (!cont) return;
+    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка устава...</div>';
     try {
       var res = await fetch(API_BASE + "/api/ustav");
+      if (!res.ok) {
+        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка получения устава.</div>';
+        return;
+      }
       var list = await res.json();
+      if (!list || !Array.isArray(list) || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Дополнительных пунктов нет.</div>';
+        return;
+      }
       cont.innerHTML = list.map(function(item) {
         return [
           '<div style="background:#020507; border:1px solid var(--line-soft); padding:8px 10px; display:flex; justify-content:space-between; align-items:flex-start;">',
@@ -1252,7 +1299,9 @@ window.renderAuthHeader = function() {
           '</div>'
         ].join('');
       }).join('');
-    } catch (e) {}
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка соединения с сервером.</div>';
+    }
   };
 
   window.editAdminUstav = function(item) {
@@ -1289,6 +1338,7 @@ window.renderAuthHeader = function() {
       });
       resetAdminUstavForm();
       loadAdminUstav();
+      loadDynamicUstav();
     } catch (e) {}
   };
 
@@ -1301,6 +1351,7 @@ window.renderAuthHeader = function() {
         headers: { "Authorization": "Bearer " + token }
       });
       loadAdminUstav();
+      loadDynamicUstav();
     } catch (e) {}
   };
   
@@ -1327,4 +1378,5 @@ window.renderAuthHeader = function() {
   }
 
   loadDynamicUstav();
+  setInterval(loadDynamicUstav, 30000);
 })();

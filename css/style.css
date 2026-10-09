@@ -1729,8 +1729,9 @@ a {
 }
 
 .dnp-admin-tab-btn.is-active {
-  background: #0d1519;
-  border-color: var(--danger);
+  background: #1b2328;
+  border-color: var(--line);
+  box-shadow: inset 3px 0 0 var(--line);
   color: #fff;
 }
 
