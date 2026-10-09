@@ -1703,7 +1703,7 @@ a {
     align-items: flex-start;
   }
 
-  .dnp-admin-tabs {
+.dnp-admin-tabs {
   display: flex;
   gap: 6px;
   border-bottom: 1px solid var(--line-soft);

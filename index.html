@@ -104,12 +104,19 @@
             <em>LOCK</em>
           </button>
 
+          <button class="dnp-locked-main" type="button" disabled>
+            <span class="dnp-num">04</span>
+            <b>Вербовка</b>
+            <em>LOCK</em>
+          </button>
+
           <button class="dnp-nav-root-btn" id="dnp-nav-admin" type="button" data-screen="admin-panel" style="display: none; border-left: 3px solid var(--danger); background: rgba(169, 100, 104, 0.08);">
             <span class="dnp-num" style="color: var(--danger);">05</span>
             <b style="color: var(--danger);">Бюрократия</b>
             <em class="dnp-menu-tag" style="color: var(--danger);">OFFICER</em>
           </button>
 
+          
           <div class="dnp-terminal-note">
             <span>PDA-LINK: ONLINE // SYS.V-1</span>
             <span>LOCAL NET: STABLE</span>
@@ -1079,7 +1086,7 @@
             </article>
           </div>
         </section>
-
+        
         <section class="dnp-screen" data-screen-panel="admin-panel">
           <div class="dnp-screen-head">
             <h1 style="color: var(--danger);">Сектор Бюрократии // Управление</h1>
@@ -1106,7 +1113,7 @@
                     <b style="color: #fff; font-size: 13px;">Входящие тикеты состава:</b>
                     <button type="button" class="dnp-action" style="margin: 0; padding: 4px 8px; font-size: 11px;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
                   </div>
-                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
@@ -1135,11 +1142,11 @@
                       <button type="button" class="dnp-action" style="margin: 0; padding: 5px 10px; border-color: var(--line-soft);" onclick="resetAdminUstavForm()">ОЧИСТИТЬ</button>
                     </div>
                   </div>
-                  <div id="adm-ustav-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                  <div id="adm-ustav-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;"></div>
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-users">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <b style="color: #fff; font-size: 13px;">Зарегистрированные аккаунты базы:</b>
                     <button type="button" class="dnp-action" style="margin: 0; padding: 4px 8px; font-size: 11px;" onclick="loadAdminUsers()">ОБНОВИТЬ ⟳</button>
                   </div>
@@ -1164,7 +1171,7 @@
                     <input type="text" id="adm-new-officer-roblox" placeholder="Roblox никнейм сотрудника" style="flex: 1; background: #020507; border: 1px solid var(--line-soft); color: #fff; padding: 6px; font-family: monospace;">
                     <button type="button" class="dnp-action" style="margin: 0; padding: 5px 12px;" onclick="addAdminOfficer()">НАЗНАЧИТЬ ОФИЦЕРОМ ↗</button>
                   </div>
-                  <div id="adm-officers-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                  <div id="adm-officers-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;"></div>
                 </div>
               </div>
             </article>
