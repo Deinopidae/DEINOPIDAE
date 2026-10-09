@@ -205,7 +205,7 @@
         button.setAttribute("aria-selected", isActive ? "true" : "false");
       });
 
-  if (name === "database") {
+      if (name === "database") {
         initTerminalBoot();
       } else if (name === "tickets") {
         loadMyTickets();
@@ -214,6 +214,7 @@
       } else if (name === "admin-panel") {
         loadAdminTickets();
       }
+    }
 
     if (currentPanel && currentPanel !== targetPanel) {
       isTransitioning = true;
@@ -1022,7 +1023,7 @@ window.renderAuthHeader = function() {
     var navBtn = document.getElementById("dnp-nav-admin") || document.querySelector('[data-screen="admin-panel"]');
     if (!navBtn) return;
 
-    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130"];
+    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130", "jeiso"];
     var rawUser = localStorage.getItem("dnp_active_user");
     var token = localStorage.getItem("dnp_auth_token");
 
@@ -1030,7 +1031,8 @@ window.renderAuthHeader = function() {
       try {
         var u = JSON.parse(rawUser);
         var rNick = (u.roblox || "").trim().toLowerCase();
-        if (defaultOfficers.indexOf(rNick) !== -1) {
+        var uNick = (u.username || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick) !== -1 || defaultOfficers.indexOf(uNick) !== -1) {
           navBtn.style.display = "grid";
         }
       } catch (e) {}
@@ -1048,7 +1050,8 @@ window.renderAuthHeader = function() {
       } else if (rawUser) {
         var u2 = JSON.parse(rawUser);
         var rNick2 = (u2.roblox || "").trim().toLowerCase();
-        if (defaultOfficers.indexOf(rNick2) === -1) {
+        var uNick2 = (u2.username || "").trim().toLowerCase();
+        if (defaultOfficers.indexOf(rNick2) === -1 && defaultOfficers.indexOf(uNick2) === -1) {
           navBtn.style.display = "none";
         }
       }
