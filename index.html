@@ -1116,9 +1116,18 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                       <div>
                         <label class="dnp-admin-label">Выбрать раздел для редактирования:</label>
-                        <select id="adm-section-selector" class="dnp-admin-input" onchange="selectAdminSectionForEdit()">
-                          <option value="">-- Создать новый раздел --</option>
-                        </select>
+                          <select id="adm-section-selector" class="dnp-admin-input" onchange="selectAdminSectionForEdit()">
+                            <option value="">-- Создать новый раздел --</option>
+                            <option value="ustav-01">Раздел 1 Основа (ustav-01)</option>
+                            <option value="ustav-02">Раздел 2 Правила (ustav-02)</option>
+                            <option value="ustav-03">Раздел 3 Иерархия и повышения (ustav-03)</option>
+                            <option value="ustav-04">Раздел 4 Норма (ustav-04)</option>
+                            <option value="ustav-05">Раздел 5 Задания (ustav-05)</option>
+                            <option value="ustav-06">Раздел 6 Проверки и лекции (ustav-06)</option>
+                            <option value="ustav-07">Раздел 7 Активности (ustav-07)</option>
+                            <option value="ustav-08">Раздел 8 Прочее (ustav-08)</option>
+                            <option value="ustav-09">Раздел 9 Конец (ustav-09)</option>
+                          </select>
                       </div>
                       <div>
                         <label class="dnp-admin-label">Идентификатор (ID):</label>
@@ -1152,7 +1161,17 @@
                     <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                       <div>
                         <label class="dnp-admin-label">Раздел устава:</label>
-                        <select id="adm-ustav-section" class="dnp-admin-input"></select>
+                        <select id="adm-ustav-section" class="dnp-admin-input">
+                          <option value="ustav-01">Раздел 1 Основа</option>
+                          <option value="ustav-02">Раздел 2 Правила</option>
+                          <option value="ustav-03">Раздел 3 Иерархия и повышения</option>
+                          <option value="ustav-04">Раздел 4 Норма</option>
+                          <option value="ustav-05">Раздел 5 Задания</option>
+                          <option value="ustav-06">Раздел 6 Проверки и лекции</option>
+                          <option value="ustav-07">Раздел 7 Активности</option>
+                          <option value="ustav-08">Раздел 8 Прочее</option>
+                          <option value="ustav-09">Раздел 9 Конец</option>
+                        </select>
                       </div>
                       <div>
                         <label class="dnp-admin-label">Номер пункта:</label>

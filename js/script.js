@@ -165,17 +165,20 @@
     var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
     if (!targetPanel) return;
 
-    var isExternal = ["forms-gui", "tickets", "notifications", "admin-panel"].indexOf(name) !== -1;
+  var isExternal = ["forms-gui", "tickets", "notifications", "admin-panel"].indexOf(name) !== -1;
     var ustavNav = document.getElementById("dnp-nav-ustav");
     var ustavStatus = document.getElementById("dnp-ustav-status");
 
-    if (isExternal && ustavNav) {
-      ustavNav.removeAttribute("open");
-      if (ustavStatus) ustavStatus.textContent = "CLOSED";
-      buttons.forEach(function(b) {
-        b.classList.remove("is-active");
-        b.setAttribute("aria-selected", "false");
-      });
+    if (isExternal) {
+      if (ustavNav) {
+        ustavNav.removeAttribute("open");
+        if (ustavStatus) ustavStatus.textContent = "CLOSED";
+      }
+    } else if (name.indexOf("ustav-") === 0) {
+      if (ustavNav) {
+        ustavNav.setAttribute("open", "");
+        if (ustavStatus) ustavStatus.textContent = "OPEN";
+      }
     }
 
     if (layout) {
@@ -189,7 +192,8 @@
     var currentPanel = root.querySelector(".dnp-screen.is-visible");
 
     function applyScreenSwitch() {
-      panels.forEach(function (panel) {
+      var allPanels = root.querySelectorAll("[data-screen-panel]");
+      allPanels.forEach(function (panel) {
         var isActive = panel === targetPanel;
         panel.classList.toggle("is-visible", isActive);
         if (isActive) {
@@ -199,7 +203,8 @@
         }
       });
 
-      buttons.forEach(function (button) {
+      var allButtons = root.querySelectorAll("[data-screen]");
+      allButtons.forEach(function (button) {
         var isActive = button.getAttribute("data-screen") === name;
         button.classList.toggle("is-active", isActive);
         button.setAttribute("aria-selected", isActive ? "true" : "false");
@@ -1071,7 +1076,10 @@ window.renderAuthHeader = function() {
       if (view) view.classList.add("is-active");
 
       if (tab === "tickets") loadAdminTickets();
-      if (tab === "ustav") loadAdminUstav();
+      if (tab === "ustav") {
+        loadUstavSections();
+        loadAdminUstav();
+      }
       if (tab === "users") loadAdminUsers();
       if (tab === "officers") loadAdminOfficers();
     });
@@ -1292,16 +1300,31 @@ window.loadAdminTickets = async function() {
     } catch (e) {}
   };
 
-  var allUstavSections = [];
+  var DEFAULT_SECTIONS = [
+    { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
+    { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
+    { sectionId: "ustav-03", title: "Раздел 3 Иерархия и повышения", headTitle: "Раздел 3 — Иерархия и повышения", order: 3 },
+    { sectionId: "ustav-04", title: "Раздел 4 Норма", headTitle: "Раздел 4 — Норма", order: 4 },
+    { sectionId: "ustav-05", title: "Раздел 5 Задания", headTitle: "Раздел 5 — Задания", order: 5 },
+    { sectionId: "ustav-06", title: "Раздел 6 Проверки и лекции", headTitle: "Раздел 6 — Проверки и лекции", order: 6 },
+    { sectionId: "ustav-07", title: "Раздел 7 Активности", headTitle: "Раздел 7 — Активности", order: 7 },
+    { sectionId: "ustav-08", title: "Раздел 8 Прочее", headTitle: "Раздел 8 — Прочее", order: 8 },
+    { sectionId: "ustav-09", title: "Раздел 9 Конец", headTitle: "Раздел 9 — Конец", order: 9 }
+  ];
+  var allUstavSections = DEFAULT_SECTIONS.slice();
 
   window.loadUstavSections = async function() {
     try {
       var res = await fetch(API_BASE + "/api/ustav/sections");
-      if (!res.ok) return;
-      allUstavSections = await res.json();
-      renderUstavNavigation();
-      populateSectionSelectors();
+      if (res.ok) {
+        var list = await res.json();
+        if (Array.isArray(list) && list.length > 0) {
+          allUstavSections = list;
+        }
+      }
     } catch (e) {}
+    renderUstavNavigation();
+    populateSectionSelectors();
   };
 
   function renderUstavNavigation() {
@@ -1560,7 +1583,10 @@ window.loadAdminTickets = async function() {
       });
     } catch (e) {}
   }
-
+  
+  populateSectionSelectors();
+  loadUstavSections();
+  loadDynamicUstav();
   loadUstavSections();
   loadDynamicUstav();
   setInterval(function() {
