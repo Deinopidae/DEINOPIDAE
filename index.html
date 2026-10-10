@@ -42,20 +42,6 @@
     <div class="dnp-loader-wipe" id="loader-wipe"></div>
   </div>
 
-  <script>
-    setTimeout(function() {
-      var l = document.getElementById("dnp-loader");
-      if (l && l.style.display !== "none") {
-        l.style.opacity = "0";
-        l.style.pointerEvents = "none";
-        setTimeout(function() { l.style.display = "none"; }, 300);
-      }
-    }, 1500);
-  </script>
-
-    <div class="dnp-loader-wipe" id="loader-wipe"></div>
-  </div>
-
   <div class="dnp-pda" id="dnp-pda">
     <div class="dnp-scan"></div>
 
@@ -1131,9 +1117,8 @@
                     </div>
                     <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff;" onclick="toggleUstavEditorMode(true)">✏ ВКЛЮЧИТЬ РЕЖИМ РЕДАКТОРА</button>
                   </div>
-                </div>
 
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; margin-bottom: 8px;">
                     <b style="color: #fff; font-size: 12.5px;">Все активные статьи и правки устава:</b>
                     <button type="button" class="dnp-action is-secondary" style="margin: 0; padding: 4px 8px; font-size: 11px;" onclick="loadAdminUstav()">ОБНОВИТЬ ⟳</button>
                   </div>
@@ -1225,3 +1210,10 @@
 
     </div>
   </div>
+
+  <script src="js/cookie_manager.js"></script>
+  <script src="js/live_polling.js"></script>
+  <script src="js/form_handler.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

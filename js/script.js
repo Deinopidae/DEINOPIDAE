@@ -14,7 +14,7 @@
   if (loader && loaderBar && loaderPercent) {
     var currentProgress = 0;
     var startTime = performance.now();
-    var duration = 1000; // Ровно 1 секунда на анимацию
+    var duration = 2400; // Плавная 2.4-секундная анимация
     var isDone = false;
 
     function renderLoader(now) {
@@ -40,14 +40,16 @@
 
       if (currentProgress >= 100) {
         isDone = true;
-        completeLoadingSequence();
+        finishLoaderSequence();
         return;
       }
 
       requestAnimationFrame(renderLoader);
     }
 
-    function completeLoadingSequence() {
+    function finishLoaderSequence() {
+      if (!loader || loader.style.display === "none") return;
+      isDone = true;
       loaderPercent.textContent = "100";
       loaderBar.style.height = "100%";
       if (loaderBg) loaderBg.style.filter = "blur(0px)";
@@ -79,11 +81,14 @@
 
     setTimeout(function () {
       if (loader && loader.style.display !== "none") {
-        loader.style.opacity = "0";
-        loader.style.pointerEvents = "none";
-        setTimeout(function () { loader.style.display = "none"; }, 200);
+        finishLoaderSequence();
       }
-    }, 1800);
+    }, 5000);
+
+    loader.addEventListener("click", function () {
+      finishLoaderSequence();
+    });
+  }
 
     // Клик по экрану пропускает загрузку мгновенно
     loader.addEventListener("click", function () {
