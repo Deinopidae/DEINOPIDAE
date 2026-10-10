@@ -14,15 +14,13 @@
   if (loader && loaderBar && loaderPercent) {
     var currentProgress = 0;
     var startTime = performance.now();
-    var duration = 2400; // Плавная 2.4-секундная анимация
+    var duration = 2200; 
     var isDone = false;
 
     function renderLoader(now) {
       if (isDone) return;
-
       var elapsed = now - startTime;
       currentProgress = Math.min(100, (elapsed / duration) * 100);
-
       var progFloor = Math.floor(currentProgress);
       loaderPercent.textContent = progFloor;
       loaderBar.style.height = currentProgress + "%";
@@ -39,7 +37,6 @@
       }
 
       if (currentProgress >= 100) {
-        isDone = true;
         finishLoaderSequence();
         return;
       }
@@ -48,7 +45,7 @@
     }
 
     function finishLoaderSequence() {
-      if (!loader || loader.style.display === "none") return;
+      if (isDone) return;
       isDone = true;
       loaderPercent.textContent = "100";
       loaderBar.style.height = "100%";
@@ -80,20 +77,11 @@
     requestAnimationFrame(renderLoader);
 
     setTimeout(function () {
-      if (loader && loader.style.display !== "none") {
-        finishLoaderSequence();
-      }
+      finishLoaderSequence();
     }, 5000);
 
     loader.addEventListener("click", function () {
       finishLoaderSequence();
-    });
-  }
-
-    // Клик по экрану пропускает загрузку мгновенно
-    loader.addEventListener("click", function () {
-      loader.style.display = "none";
-      loader.style.pointerEvents = "none";
     });
   }
 
@@ -123,7 +111,6 @@
 
   var isTransitioning = false;
 
-  // Открытие экранов (Устав больше не захлопывается при переходе в другие вкладки)
   window.openScreen = function(name) {
     if (isTransitioning) return;
 
@@ -222,7 +209,6 @@
     openScreen(firstButton.getAttribute("data-screen"));
   }
 
-  // --- 3D ПАРАЛЛАКС И ГЛИТЧ-ЭФФЕКТ (КОРНИ DEINOPIDAE) ---
   var corruptModule = document.getElementById("corrupt-module");
   var corruptImg = document.getElementById("corrupt-img");
   var ghostTitle = document.getElementById("ghost-title");
@@ -255,7 +241,6 @@
     });
   }
 
-  // --- ПОЛНЫЙ ТЕРМИНАЛ И БАЗА СОТРУДНИКОВ ---
   var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
   var asciiLogo = [
@@ -501,38 +486,6 @@
     }
   }
 
-  async function submitFormConsole(typeNum, desc, links) {
-    var typeMap = { "1": "Внеурочка", "2": "Изменение устава", "3": "Обращение к руководству" };
-    var type = typeMap[typeNum.toLowerCase()] || typeNum;
-    var token = localStorage.getItem("dnp_auth_token");
-
-    if (!token) {
-      printLine('<span style="color:#ff5252;">[ОТКАЗ] Необходима авторизация в Личном кабинете.</span>');
-      return;
-    }
-    if (!desc) {
-      printLine('<span style="color:#ff5252;">[ОШИБКА] Текст описания не может быть пустым.</span>');
-      return;
-    }
-
-    printLine('[SYS] Передача рапорта в базу данных комплекса...');
-    try {
-      var res = await fetch(API_BASE + "/api/forms/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({ type: type, description: desc, links: links || "Отсутствуют" })
-      });
-      var data = await res.json();
-      if (res.ok && data.success) {
-        printLine('<span style="color:#4af626;">[УСПЕХ] Обращение #' + data.reportId + ' зарегистрировано!</span>');
-      } else {
-        printLine('<span style="color:#ff5252;">[ОТКАЗ] ' + (data.error || "Ошибка сохранения") + '</span>');
-      }
-    } catch (e) {
-      printLine('<span style="color:#ff5252;">[СБОЙ СЕТИ] Не удалось связаться с сервером.</span>');
-    }
-  }
-
   function executeCommand(raw) {
     var cmd = raw.trim();
     if (!cmd) return;
@@ -549,29 +502,6 @@
       first = (parts[0] || "").toUpperCase();
     }
 
-    if (first === "FORMS") {
-      var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
-      if (isGui) {
-        openScreen("forms-gui");
-        printLine('[SYS] Переход в форму подачи обращений.');
-        return;
-      }
-      if (parts.length >= 3) {
-        var catNum = parts[1].replace(/^"|"$/g, "");
-        var desc = parts[2].replace(/^"|"$/g, "");
-        var links = (parts[3] || "").replace(/^"|"$/g, "");
-        submitFormConsole(catNum, desc, links);
-        return;
-      }
-      printLine("=== [СИСТЕМА ПОДАЧИ ОТЧЁТОВ И ФОРМ] ===");
-      printLine("  [1] Внеурочка (Починка / Создание оборудования)");
-      printLine("  [2] Изменение устава (Предложение поправки)");
-      printLine("  [3] Обращение к руководству (Запрос / Жалоба / Вопрос)");
-      printLine('Отправка через консоль: FORMS <1-3> "<текст>" "<ссылка>"');
-      printLine('Графический интерфейс: FORMS -gui');
-      return;
-    }
-
     if (first === "STAFF") {
       var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
       if (!nick) {
@@ -580,7 +510,7 @@
       }
       var p = window.employeeDb[nick];
       if (p) {
-        printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+        printLine("===ЛИЧНОЕ ДЕЛО СОТРУДНИКА===");
         printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
         printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
         printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
@@ -621,8 +551,6 @@
       printLine("HELP                  - Вызов списка доступных команд");
       printLine("FIND <фраза>          - Глобальный поиск по уставу и сотрудникам");
       printLine("STAFF <ник>           - Личное дело сотрудника");
-      printLine('FORMS <1-3> "..." ".." - Отправка рапорта из консоли');
-      printLine("FORMS -gui            - Графический интерфейс подачи форм");
       printLine("GOTO <1-9>            - Быстрый переход в раздел устава");
       printLine("CLS / CLEAR           - Очистить экран консоли");
       return;
@@ -676,7 +604,6 @@
     });
   }
 
-  // Интерактивные поля графической формы
   var formCategory = document.getElementById("gui-form-category");
   var targetBox = document.getElementById("gui-form-target-box");
   var rulesBox = document.getElementById("gui-form-rules-box");
@@ -763,7 +690,6 @@
     submitBtn.addEventListener("click", window.submitFormFromGui);
   }
 
-  // --- ОБРАЩЕНИЯ ПОЛЬЗОВАТЕЛЯ ---
   window.loadMyTickets = async function() {
     var cont = document.getElementById("tickets-list-container");
     if (!cont) return;
@@ -821,7 +747,6 @@
     }
   };
 
-  // --- УВЕДОМЛЕНИЯ С УДАЛЕНИЕМ ---
   window.deleteNotification = async function(e, id) {
     e.stopPropagation();
     var token = localStorage.getItem("dnp_auth_token");
@@ -907,7 +832,6 @@
     } catch (e) {}
   };
 
-  // --- ПРОВЕРКА ПРАВ ОФИЦЕРА (JEISO УБРАН ИЗ DEFAULT) ---
   async function checkOfficerStatus() {
     var navBtn = document.getElementById("dnp-nav-admin") || document.querySelector('[data-screen="admin-panel"]');
     if (!navBtn) return;
@@ -952,8 +876,8 @@
 
   document.querySelectorAll(".dnp-admin-tab-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".dnp-admin-tab-btn").forEach(b => b.classList.remove("is-active"));
-      document.querySelectorAll(".dnp-admin-panel-view").forEach(v => v.classList.remove("is-active"));
+      document.querySelectorAll(".dnp-admin-tab-btn").forEach(function(b) { b.classList.remove("is-active"); });
+      document.querySelectorAll(".dnp-admin-panel-view").forEach(function(v) { v.classList.remove("is-active"); });
       btn.classList.add("is-active");
       var tab = btn.getAttribute("data-admin-tab");
       var view = document.getElementById("adm-view-" + tab);
@@ -1039,7 +963,7 @@
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({ reportId: reportId, status: status, officerComment: comment })
       });
-      var data = await res.json().catch(() => ({}));
+      var data = await res.json().catch(function() { return {}; });
       if (res.ok && data.success) {
         loadAdminTickets();
       } else {
@@ -1141,7 +1065,7 @@
     if (!confirm("Снять статус офицера с " + nick + "?")) return;
     var token = localStorage.getItem("dnp_auth_token");
     try {
-      var res = await fetch(API_BASE + "/api/admin/officers/remove", {
+      await fetch(API_BASE + "/api/admin/officers/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({ roblox: nick })
@@ -1195,7 +1119,6 @@
     } catch (e) {}
   };
 
-  // --- ВСТРОЕННЫЙ РЕДАКТОР УСТАВА (GOOGLE DOCS STYLE + СИНИЙ РЕЖИМ) ---
   var isEditorModeActive = false;
   var currentEditedElement = null;
 
@@ -1352,7 +1275,6 @@
     }
   };
 
-  // --- ДИНАМИЧЕСКИЙ РЕНДЕР СТАТЕЙ И РАЗДЕЛОВ ---
   var DEFAULT_SECTIONS = [
     { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
     { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
@@ -1381,7 +1303,7 @@
     var subnav = document.querySelector(".dnp-subnav");
     if (!subnav || allUstavSections.length === 0) return;
 
-    allUstavSections.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(function(sec) {
+    allUstavSections.sort(function(a, b) { return (a.order || 0) - (b.order || 0); }).forEach(function(sec) {
       var btn = subnav.querySelector('[data-screen="' + sec.sectionId + '"]');
       if (btn) {
         btn.textContent = sec.title;
