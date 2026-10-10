@@ -1935,3 +1935,93 @@ body.is-hud-editing .dnp-rank-block:hover {
   border-bottom: 1px solid var(--line-soft);
   padding-bottom: 8px;
 }
+
+/* Плюсик создания раздела возле 01 Устав */
+.dnp-nav-plus-btn {
+  display: none;
+  background: #0077ff;
+  border: 1px solid #00f0ff;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: 6px;
+  line-height: 1;
+}
+.dnp-nav-plus-btn:hover {
+  background: #00f0ff;
+  color: #000;
+}
+
+.dnp-editor-mode .dnp-nav-plus-btn {
+  display: inline-flex !important;
+}
+
+/* Строки разделов с крестиками удаления */
+.dnp-subnav-item-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+.dnp-subnav-item-wrap button[data-screen] {
+  flex: 1;
+}
+
+.dnp-sec-del-btn {
+  display: none;
+  background: rgba(169, 100, 104, 0.25);
+  border: 1px solid var(--danger);
+  color: #ff8e92;
+  width: 26px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 11px;
+  align-items: center;
+  justify-content: center;
+}
+.dnp-sec-del-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.dnp-editor-mode .dnp-sec-del-btn {
+  display: flex !important;
+}
+
+/* Линия слева в статье (отмеченная на скриншоте) */
+.dnp-module {
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--line);
+  box-shadow: inset 3px 0 0 var(--line);
+}
+
+/* Стилизация текста без блокирующего !important, чтобы цвет применялся */
+.dnp-module p,
+.dnp-module li,
+.dnp-dyn-module p {
+  color: #d9e1e4;
+  font-family: "Roboto Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.dnp-module.is-focused-module {
+  outline: 2px solid #00f0ff !important;
+}
+
+.dnp-doc-btn.is-danger-btn {
+  border-color: rgba(169, 100, 104, 0.5);
+  color: #ff8e92;
+}
+.dnp-doc-btn.is-danger-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}

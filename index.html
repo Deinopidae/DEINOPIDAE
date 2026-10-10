@@ -67,11 +67,11 @@
           <em class="dnp-menu-tag">MENU</em>
         </div>
 
-        <div class="dnp-sidebar-body" id="dnp-sidebar-body">
-          <details class="dnp-nav-group" id="dnp-nav-ustav" open>
+        <details class="dnp-nav-group" id="dnp-nav-ustav" open>
             <summary>
               <span class="dnp-num">01</span>
               <b>Устав</b>
+              <button type="button" class="dnp-nav-plus-btn" id="dnp-nav-plus-sec" onclick="event.stopPropagation(); navPromptAddSection();" title="Добавить новый раздел">+</button>
               <em id="dnp-ustav-status">OPEN</em>
             </summary>
             <div class="dnp-subnav">
@@ -1111,28 +1111,18 @@
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
-                  <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                  <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
                     <div>
                       <b style="color: #fff; font-size: 14px; font-family: 'Exo 2', sans-serif;">ИНТЕРАКТИВНЫЙ РЕДАКТОР УСТАВА</b>
-                      <span style="display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px;">Прямое редактирование текста на страницах с синей подсветкой и нижней панелью инструментов.</span>
+                      <span style="display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px;">Прямое редактирование текста на страницах. Разделы удаляются крестиком ✕ в меню, добавляются плюсиком + у кнопки 01.</span>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                      <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff;" onclick="toggleUstavEditorMode(true)">✏ ВКЛЮЧИТЬ РЕДАКТОР</button>
+                      <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff;" onclick="toggleUstavEditorMode(true)">✏ ВКЛЮЧИТЬ РЕЖИМ РЕДАКТОРА</button>
                       <button type="button" class="dnp-action is-danger" style="margin: 0;" onclick="resetAllUstavFactory()">СБРОСИТЬ ВСЕ К ЗАВОДСКИМ</button>
                     </div>
                   </div>
 
-                  <div class="dnp-admin-box" style="margin-bottom: 12px;">
-                    <div class="dnp-admin-box-title">УПРАВЛЕНИЕ РАЗДЕЛАМИ УСТАВА</div>
-                    <div style="display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 8px; margin-bottom: 8px;">
-                      <input type="text" id="adm-new-sec-id" class="dnp-admin-input" placeholder="ID (ustav-10)">
-                      <input type="text" id="adm-new-sec-title" class="dnp-admin-input" placeholder="Название раздела в меню">
-                      <input type="number" id="adm-new-sec-order" class="dnp-admin-input" placeholder="Порядок">
-                      <button type="button" class="dnp-action" style="margin: 0;" onclick="adminCreateSection()">СОЗДАТЬ РАЗДЕЛ</button>
-                    </div>
-                    <div id="adm-sections-list-box" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
-                  </div>
-
+                  <!-- Журнал изменений и откат -->
                   <div class="dnp-admin-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                       <div class="dnp-admin-box-title" style="margin: 0;">ЖУРНАЛ ИЗМЕНЕНИЙ УСТАВА (ИСТОРИЯ РЕВИЗИЙ)</div>
@@ -1202,15 +1192,16 @@
       </div>
 
       <div class="dnp-doc-group">
+        <label title="Цвет оглавления статьи">Оглавление <input type="color" value="#00f0ff" onchange="docApplyTitleColor(this.value)"></label>
         <label title="Цвет текста">Текст <input type="color" value="#d9e1e4" onchange="docApplyTextColor(this.value)"></label>
-        <label title="Линия слева">Полоса <input type="color" value="#8aa0a8" onchange="docApplyBorderColor(this.value)"></label>
-        <label title="Фон блока">Фон <input type="color" value="#0e1519" onchange="docApplyBgColor(this.value)"></label>
+        <label title="Цвет полосы слева">Полоса <input type="color" value="#8aa0a8" onchange="docApplyBorderColor(this.value)"></label>
+        <label title="Фон блока">Фон <input type="color" value="#080d10" onchange="docApplyBgColor(this.value)"></label>
       </div>
 
       <div class="dnp-doc-group">
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('list')" title="Список точками">• Список</button>
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('module')" title="Добавить статью">+ Статья</button>
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('card')" title="Добавить карточку звания">+ Карточка</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('list')" title="Добавить список внутри статьи">• Список</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('card')" title="Добавить карточку внутри статьи">+ Карточка</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('module')" title="Добавить новую статью">+ Статья</button>
         <button type="button" class="dnp-doc-btn is-danger-btn" onclick="docDeleteCurrentItem()" title="Удалить выбранный блок">🗑 Удалить блок</button>
       </div>
 
