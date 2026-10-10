@@ -159,27 +159,12 @@
 
   var isTransitioning = false;
 
+  // Открытие экранов (Устав больше не закрывается при переходе в Бюрократию)
   window.openScreen = function(name) {
     if (isTransitioning) return;
 
     var targetPanel = root.querySelector('[data-screen-panel="' + name + '"]');
     if (!targetPanel) return;
-
-    var isExternal = ["forms-gui", "tickets", "notifications", "admin-panel"].indexOf(name) !== -1;
-    var ustavNav = document.getElementById("dnp-nav-ustav");
-    var ustavStatus = document.getElementById("dnp-ustav-status");
-
-    if (isExternal) {
-      if (ustavNav) {
-        ustavNav.removeAttribute("open");
-        if (ustavStatus) ustavStatus.textContent = "CLOSED";
-      }
-    } else if (name.indexOf("ustav-") === 0) {
-      if (ustavNav) {
-        ustavNav.setAttribute("open", "");
-        if (ustavStatus) ustavStatus.textContent = "OPEN";
-      }
-    }
 
     if (layout) {
       if (name === "database") {
@@ -273,6 +258,192 @@
     openScreen(firstButton.getAttribute("data-screen"));
   }
 
+  // --- ЛОГИКА ТЕРМИНАЛА И БАЗЫ ДАННЫХ ---
+  var termLoaded = false;
+  var termBooting = false;
+  var termStep = 0;
+  var termTimer = null;
+  var cmdHistory = [];
+  var cmdHistoryIndex = -1;
+
+  var asciiLogo = [
+    "    @@                                                        @@    ",
+    "     @                                                         %     ",
+    "      %   @@ @@@ @@%@@@@@@ %@ @@@@@@@@@@@ @@ @@@@@@@@@@@@ @%@@@@@@@@@@          ",
+    "       %   @@@@@%@ @@@@@@@ @%@@  @   @ @@@@ @@ @@@@@@@@@@@ @@@@@@@@@            ",
+    "            @@@@@@@  @@@@@ @@@@@                 @@ @@@@ @@@ @@@@@@             ",
+    "              @@@@@@%  @@@@@@@@ @@@@         @@@@@@@@@@@@ @@@@ @@@   %          ",
+    "           @   @@@@@@@%@@@@@@@@@@@@@%       @@@@@@ @@ @ @@@@@@ @@   @           ",
+    "            @   @@@%%@%@@@@@   @@@@@    @@@@@@@@@@@@ @@@@@@%@@@@   @            ",
+    "             @   @@@% @@ @@@@@ @@@@@        @@@@@@@@@@ @%@@ @ @                 ",
+    "              %   %@@@@@@@ @@@@%@@@@@       @@@@@@  %@@@%@@@@@                  ",
+    "                    @@@@ @@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@                   ",
+    "                      @ %@%@% %@@   @%      @@ %@%%%%%%   @                     "
+  ].join("\n");
+
+  window.employeeDb = {
+    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" },
+    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" },
+    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" }
+  };
+
+  function getCurrentUser() {
+    var user = localStorage.getItem("dnp_active_user");
+    if (user) {
+      try {
+        var parsed = JSON.parse(user);
+        if (parsed && (parsed.displayName || parsed.username)) {
+          return (parsed.displayName || parsed.username).toUpperCase();
+        }
+      } catch (e) {}
+    }
+    return "USER";
+  }
+
+  function getPromptStr() {
+    return 'D:\\"' + getCurrentUser() + '">';
+  }
+
+  function initTerminalBoot() {
+    var termTopTitle = document.getElementById("term-top-title");
+    var termProgressLine = document.getElementById("term-progress-line");
+    var termAscii = document.getElementById("term-ascii");
+    var termPromptLine = document.getElementById("term-prompt-line");
+    var termPromptLabel = document.getElementById("term-prompt-label");
+    var termInput = document.getElementById("term-input");
+
+    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
+    if (termLoaded || termBooting) {
+      if (termInput) termInput.focus({ preventScroll: true });
+      return;
+    }
+    termBooting = true;
+    termStep = 0;
+
+    if (termTopTitle) termTopTitle.textContent = "LOADING .  .  . PLEASE WAIT";
+    if (termProgressLine) termProgressLine.textContent = "▶ CURRENT PROGRESS . . . [ • • • • • • • • • • • • • • • • • • • • ]";
+    if (termAscii) termAscii.style.display = "none";
+    if (termPromptLine) termPromptLine.style.display = "none";
+
+    runBootStep();
+  }
+
+  function runBootStep() {
+    var termProgressLine = document.getElementById("term-progress-line");
+    var totalDots = 20;
+    var filled = Math.min(termStep * 2, totalDots);
+    var str = "[ ";
+    for (var i = 0; i < filled; i++) str += "▉ ";
+    for (var j = filled; j < totalDots; j++) str += "• ";
+    str += "]";
+
+    if (termProgressLine) termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+    if (termStep >= 10) {
+      finishTerminalBoot();
+      return;
+    }
+    termStep++;
+    termTimer = setTimeout(runBootStep, 140);
+  }
+
+  function finishTerminalBoot() {
+    if (termTimer) clearTimeout(termTimer);
+    termBooting = false;
+    termLoaded = true;
+
+    var termTopTitle = document.getElementById("term-top-title");
+    var termProgressLine = document.getElementById("term-progress-line");
+    var termAscii = document.getElementById("term-ascii");
+    var termPromptLine = document.getElementById("term-prompt-line");
+    var termPromptLabel = document.getElementById("term-prompt-label");
+    var termInput = document.getElementById("term-input");
+
+    if (termTopTitle) termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
+    if (termProgressLine) termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "HELP" FOR SEE HELP';
+    if (termAscii) { termAscii.textContent = asciiLogo; termAscii.style.display = "block"; }
+    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
+    if (termPromptLine) termPromptLine.style.display = "flex";
+    if (termInput) termInput.focus({ preventScroll: true });
+  }
+
+  var termBody = document.getElementById("term-body");
+  if (termBody) {
+    termBody.addEventListener("click", function () {
+      if (termBooting) finishTerminalBoot();
+      else {
+        var input = document.getElementById("term-input");
+        if (input) input.focus({ preventScroll: true });
+      }
+    });
+  }
+
+  function printLine(text) {
+    var termOutput = document.getElementById("term-output");
+    if (!termOutput) return;
+    var div = document.createElement("div");
+    div.className = "dnp-term-resp-line";
+    div.innerHTML = text;
+    termOutput.appendChild(div);
+    if (termBody) termBody.scrollTop = termBody.scrollHeight;
+  }
+
+  function executeCommand(raw) {
+    var cmd = raw.trim();
+    if (!cmd) return;
+    cmdHistory.push(cmd);
+    cmdHistoryIndex = cmdHistory.length;
+    printLine(getPromptStr() + " " + cmd);
+
+    var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+    var first = (parts[0] || "").toUpperCase();
+
+    if (first === "HELP") {
+      printLine("HELP - Список команд");
+      printLine("CLS / CLEAR - Очистить экран");
+      printLine("STAFF <ник> - Личное дело сотрудника");
+      printLine("GOTO <1-9> - Переход в раздел устава");
+      return;
+    }
+    if (first === "CLS" || first === "CLEAR") {
+      var termOutput = document.getElementById("term-output");
+      if (termOutput) termOutput.innerHTML = "";
+      return;
+    }
+    if (first === "STAFF") {
+      var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
+      var p = window.employeeDb[nick];
+      if (p) {
+        printLine("ПОЗЫВНОЙ: " + p.name + " | РАНГ: " + p.title + " [" + p.rank + "] | НОРМА: " + p.quota_status);
+      } else {
+        printLine("Сотрудник не найден в локальном реестре.");
+      }
+      return;
+    }
+    if (first === "GOTO") {
+      var target = (parts[1] || "").toLowerCase();
+      openScreen("ustav-0" + target);
+      return;
+    }
+    printLine('Команда "' + cmd + '" не распознана. Введите "HELP".');
+  }
+
+  var termInput = document.getElementById("term-input");
+  var termTyped = document.getElementById("term-typed");
+  if (termInput) {
+    termInput.addEventListener("input", function() {
+      if (termTyped) termTyped.textContent = termInput.value;
+    });
+    termInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        var val = termInput.value;
+        termInput.value = "";
+        if (termTyped) termTyped.textContent = "";
+        executeCommand(val);
+      }
+    });
+  }
+
+  // --- ОЧИСТКА И ОТПРАВКА ОБРАЩЕНИЙ ---
   window.clearGuiForm = function() {
     var desc = document.getElementById("gui-form-desc");
     var links = document.getElementById("gui-form-links");
@@ -350,9 +521,7 @@
     submitBtn.addEventListener("click", window.submitFormFromGui);
   }
 
-  var myTicketsCache = [];
-  var currentTicketFilter = 'ALL';
-
+  // --- ТИКЕТЫ ПОЛЬЗОВАТЕЛЯ ---
   window.loadMyTickets = async function() {
     var cont = document.getElementById("tickets-list-container");
     if (!cont) return;
@@ -394,11 +563,11 @@
           '      <b>' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
           '      <span style="color:var(--muted); font-size:11px; margin-left:8px;">' + dateSubmit + '</span>',
           '    </div>',
-          '    <span class="dnp-ticket-status ' + stClass + '">' + (t.status || "НА ПРОВЕРКЕ") + '</span>',
+          '    <span class="dnp-badge ' + stClass + '">' + (t.status || "НА ПРОВЕРКЕ") + '</span>',
           '  </div>',
           '  <div class="dnp-ticket-history">',
           '    <div><span style="color:var(--line);">Суть:</span> ' + t.description + '</div>',
-          t.links && t.links !== "Отсутствуют" ? '    <div><span style="color:var(--line);">Материалы:</span> <a href="' + t.links + '" target="_blank" class="dnp-brud-link">Открыть вложение ↗</a></div>' : '',
+          t.links && t.links !== "Отсутствуют" ? '    <div><span style="color:var(--line);">Материалы:</span> <a href="' + t.links + '" target="_blank" class="dnp-brud-link">Открыть вложение</a></div>' : '',
           t.officer ? '    <div style="margin-top:4px; padding-top:6px; border-top:1px dashed var(--line-soft);"><span style="color:var(--line);">Офицер:</span> ' + t.officer + ' (' + dateUpdate + ')</div>' : '',
           t.officerComment ? '    <div class="dnp-ticket-verdict-box"><span style="color:var(--line);">Вердикт офицера:</span> <b style="color:#fff;">' + t.officerComment + '</b></div>' : '',
           '  </div>',
@@ -410,71 +579,32 @@
     }
   };
 
-  window.filterRenderTickets = function() {
-    var cont = document.getElementById("tickets-list-container");
-    if (!cont) return;
-
-    var q = (document.getElementById("tickets-search-input")?.value || "").toLowerCase().trim();
-    var list = myTicketsCache.filter(function(t) {
-      var matchStatus = currentTicketFilter === 'ALL' || t.status === currentTicketFilter;
-      var matchQuery = !q || (t.reportId && t.reportId.toLowerCase().indexOf(q) !== -1) ||
-                              (t.description && t.description.toLowerCase().indexOf(q) !== -1) ||
-                              (t.officer && t.officer.toLowerCase().indexOf(q) !== -1);
-      return matchStatus && matchQuery;
-    });
-
-    document.getElementById("t-count-all").textContent = myTicketsCache.length;
-    document.getElementById("t-count-pending").textContent = myTicketsCache.filter(t => t.status === 'НА ПРОВЕРКЕ').length;
-    document.getElementById("t-count-work").textContent = myTicketsCache.filter(t => t.status === 'В РАБОТЕ').length;
-    document.getElementById("t-count-approved").textContent = myTicketsCache.filter(t => t.status === 'ОДОБРЕНО').length;
-    document.getElementById("t-count-rejected").textContent = myTicketsCache.filter(t => t.status === 'ОТКЛОНЕНО').length;
-
-    if (list.length === 0) {
-      cont.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:12px 0;">Обращений по данному критерию не найдено.</div>';
-      return;
-    }
-
-    cont.innerHTML = list.map(function(t) {
-      var stClass = "st-pending";
-      if (t.status === "В РАБОТЕ") stClass = "st-work";
-      if (t.status === "ОДОБРЕНО") stClass = "st-ok";
-      if (t.status === "ОТКЛОНЕНО") stClass = "st-reject";
-      if (t.status === "УДАЛЕНО") stClass = "st-deleted";
-
-      var dateSubmit = t.submittedAt ? new Date(t.submittedAt).toLocaleDateString() + " " + new Date(t.submittedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
-      var dateUpdate = t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() + " " + new Date(t.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "—";
-
-      return [
-        '<div class="dnp-ticket-box">',
-        '  <div class="dnp-ticket-top" onclick="this.parentElement.querySelector(\'.dnp-ticket-details\').classList.toggle(\'dnp-hidden\')">',
-        '    <div>',
-        '      <b>' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
-        '      <span style="color:var(--muted); font-size:11px; margin-left:8px;">' + dateSubmit + '</span>',
-        '    </div>',
-        '    <span class="dnp-badge ' + stClass + '">' + (t.status || "НА ПРОВЕРКЕ") + '</span>',
-        '  </div>',
-        '  <div class="dnp-ticket-details">',
-        '    <div><span style="color:var(--line);">Суть:</span> ' + t.description + '</div>',
-        t.links && t.links !== "Отсутствуют" ? '    <div><span style="color:var(--line);">Материалы:</span> <a href="' + t.links + '" target="_blank" class="dnp-brud-link">Открыть вложение ↗</a></div>' : '',
-        t.officer ? '    <div style="margin-top:4px; padding-top:6px; border-top:1px dashed var(--line-soft);"><span style="color:var(--line);">Офицер:</span> ' + t.officer + ' (' + dateUpdate + ')</div>' : '',
-        t.officerComment ? '    <div class="dnp-ticket-verdict-box"><span style="color:var(--line);">Вердикт офицера:</span> <b style="color:#fff;">' + t.officerComment + '</b></div>' : '',
-        '  </div>',
-        '</div>'
-      ].join('');
-    }).join('');
+  // --- УВЕДОМЛЕНИЯ С УДАЛЕНИЕМ ---
+  window.deleteNotification = async function(e, id) {
+    e.stopPropagation();
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch(API_BASE + "/api/notifications/" + id, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (err) {}
   };
 
-  document.querySelectorAll("#tickets-filter-bar button").forEach(function(btn) {
-    btn.addEventListener("click", function() {
-      document.querySelectorAll("#tickets-filter-bar button").forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-      currentTicketFilter = btn.getAttribute("data-ticket-filter");
-      filterRenderTickets();
-    });
-  });
-
-  var myNotifsCache = [];
-  var currentNotifFilter = 'ALL';
+  window.clearAllNotifications = async function() {
+    if (!confirm("Удалить все уведомления?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+    try {
+      await fetch(API_BASE + "/api/notifications", {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadNotifications();
+    } catch (err) {}
+  };
 
   window.loadNotifications = async function() {
     var cont = document.getElementById("notifications-list-container");
@@ -497,7 +627,10 @@
           '<div class="dnp-notif-box ' + unreadClass + '" onclick="markNotificationRead(\'' + n._id + '\')">',
           '  <div class="dnp-notif-top">',
           '    <b>' + n.title + '</b>',
-          '    <span class="dnp-notif-time">' + dateStr + '</span>',
+          '    <div style="display:flex; align-items:center; gap:8px;">',
+          '      <span class="dnp-notif-time">' + dateStr + '</span>',
+          '      <button type="button" class="dnp-notif-del-btn" onclick="deleteNotification(event, \'' + n._id + '\')">✕</button>',
+          '    </div>',
           '  </div>',
           '  <div class="dnp-notif-msg">' + n.message + '</div>',
           '</div>'
@@ -507,51 +640,6 @@
       if (cont) cont.innerHTML = '<div style="color:var(--danger); font-size:12.5px;">Ошибка загрузки уведомлений.</div>';
     }
   };
-
-  window.filterRenderNotifs = function() {
-    var cont = document.getElementById("notifications-list-container");
-    if (!cont) return;
-
-    var list = myNotifsCache.filter(function(n) {
-      if (currentNotifFilter === 'UNREAD') return !n.isRead;
-      if (currentNotifFilter === 'TICKET') return n.type === 'TICKET' || n.type === 'SUCCESS' || n.type === 'WARNING';
-      if (currentNotifFilter === 'SYSTEM') return n.type === 'SYSTEM';
-      return true;
-    });
-
-    document.getElementById("n-count-all").textContent = myNotifsCache.length;
-    document.getElementById("n-count-unread").textContent = myNotifsCache.filter(n => !n.isRead).length;
-    document.getElementById("n-count-ticket").textContent = myNotifsCache.filter(n => n.type === 'TICKET' || n.type === 'SUCCESS' || n.type === 'WARNING').length;
-    document.getElementById("n-count-sys").textContent = myNotifsCache.filter(n => n.type === 'SYSTEM').length;
-
-    if (list.length === 0) {
-      cont.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:12px 0;">Уведомлений нет.</div>';
-      return;
-    }
-
-    cont.innerHTML = list.map(function(n) {
-      var unreadClass = n.isRead ? "" : "is-unread";
-      var dateStr = new Date(n.createdAt).toLocaleDateString() + " " + new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      return [
-        '<div class="dnp-notif-box ' + unreadClass + '" onclick="markNotificationRead(\'' + n._id + '\')">',
-        '  <div class="dnp-notif-top">',
-        '    <b>' + n.title + '</b>',
-        '    <span class="dnp-notif-time">' + dateStr + '</span>',
-        '  </div>',
-        '  <div class="dnp-notif-msg">' + n.message + '</div>',
-        '</div>'
-      ].join('');
-    }).join('');
-  };
-
-  document.querySelectorAll("#notifs-filter-bar button").forEach(function(btn) {
-    btn.addEventListener("click", function() {
-      document.querySelectorAll("#notifs-filter-bar button").forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-      currentNotifFilter = btn.getAttribute("data-notif-filter");
-      filterRenderNotifs();
-    });
-  });
 
   window.markNotificationRead = async function(id) {
     var token = localStorage.getItem("dnp_auth_token");
@@ -577,11 +665,12 @@
     } catch (e) {}
   };
 
+  // --- ПРОВЕРКА ПРАВ ОФИЦЕРА (JEISO УБРАН ИЗ DEFAULT) ---
   async function checkOfficerStatus() {
     var navBtn = document.getElementById("dnp-nav-admin") || document.querySelector('[data-screen="admin-panel"]');
     if (!navBtn) return;
 
-    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130", "jeiso"];
+    var defaultOfficers = ["xxartemrtxxx", "tds_masterfarm", "egorik0130"];
     var rawUser = localStorage.getItem("dnp_active_user");
     var token = localStorage.getItem("dnp_auth_token");
 
@@ -688,7 +777,7 @@
           '    <span class="dnp-badge ' + stClass + '">' + t.status + '</span>',
           '  </div>',
           '  <div style="font-size:12.5px; color:var(--text); line-height:1.5;">' + t.description + '</div>',
-          t.links && t.links !== 'Отсутствуют' ? '<div style="font-size:11.5px;"><a href="' + t.links + '" target="_blank" class="dnp-brud-link">Материалы ↗</a></div>' : '',
+          t.links && t.links !== 'Отсутствуют' ? '<div style="font-size:11.5px;"><a href="' + t.links + '" target="_blank" class="dnp-brud-link">Материалы</a></div>' : '',
           actionsHtml,
           '</div>'
         ].join('');
@@ -810,7 +899,7 @@
     if (!confirm("Снять статус офицера с " + nick + "?")) return;
     var token = localStorage.getItem("dnp_auth_token");
     try {
-      await fetch(API_BASE + "/api/admin/officers/remove", {
+      var res = await fetch(API_BASE + "/api/admin/officers/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({ roblox: nick })
@@ -865,15 +954,14 @@
     } catch (e) {}
   };
 
+  // --- ИНТЕРАКТИВНЫЙ FLOAT HUD РЕДАКТОР УСТАВА ---
   var floatEditor = document.getElementById("dnp-floating-editor");
   var floatHeader = document.getElementById("dnp-float-hud-header");
   var floatMinBtn = document.getElementById("dnp-float-min-btn");
   var floatCloseBtn = document.getElementById("dnp-float-close-btn");
 
-  var activeFloatSectionId = 'ustav-01';
   var allUstavSections = [];
-  var allUstavItemsCache = [];
-
+  var currentHudMode = 'art';
   var isDragging = false;
   var dragOffsetX = 0;
   var dragOffsetY = 0;
@@ -918,262 +1006,174 @@
     if (floatCloseBtn) {
       floatCloseBtn.addEventListener("click", function() {
         floatEditor.style.display = "none";
+        document.body.classList.remove("is-hud-editing");
       });
     }
   }
+
+  window.switchHudMode = function(mode) {
+    currentHudMode = mode;
+    document.querySelectorAll(".dnp-float-mode-btn").forEach(b => b.classList.remove("is-active"));
+    document.querySelectorAll(".dnp-float-view").forEach(v => v.classList.remove("is-active"));
+    var tab = document.getElementById("hud-tab-" + mode);
+    var view = document.getElementById("hud-view-" + mode);
+    if (tab) tab.classList.add("is-active");
+    if (view) view.classList.add("is-active");
+  };
 
   window.openFloatingUstavEditor = function() {
     if (!floatEditor) return;
     floatEditor.style.display = "flex";
     floatEditor.classList.remove("is-minimized");
+    document.body.classList.add("is-hud-editing");
     if (floatMinBtn) floatMinBtn.textContent = "−";
-    loadFloatData();
+    loadFloatSectionsData();
   };
 
   window.openFloatingUstavEditorWithItem = function(item) {
     openFloatingUstavEditor();
-    activeFloatSectionId = item.sectionId;
-    renderFloatSections();
-    renderFloatArticles();
-    editFloatArticle(item);
-  };
-
-  async function loadFloatData() {
-    try {
-      var secRes = await fetch(API_BASE + "/api/ustav/sections");
-      if (secRes.ok) {
-        var sData = await secRes.json();
-        if (Array.isArray(sData) && sData.length > 0) allUstavSections = sData;
-      }
-    } catch (e) {}
-
-    try {
-      var artRes = await fetch(API_BASE + "/api/ustav");
-      if (artRes.ok) {
-        var aData = await artRes.json();
-        if (Array.isArray(aData)) allUstavItemsCache = aData;
-      }
-    } catch (e) {}
-
-    renderFloatSections();
-    renderFloatArticles();
-  }
-
-  function renderFloatSections() {
-    var cont = document.getElementById("float-sections-list");
-    if (!cont) return;
-
-    cont.innerHTML = allUstavSections.map(function(s, idx) {
-      var isActive = s.sectionId === activeFloatSectionId ? "is-active" : "";
-      return [
-        '<div class="dnp-float-sec-row ' + isActive + '" onclick="selectFloatSection(\'' + s.sectionId + '\')">',
-        '  <div>',
-        '    <b>' + s.title + '</b>',
-        '    <span style="font-size:10px; color:var(--muted); margin-left:6px;">[' + s.sectionId + ']</span>',
-        '  </div>',
-        '  <div class="dnp-float-order-ctrls" onclick="event.stopPropagation()">',
-        idx > 0 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveFloatSection(' + idx + ', -1)">▲</button>' : '',
-        idx < allUstavSections.length - 1 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveFloatSection(' + idx + ', 1)">▼</button>' : '',
-        s.isCustom ? '    <button type="button" class="dnp-float-arrow-btn" style="color:var(--danger);" onclick="deleteFloatSection(\'' + s.sectionId + '\')">✕</button>' : '',
-        '  </div>',
-        '</div>'
-      ].join('');
-    }).join('');
-  }
-
-  window.selectFloatSection = function(secId) {
-    activeFloatSectionId = secId;
-    renderFloatSections();
-    renderFloatArticles();
-    var secObj = allUstavSections.find(s => s.sectionId === secId);
-    var label = document.getElementById("float-active-section-label");
-    if (label && secObj) label.textContent = 'СТАТЬИ: ' + secObj.title.toUpperCase();
-  };
-
-  window.toggleFloatNewSection = function() {
-    var box = document.getElementById("float-new-section-box");
-    if (box) box.style.display = box.style.display === "none" ? "block" : "none";
-  };
-
-  window.saveFloatNewSection = async function() {
-    var token = localStorage.getItem("dnp_auth_token");
-    var id = document.getElementById("float-sec-new-id").value.trim().toLowerCase();
-    var title = document.getElementById("float-sec-new-title").value.trim();
-    var order = parseInt(document.getElementById("float-sec-new-order").value, 10);
-
-    if (!id || !title) return alert("Заполните ID и название раздела");
-
-    try {
-      var res = await fetch(API_BASE + "/api/admin/ustav/sections/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({ sectionId: id, title: title, headTitle: title, order: isNaN(order) ? 99 : order })
-      });
-      if (res.ok) {
-        document.getElementById("float-sec-new-id").value = "";
-        document.getElementById("float-sec-new-title").value = "";
-        toggleFloatNewSection();
-        loadFloatData();
-        loadDynamicUstav();
-      }
-    } catch (e) {}
-  };
-
-  window.deleteFloatSection = async function(secId) {
-    if (!confirm("Удалить раздел " + secId + "?")) return;
-    var token = localStorage.getItem("dnp_auth_token");
-    try {
-      await fetch(API_BASE + "/api/admin/ustav/sections/" + secId, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-      });
-      activeFloatSectionId = 'ustav-01';
-      loadFloatData();
-      loadDynamicUstav();
-    } catch (e) {}
-  };
-
-  window.moveFloatSection = async function(idx, dir) {
-    var targetIdx = idx + dir;
-    if (targetIdx < 0 || targetIdx >= allUstavSections.length) return;
-    var temp = allUstavSections[idx];
-    allUstavSections[idx] = allUstavSections[targetIdx];
-    allUstavSections[targetIdx] = temp;
-
-    var token = localStorage.getItem("dnp_auth_token");
-    for (var i = 0; i < allUstavSections.length; i++) {
-      allUstavSections[i].order = i + 1;
-      fetch(API_BASE + "/api/admin/ustav/sections/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify(allUstavSections[i])
-      });
-    }
-    renderFloatSections();
-    renderUstavNavigation();
-  };
-
-  function renderFloatArticles() {
-    var cont = document.getElementById("float-articles-container");
-    if (!cont) return;
-
-    var list = allUstavItemsCache.filter(item => item.sectionId === activeFloatSectionId);
-    if (list.length === 0) {
-      cont.innerHTML = '<div style="color:var(--muted); font-size:11px; padding:6px;">В этом разделе пока нет кастомных статей. Нажмите "+ ДОБАВИТЬ СТАТЬЮ".</div>';
-      return;
-    }
-
-    cont.innerHTML = list.map(function(item, idx) {
-      var borderColor = item.borderColor || 'var(--line)';
-      return [
-        '<div class="dnp-float-sec-row" style="border-left: 3px solid ' + borderColor + ';" onclick=\'editFloatArticle(' + JSON.stringify(item) + ')\'>',
-        '  <div>',
-        '    <b>' + item.num + ' ' + item.title + '</b>',
-        '    <span style="font-size:10px; color:var(--muted); margin-left:6px;">[' + item.tag + ']</span>',
-        '  </div>',
-        '  <div class="dnp-float-order-ctrls" onclick="event.stopPropagation()">',
-        idx > 0 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveFloatArticle(' + idx + ', -1)">▲</button>' : '',
-        idx < list.length - 1 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveFloatArticle(' + idx + ', 1)">▼</button>' : '',
-        '    <button type="button" class="dnp-float-arrow-btn" style="color:var(--danger);" onclick="deleteAdminUstav(\'' + item._id + '\')">✕</button>',
-        '  </div>',
-        '</div>'
-      ].join('');
-    }).join('');
-  }
-
-  window.moveFloatArticle = async function(idx, dir) {
-    var list = allUstavItemsCache.filter(item => item.sectionId === activeFloatSectionId);
-    var targetIdx = idx + dir;
-    if (targetIdx < 0 || targetIdx >= list.length) return;
-
-    var temp = list[idx];
-    list[idx] = list[targetIdx];
-    list[targetIdx] = temp;
-
-    var token = localStorage.getItem("dnp_auth_token");
-    for (var i = 0; i < list.length; i++) {
-      list[i].order = i + 1;
-      await fetch(API_BASE + "/api/admin/ustav/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify(list[i])
-      });
-    }
-    loadFloatData();
-    loadDynamicUstav();
-  };
-
-  window.newFloatArticle = function() {
-    resetFloatArticleForm();
-    document.getElementById("float-inspector-target").textContent = '[НОВАЯ СТАТЬЯ ДЛЯ ' + activeFloatSectionId + ']';
-  };
-
-  window.editFloatArticle = function(item) {
-    document.getElementById("float-art-id").value = item._id;
+    switchHudMode('art');
+    document.getElementById("float-art-id").value = item._id || "";
+    document.getElementById("float-art-section").value = item.sectionId;
     document.getElementById("float-art-num").value = item.num;
-    document.getElementById("float-art-tag").value = item.tag;
     document.getElementById("float-art-title").value = item.title;
+    document.getElementById("float-art-tag").value = item.tag;
     document.getElementById("float-art-text").value = item.text;
-    document.getElementById("float-art-order").value = item.order || 0;
-    document.getElementById("float-color-border").value = item.borderColor || "#00f0ff";
+    document.getElementById("float-color-border").value = item.borderColor || "#8aa0a8";
     document.getElementById("float-color-text").value = item.textColor || "#d9e1e4";
     document.getElementById("float-color-bg").value = item.highlightColor || "#080d10";
-    document.getElementById("float-inspector-target").textContent = '[РЕДАКТИРОВАНИЕ: ' + item.num + ']';
   };
 
-  window.resetFloatArticleForm = function() {
-    document.getElementById("float-art-id").value = "";
-    document.getElementById("float-art-num").value = "";
-    document.getElementById("float-art-tag").value = "ACTIVE";
-    document.getElementById("float-art-title").value = "";
-    document.getElementById("float-art-text").value = "";
-    document.getElementById("float-art-order").value = "";
-    document.getElementById("float-color-border").value = "#8aa0a8";
-    document.getElementById("float-color-text").value = "#d9e1e4";
-    document.getElementById("float-color-bg").value = "#080d10";
-    document.getElementById("float-inspector-target").textContent = '[НОВАЯ]';
-  };
+  // Клик прямо по статье в уставе при открытом HUD
+  document.addEventListener("click", function(e) {
+    if (!document.body.classList.contains("is-hud-editing")) return;
+    var art = e.target.closest(".dnp-module");
+    if (art && !art.closest("#dnp-floating-editor")) {
+      e.preventDefault();
+      var num = art.querySelector(".dnp-module-title span")?.textContent.trim() || "";
+      var title = art.querySelector(".dnp-module-title b")?.textContent.trim() || "";
+      var tag = art.querySelector(".dnp-module-title em")?.textContent.trim() || "";
+      var text = art.querySelector("p")?.textContent.trim() || "";
+      var secPanel = art.closest("[data-screen-panel]");
+      var secId = secPanel ? secPanel.getAttribute("data-screen-panel") : "ustav-01";
 
-  window.saveFloatArticle = async function() {
+      switchHudMode('art');
+      document.getElementById("float-art-id").value = art.dataset.itemId || "";
+      document.getElementById("float-art-section").value = secId;
+      document.getElementById("float-art-num").value = num;
+      document.getElementById("float-art-title").value = title;
+      document.getElementById("float-art-tag").value = tag;
+      document.getElementById("float-art-text").value = text;
+    }
+  });
+
+  // Главная кнопка "ПРИМЕНИТЬ ИЗМЕНЕНИЯ"
+  window.applyFloatHudChanges = async function() {
     var token = localStorage.getItem("dnp_auth_token");
-    var id = document.getElementById("float-art-id").value;
-    var num = document.getElementById("float-art-num").value.trim();
-    var tag = document.getElementById("float-art-tag").value.trim() || 'ACTIVE';
-    var title = document.getElementById("float-art-title").value.trim();
-    var text = document.getElementById("float-art-text").value.trim();
-    var order = parseInt(document.getElementById("float-art-order").value, 10);
-    var borderColor = document.getElementById("float-color-border").value;
-    var textColor = document.getElementById("float-color-text").value;
-    var highlightColor = document.getElementById("float-color-bg").value;
+    if (!token) return alert("Необходима авторизация офицера");
 
-    if (!num || !title || !text) return alert("Заполните номер, заголовок и текст статьи");
+    if (currentHudMode === 'art') {
+      var id = document.getElementById("float-art-id").value;
+      var sectionId = document.getElementById("float-art-section").value;
+      var num = document.getElementById("float-art-num").value.trim();
+      var tag = document.getElementById("float-art-tag").value.trim() || 'ACTIVE';
+      var title = document.getElementById("float-art-title").value.trim();
+      var text = document.getElementById("float-art-text").value.trim();
+      var borderColor = document.getElementById("float-color-border").value;
+      var textColor = document.getElementById("float-color-text").value;
+      var highlightColor = document.getElementById("float-color-bg").value;
 
-    try {
-      var res = await fetch(API_BASE + "/api/admin/ustav/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({
-          id: id,
-          sectionId: activeFloatSectionId,
-          num: num,
-          tag: tag,
-          title: title,
-          text: text,
-          order: isNaN(order) ? 0 : order,
-          borderColor: borderColor,
-          textColor: textColor,
-          highlightColor: highlightColor
-        })
-      });
-      if (res.ok) {
-        resetFloatArticleForm();
-        loadFloatData();
-        loadDynamicUstav();
-        loadAdminUstav();
+      if (!num || !title || !text) return alert("Заполните номер, заголовок и текст статьи");
+
+      try {
+        var res = await fetch(API_BASE + "/api/admin/ustav/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+          body: JSON.stringify({
+            id: id, sectionId: sectionId, num: num, tag: tag, title: title, text: text,
+            borderColor: borderColor, textColor: textColor, highlightColor: highlightColor
+          })
+        });
+        if (res.ok) {
+          alert("Изменения статьи успешно применены!");
+          loadDynamicUstav();
+          loadAdminUstav();
+        } else {
+          alert("Ошибка сохранения статьи");
+        }
+      } catch (e) { alert("Ошибка соединения"); }
+    } else {
+      var editId = document.getElementById("float-sec-edit-id").value.trim().toLowerCase();
+      var editTitle = document.getElementById("float-sec-edit-title").value.trim();
+      var editOrder = parseInt(document.getElementById("float-sec-edit-order").value, 10);
+
+      if (editId && editTitle) {
+        await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+          body: JSON.stringify({ sectionId: editId, title: editTitle, headTitle: editTitle, order: isNaN(editOrder) ? 99 : editOrder })
+        });
       }
-    } catch (e) {}
+
+      for (var i = 0; i < allUstavSections.length; i++) {
+        allUstavSections[i].order = i + 1;
+        await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+          body: JSON.stringify(allUstavSections[i])
+        });
+      }
+      alert("Порядок и названия разделов применены!");
+      loadUstavSections();
+      loadFloatSectionsData();
+    }
   };
 
+  async function loadFloatSectionsData() {
+    try {
+      var res = await fetch(API_BASE + "/api/ustav/sections");
+      if (res.ok) allUstavSections = await res.json();
+    } catch (e) {}
+
+    var sel = document.getElementById("float-art-section");
+    if (sel) {
+      sel.innerHTML = allUstavSections.map(s => '<option value="' + s.sectionId + '">' + s.title + '</option>').join('');
+    }
+
+    var list = document.getElementById("float-sections-list");
+    if (list) {
+      list.innerHTML = allUstavSections.map(function(s, idx) {
+        return [
+          '<div class="dnp-float-sec-row" onclick="selectSectionToEdit(\'' + s.sectionId + '\')">',
+          '  <b>' + (idx + 1) + '. ' + s.title + '</b>',
+          '  <div class="dnp-float-order-ctrls" onclick="event.stopPropagation()">',
+          idx > 0 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveSectionOrder(' + idx + ', -1)">▲</button>' : '',
+          idx < allUstavSections.length - 1 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveSectionOrder(' + idx + ', 1)">▼</button>' : '',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+  }
+
+  window.moveSectionOrder = function(idx, dir) {
+    var target = idx + dir;
+    if (target < 0 || target >= allUstavSections.length) return;
+    var temp = allUstavSections[idx];
+    allUstavSections[idx] = allUstavSections[target];
+    allUstavSections[target] = temp;
+    loadFloatSectionsData();
+  };
+
+  window.selectSectionToEdit = function(id) {
+    var found = allUstavSections.find(s => s.sectionId === id);
+    if (!found) return;
+    document.getElementById("float-sec-edit-id").value = found.sectionId;
+    document.getElementById("float-sec-edit-title").value = found.title;
+    document.getElementById("float-sec-edit-order").value = found.order || 1;
+  };
+
+  // --- ДИНАМИЧЕСКИЙ РЕНДЕР СТАТЕЙ И РАЗДЕЛОВ ---
   var DEFAULT_SECTIONS = [
     { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
     { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
@@ -1228,7 +1228,7 @@
           newSec.innerHTML = [
             '<div class="dnp-screen-head"><h1>' + (sec.headTitle || sec.title) + '</h1></div>',
             '<div class="dnp-screen-content">',
-            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД ↗</strong></a>.</span></div>',
+            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span></div>',
             '</div>'
           ].join('');
           main.insertBefore(newSec, document.querySelector('[data-screen-panel="forms-gui"]') || null);
@@ -1249,6 +1249,7 @@
         if (!panel) return;
         var art = document.createElement("article");
         art.className = "dnp-module dnp-dyn-module";
+        art.dataset.itemId = item._id || "";
         
         var customStyles = [];
         if (item.borderColor) customStyles.push('border-left-color: ' + item.borderColor);
