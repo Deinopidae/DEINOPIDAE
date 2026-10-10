@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DEINOPIDAE / ДЕИНОПИДЫ</title>
 
   <link rel="icon" type="image/png" href="assets/image/favicon.png">
@@ -46,6 +46,7 @@
     <div class="dnp-scan"></div>
 
     <header class="dnp-topbar">
+      <button type="button" class="dnp-nav-toggle" data-action="toggleNavDrawer" aria-controls="dnp-sidebar" aria-expanded="false">MENU</button>
       <div class="dnp-brand" id="dnp-top-brand">
         <strong>DEINOPIDAE / ДЕИНОПИДЫ</strong>
         <span>Департамент S.E. · Kurodzakura</span>
@@ -64,14 +65,16 @@
           <div class="dnp-sidebar-title-left">
             <span>Навигация</span>
           </div>
+          <span id="dnp-section-status" role="status" aria-live="polite"></span>
           <em class="dnp-menu-tag">MENU</em>
         </div>
 
+        <div class="dnp-sidebar-body" id="dnp-sidebar-body">
         <details class="dnp-nav-group" id="dnp-nav-ustav" open>
             <summary>
               <span class="dnp-num">01</span>
               <b>Устав</b>
-              <button type="button" class="dnp-nav-plus-btn" id="dnp-nav-plus-sec" onclick="event.stopPropagation(); navPromptAddSection();" title="Добавить новый раздел">+</button>
+              <button type="button" class="dnp-nav-plus-btn" id="dnp-nav-plus-sec" data-action="navPromptAddSection" title="Добавить новый раздел">+</button>
               <em id="dnp-ustav-status">OPEN</em>
             </summary>
             <div class="dnp-subnav">
@@ -98,21 +101,26 @@
             <b>Корни Deinopidae</b>
           </button>
 
-          <button class="dnp-locked-main" type="button" disabled>
+          <button class="dnp-nav-root-btn" type="button" data-screen="profile">
             <span class="dnp-num">04</span>
+            <b>Профиль</b>
+          </button>
+
+          <button class="dnp-locked-main" type="button" disabled>
+            <span class="dnp-num">05</span>
             <b>Вербовка</b>
             <em>LOCK</em>
           </button>
 
           <button class="dnp-nav-root-btn" id="dnp-nav-admin" type="button" data-screen="admin-panel" style="display: none;">
-            <span class="dnp-num">05</span>
+            <span class="dnp-num">06</span>
             <b>Бюрократия</b>
             <em class="dnp-menu-tag">OFFICER</em>
           </button>
 
           <div class="dnp-terminal-note">
             <span>PDA-LINK: ONLINE // SYS.V-2</span>
-            <span id="dnp-local-net-status">LOCAL NET: STABLE</span>
+            <span>LOCAL NET: <b class="dnp-net-status is-error" id="dnp-net-status">ERROR</b></span>
             <span>SYNC: 97%</span>
             <span>CORE TEMP: 36C</span>
           </div>
@@ -199,7 +207,7 @@
               </ul>
 
               <div class="dnp-platc-wrap">
-                <img src="assets/image/plach.png" onerror="if(!this.dataset.tried) { this.dataset.tried=1; this.src='assets/image/plach.jpg'; } else if(this.dataset.tried==1) { this.dataset.tried=2; this.src='assets/image/plach'; }" alt="Схема построения на плацу" class="dnp-platc-img">
+                <img src="assets/image/plach.png" alt="Схема построения на плацу" class="dnp-platc-img">
                 <span class="dnp-platc-caption">СХЕМА: ЛИНИИ ПОСТРОЕНИЯ НА ПЛАЦУ ПО ПОДРАЗДЕЛЕНИЯМ</span>
               </div>
             </article>
@@ -799,7 +807,7 @@
                     <b>БРУД // БОЛЕЕ РАСШИРЕННЫЙ УСТАВ ДЕЙНОПИДОВ</b>
                     <span>Главный свод документов, положений и нормативно-правовых актов</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
 
                 <a href="https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163" target="_blank" class="dnp-subtle-card">
@@ -807,7 +815,7 @@
                     <b>ТАБЛИЦА ЛИЧНОГО СОСТАВА</b>
                     <span>Основной реестр нормы, часов и баллов активности</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
 
                 <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
@@ -815,7 +823,7 @@
                     <b>ВНЕУРОЧКИ: ОТДЕЛ ПОЧИНКИ (ПО)</b>
                     <span>Форма отчёта и порядок проведения ремонтных работ</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
 
                 <a href="https://docs.google.com/document/d/1uE71cTVHOE3EuCvhobRR2kRhBRD6_jkZpuRtHyttJss/edit?tab=t.dbweaooy075n" target="_blank" class="dnp-subtle-card">
@@ -823,7 +831,7 @@
                     <b>ВНЕУРОЧКИ: ОТДЕЛ СОЗДАНИЯ (СО)</b>
                     <span>Форма отчёта создания и конструирования техники</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
 
                 <a href="https://docs.google.com/document/d/19s4BciaStHnKUGiKVbS0_ZXwLyneFtL_1h7jKW1yjQc/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
@@ -831,7 +839,7 @@
                     <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>
                     <span>Регламент работы и правила использования систем</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
 
                 <a href="https://docs.google.com/document/d/1tyOYPDDdCkR05MErbYVRTcsnkziUA5bxzr5-_I7G6Pk/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-subtle-card">
@@ -839,7 +847,7 @@
                     <b>СПРАВОЧНИК СОТРУДНИКА</b>
                     <span>Базовый информационный свод департамента S.E.</span>
                   </div>
-                  <em>ОТКРЫТЬ ↗</em>
+                  <em>[ОТКРЫТЬ]</em>
                 </a>
               </div>
             </article>
@@ -974,6 +982,30 @@
           </div>
         </section>
 
+        <section class="dnp-screen" data-screen-panel="profile">
+          <div class="dnp-screen-head">
+            <h1>Профиль сотрудника</h1>
+          </div>
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>P.1</span>
+                <b>Личное дело</b>
+                <em>PROFILE</em>
+              </div>
+              <div class="dnp-profile-card" id="dnp-profile-content" aria-live="polite">
+                <div class="dnp-profile-identity">
+                  <div class="dnp-profile-avatar" id="dnp-profile-avatar" aria-hidden="true">D</div>
+                  <b class="dnp-profile-name" id="dnp-profile-name">ЗАГРУЗКА</b>
+                  <span class="dnp-profile-nick" id="dnp-profile-nick">---</span>
+                  <span class="dnp-profile-online" id="dnp-profile-online">ПРОВЕРКА СТАТУСА</span>
+                </div>
+                <dl class="dnp-profile-fields" id="dnp-profile-fields"></dl>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section class="dnp-screen" data-screen-panel="forms-gui">
           <div class="dnp-screen-head">
             <h1>Подача отчёта // Обращение</h1>
@@ -987,8 +1019,8 @@
                 <em>DISPATCH</em>
               </div>
               <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
-                <div id="forms-auth-warning" style="display: none; padding: 10px 14px; background: rgba(169,100,104,0.12); border: 1px solid var(--danger); color: #ff8e92; font-size: 12px;">
-                  [ВНИМАНИЕ] Для регистрации обращения необходимо войти в аккаунт. <a href="auth.html" style="color: #fff; text-decoration: underline; margin-left: 6px;">АВТОРИЗАЦИЯ ↗</a>
+                <div id="forms-auth-warning" style="display: none; padding: 10px 14px; background: rgba(231, 76, 60, 0.12); border: 1px solid var(--danger); color: var(--danger); font-size: 12px;">
+                  [ВНИМАНИЕ] Для регистрации обращения необходимо войти в аккаунт. <a href="auth.html" style="color: #fff; text-decoration: underline; margin-left: 6px;">[АВТОРИЗАЦИЯ]</a>
                 </div>
 
                 <div>
@@ -1020,9 +1052,15 @@
                   <input type="text" id="gui-form-links" placeholder="Ссылка на скриншоты (Imgur, Yapx, Drive)" class="dnp-admin-input">
                 </div>
 
+                <div>
+                  <label class="dnp-admin-label" for="gui-form-files">Прикрепить файлы к сообщению в Discord (до 20 МБ всего):</label>
+                  <input type="file" id="gui-form-files" class="dnp-form-file-input" multiple>
+                  <div id="gui-form-files-list" class="dnp-muted" aria-live="polite"></div>
+                </div>
+
                 <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px; flex-wrap: wrap;">
-                  <button type="button" class="dnp-action" id="gui-form-submit-btn" style="margin: 0;">ОТПРАВИТЬ ФОРМУ ↗</button>
-                  <button type="button" class="dnp-action is-secondary" id="gui-form-clear-btn" style="margin: 0;" onclick="clearGuiForm()">ОЧИСТИТЬ</button>
+                  <button type="button" class="dnp-action" id="gui-form-submit-btn" style="margin: 0;">ОТПРАВИТЬ ФОРМУ</button>
+                  <button type="button" class="dnp-action is-secondary" id="gui-form-clear-btn" data-action="clearGuiForm" style="margin: 0;">ОЧИСТИТЬ</button>
                 </div>
 
                 <div id="gui-form-status-msg" style="font-size: 12px; font-weight: 700; margin-top: 4px;"></div>
@@ -1045,8 +1083,8 @@
               </div>
               <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <button type="button" class="dnp-action" style="margin: 0;" onclick="openScreen('forms-gui')">+ ПОДАТЬ НОВОЕ ОБРАЩЕНИЕ</button>
-                  <button type="button" class="dnp-action" style="margin: 0; border-color: var(--line-soft);" onclick="loadMyTickets()">ОБНОВИТЬ ⟳</button>
+                  <button type="button" class="dnp-action" data-action="openScreen" data-screen-name="forms-gui" style="margin: 0;">ПОДАТЬ НОВОЕ ОБРАЩЕНИЕ</button>
+                  <button type="button" class="dnp-action" data-action="loadMyTickets" style="margin: 0; border-color: var(--line-soft);">ОБНОВИТЬ</button>
                 </div>
 
                 <div id="tickets-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -1069,9 +1107,9 @@
               </div>
               <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <button type="button" class="dnp-action" style="margin: 0;" onclick="markAllNotificationsRead()">ПРОЧИТАТЬ ВСЕ</button>
-                  <button type="button" class="dnp-action is-danger" style="margin: 0; padding: 4px 10px; font-size: 11px;" onclick="clearAllNotifications()">ОЧИСТИТЬ ВСЕ</button>
-                  <button type="button" class="dnp-action" style="margin: 0; border-color: var(--line-soft);" onclick="loadNotifications()">ОБНОВИТЬ ⟳</button>
+                  <button type="button" class="dnp-action" data-action="markAllNotificationsRead" style="margin: 0;">ПРОЧИТАТЬ ВСЕ</button>
+                  <button type="button" class="dnp-action is-danger" data-action="clearAllNotifications" style="margin: 0; padding: 4px 10px; font-size: 11px;">ОЧИСТИТЬ ВСЕ</button>
+                  <button type="button" class="dnp-action" data-action="loadNotifications" style="margin: 0; border-color: var(--line-soft);">ОБНОВИТЬ</button>
                 </div>
 
                 <div id="notifications-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -1103,9 +1141,9 @@
 
                 <div class="dnp-admin-panel-view is-active" id="adm-view-tickets">
                   <div class="dnp-tickets-subtabs">
-                    <button type="button" class="dnp-admin-tab-btn is-active" id="btn-tickets-active" onclick="switchAdminTicketTab('active')">ВХОДЯЩИЕ (<span id="adm-t-active-count">0</span>)</button>
-                    <button type="button" class="dnp-admin-tab-btn" id="btn-tickets-archive" onclick="switchAdminTicketTab('archive')">АРХИВ ТИКЕТОВ (<span id="adm-t-archive-count">0</span>)</button>
-                    <button type="button" class="dnp-action is-secondary" style="margin-left: auto; padding: 4px 10px;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
+                    <button type="button" class="dnp-admin-tab-btn is-active" id="btn-tickets-active" data-action="switchAdminTicketTab" data-tab="active">АКТИВНЫЕ / ВХОДЯЩИЕ <span class="dnp-ticket-count" id="adm-t-active-count">0</span></button>
+                    <button type="button" class="dnp-admin-tab-btn" id="btn-tickets-archive" data-action="switchAdminTicketTab" data-tab="archive">АРХИВ <span class="dnp-ticket-count" id="adm-t-archive-count">0</span></button>
+                    <button type="button" class="dnp-action is-secondary" data-action="loadAdminTickets" style="margin-left: auto; padding: 4px 10px;">ОБНОВИТЬ</button>
                   </div>
                   <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;"></div>
                 </div>
@@ -1114,11 +1152,10 @@
                   <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
                     <div>
                       <b style="color: #fff; font-size: 14px; font-family: 'Exo 2', sans-serif;">ИНТЕРАКТИВНЫЙ РЕДАКТОР УСТАВА</b>
-                      <span style="display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px;">Прямое редактирование текста на страницах. Разделы удаляются крестиком ✕ в меню, добавляются плюсиком + у кнопки 01.</span>
+                      <span style="display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px;">Прямое редактирование текста на страницах. Разделы удаляются кнопкой × в меню, добавляются кнопкой + у пункта 01.</span>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                      <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff;" onclick="toggleUstavEditorMode(true)">✏ ВКЛЮЧИТЬ РЕЖИМ РЕДАКТОРА</button>
-                      <button type="button" class="dnp-action is-danger" style="margin: 0;" onclick="resetAllUstavFactory()">СБРОСИТЬ ВСЕ К ЗАВОДСКИМ</button>
+                      <button type="button" class="dnp-action" data-action="toggleUstavEditorMode" data-state="true" style="margin: 0;">ВКЛЮЧИТЬ РЕЖИМ РЕДАКТОРА</button>
                     </div>
                   </div>
 
@@ -1126,7 +1163,7 @@
                   <div class="dnp-admin-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                       <div class="dnp-admin-box-title" style="margin: 0;">ЖУРНАЛ ИЗМЕНЕНИЙ УСТАВА (ИСТОРИЯ РЕВИЗИЙ)</div>
-                      <button type="button" class="dnp-action is-secondary" style="margin: 0; padding: 4px 8px; font-size: 10.5px;" onclick="loadUstavHistory()">ОБНОВИТЬ ⟳</button>
+                      <button type="button" class="dnp-action is-secondary" data-action="loadUstavHistory" style="margin: 0; padding: 4px 8px; font-size: 10.5px;">ОБНОВИТЬ</button>
                     </div>
                     <div id="adm-ustav-history-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
                   </div>
@@ -1135,7 +1172,7 @@
                 <div class="dnp-admin-panel-view" id="adm-view-users">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <b style="color: #fff; font-size: 13px;">Зарегистрированные аккаунты базы:</b>
-                    <button type="button" class="dnp-action" style="margin: 0;" onclick="loadAdminUsers()">ОБНОВИТЬ ⟳</button>
+                    <button type="button" class="dnp-action" data-action="loadAdminUsers" style="margin: 0;">ОБНОВИТЬ</button>
                   </div>
                   <div style="overflow-x: auto;">
                     <table class="dnp-admin-table" id="adm-users-table">
@@ -1158,7 +1195,7 @@
                     <div class="dnp-admin-box-title">НАЗНАЧЕНИЕ НОВОГО ОФИЦЕРА</div>
                     <div style="display: flex; gap: 10px;">
                       <input type="text" id="adm-new-officer-roblox" class="dnp-admin-input" placeholder="Введите Roblox никнейм" style="flex: 1;">
-                      <button type="button" class="dnp-action" style="margin: 0;" onclick="addAdminOfficer()">НАЗНАЧИТЬ ↗</button>
+                      <button type="button" class="dnp-action" data-action="addAdminOfficer" style="margin: 0;">НАЗНАЧИТЬ</button>
                     </div>
                   </div>
                   <div id="adm-officers-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -1177,49 +1214,65 @@
     </footer>
   </div>
 
+  <div id="dnp-add-section-modal" class="dnp-modal-overlay" aria-hidden="true">
+    <form class="dnp-modal" id="dnp-add-section-form">
+      <h2>СОЗДАНИЕ РАЗДЕЛА</h2>
+      <label for="dnp-new-section-id">Section ID</label>
+      <input id="dnp-new-section-id" name="sectionId" type="text" placeholder="ustav-10" required>
+      <label for="dnp-new-section-title">Menu Title</label>
+      <input id="dnp-new-section-title" name="title" type="text" placeholder="Раздел 10 Дополнительно" required>
+      <div id="dnp-add-section-status" role="status" aria-live="polite"></div>
+      <div class="dnp-modal-actions">
+        <button type="submit" class="dnp-action">CREATE</button>
+        <button type="button" class="dnp-action is-secondary" data-action="closeAddSectionModal">CANCEL</button>
+      </div>
+    </form>
+  </div>
+
   <div id="dnp-editor-dock" class="dnp-editor-dock" style="display: none;">
     <div class="dnp-doc-toolbar">
       
       <div class="dnp-doc-group">
-        <select class="dnp-doc-select" onchange="docSetFont(this.value)">
+        <select class="dnp-doc-select" data-action-change="docSetFont">
           <option value="'Roboto Mono', monospace">Roboto Mono</option>
           <option value="'Exo 2', sans-serif">Exo 2</option>
           <option value="'Chakra Petch', monospace">Chakra Petch</option>
         </select>
-        <button type="button" class="dnp-doc-btn" onclick="docFormat('bold')" title="Жирный"><b>B</b></button>
-        <button type="button" class="dnp-doc-btn" onclick="docFormat('italic')" title="Курсив"><i>I</i></button>
-        <button type="button" class="dnp-doc-btn" onclick="docFormat('underline')" title="Подчеркивание"><u>U</u></button>
+        <button type="button" class="dnp-doc-btn" data-action="docFormat" data-command="bold" title="Жирный"><b>B</b></button>
+        <button type="button" class="dnp-doc-btn" data-action="docFormat" data-command="italic" title="Курсив"><i>I</i></button>
+        <button type="button" class="dnp-doc-btn" data-action="docFormat" data-command="underline" title="Подчеркивание"><u>U</u></button>
       </div>
 
       <div class="dnp-doc-group">
-        <label title="Цвет оглавления статьи">Оглавление <input type="color" value="#00f0ff" onchange="docApplyTitleColor(this.value)"></label>
-        <label title="Цвет текста">Текст <input type="color" value="#d9e1e4" onchange="docApplyTextColor(this.value)"></label>
-        <label title="Цвет полосы слева">Полоса <input type="color" value="#8aa0a8" onchange="docApplyBorderColor(this.value)"></label>
-        <label title="Фон блока">Фон <input type="color" value="#080d10" onchange="docApplyBgColor(this.value)"></label>
+        <label title="Цвет оглавления статьи">Оглавление <input type="color" value="#00f0ff" data-action-change="docApplyTitleColor"></label>
+        <label title="Цвет текста">Текст <input type="color" value="#d9e1e4" data-action-change="docApplyTextColor"></label>
+        <label title="Цвет полосы слева">Полоса <input type="color" value="#8aa0a8" data-action-change="docApplyBorderColor"></label>
+        <label title="Фон блока">Фон <input type="color" value="#080d10" data-action-change="docApplyBgColor"></label>
       </div>
 
       <div class="dnp-doc-group">
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('list')" title="Добавить список внутри статьи">• Список</button>
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('card')" title="Добавить карточку внутри статьи">+ Карточка</button>
-        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('module')" title="Добавить новую статью">+ Статья</button>
-        <button type="button" class="dnp-doc-btn is-danger-btn" onclick="docDeleteCurrentItem()" title="Удалить выбранный блок">🗑 Удалить блок</button>
+        <button type="button" class="dnp-doc-btn" data-action="docInsertItem" data-type="list" title="Добавить список внутри статьи">+ Список</button>
+        <button type="button" class="dnp-doc-btn" data-action="docInsertItem" data-type="card" title="Добавить карточку внутри статьи">+ Карточка</button>
+        <button type="button" class="dnp-doc-btn" data-action="docInsertItem" data-type="module" title="Добавить новую статью">+ Статья</button>
+        <button type="button" class="dnp-doc-btn is-danger-btn" data-action="docDeleteCurrentItem" title="Удалить выбранный блок">УДАЛИТЬ БЛОК</button>
       </div>
 
       <div class="dnp-doc-group">
-        <span style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Раздел:</span>
-        <button type="button" class="dnp-doc-btn" onclick="moveActiveSection(-1)" title="Переместить раздел выше">▲</button>
-        <button type="button" class="dnp-doc-btn" onclick="moveActiveSection(1)" title="Переместить раздел ниже">▼</button>
+        <span style="font-size: 10px; color: #d9e1e4; text-transform: uppercase;">Раздел:</span>
+        <button type="button" class="dnp-doc-btn" data-action="moveActiveSection" data-direction="-1" title="Переместить раздел выше">ВЫШЕ</button>
+        <button type="button" class="dnp-doc-btn" data-action="moveActiveSection" data-direction="1" title="Переместить раздел ниже">НИЖЕ</button>
       </div>
 
       <div class="dnp-doc-group" style="margin-left: auto;">
-        <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff; padding: 5px 12px;" onclick="saveUstavChanges()">💾 ПРИМЕНИТЬ ИЗМЕНЕНИЯ</button>
-        <button type="button" class="dnp-action is-secondary" style="margin: 0; padding: 5px 10px;" onclick="toggleUstavEditorMode(false)">✕ ВЫХОД</button>
+        <button type="button" class="dnp-action" data-action="saveUstavChanges" style="margin: 0; padding: 5px 12px;">ПРИМЕНИТЬ ИЗМЕНЕНИЯ</button>
+        <button type="button" class="dnp-action is-secondary" data-action="toggleUstavEditorMode" data-state="false" style="margin: 0; padding: 5px 10px;">ВЫХОД</button>
       </div>
 
     </div>
   </div>
 
-  <script src="js/live_polling.js"></script>
-  <script src="js/script.js"></script>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/script.js"></script>
+  <script defer src="js/live_polling.js"></script>
 </body>
 </html>

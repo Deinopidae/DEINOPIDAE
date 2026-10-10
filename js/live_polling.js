@@ -1,146 +1,195 @@
-(function () {
-  var SERVER_URL = "https://deinopidae-api.onrender.com";
+(function() {
+  "use strict";
+
+  var app = window.DnpApp = window.DnpApp || {};
+  app.state = app.state || { employeeDb: {}, activeScreen: "ustav-01" };
+
+  var baseDelay = 15000;
+  var maxDelay = 120000;
+  var failureCount = 0;
+  var pollTimer = null;
+  var pollInFlight = false;
   var lastDataHash = "";
 
-  function setNetStatus(isOnline, errCode) {
-    var netStatusEl = document.getElementById("dnp-local-net-status");
-    if (!netStatusEl) return;
-
-    if (isOnline) {
-      netStatusEl.textContent = "LOCAL NET: STABLE";
-      netStatusEl.style.color = "";
-    } else {
-      var code = errCode || "SERVER_DISCONN";
-      netStatusEl.textContent = "LOCAL NET: ERROR(" + code + ")";
-      netStatusEl.style.color = "#ff5252";
-    }
-  }
-  window.setNetStatus = setNetStatus;
-
-  window.addEventListener('offline', function () {
-    setNetStatus(false, 'OFFLINE');
-  });
-  window.addEventListener('online', function () {
-    setNetStatus(true);
-  });
-
-  window.renderAuthHeader = function () {
-    var slot = document.getElementById("dnp-auth-header-slot");
-    if (!slot) return;
-
-    var rawUser = localStorage.getItem("dnp_active_user");
-    if (rawUser) {
-      try {
-        var u = JSON.parse(rawUser);
-        var avatarHtml = '';
-        if (u.avatar && u.avatar.length > 5) {
-          avatarHtml = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:2px;">';
-        } else {
-          avatarHtml = (u.displayName || u.username || 'U')[0].toUpperCase();
-        }
-
-        slot.innerHTML = [
-          '<div class="dnp-user-pill" id="dnp-user-pill">',
-          '  <div class="dnp-user-avatar">' + avatarHtml + '</div>',
-          '  <span class="dnp-user-name">' + (u.displayName || u.username || 'OPERATOR') + '</span>',
-          '</div>',
-          '<div class="dnp-user-dropdown" id="dnp-user-dropdown" style="display: none;">',
-          '  <button type="button" class="dnp-dropdown-item" onclick="openScreen(\'tickets\')">Обращения</button>',
-          '  <button type="button" class="dnp-dropdown-item" onclick="openScreen(\'notifications\')">Уведомления</button>',
-          '  <button type="button" class="dnp-dropdown-item is-logout" id="dnp-menu-logout">Выйти из аккаунта</button>',
-          '</div>'
-        ].join('');
-
-        var pill = document.getElementById("dnp-user-pill");
-        var dd = document.getElementById("dnp-user-dropdown");
-        
-        pill.addEventListener("click", function (e) {
-          e.stopPropagation();
-          dd.style.display = dd.style.display === "none" ? "flex" : "none";
-        });
-
-        document.addEventListener("click", function () {
-          if (dd) dd.style.display = "none";
-        });
-
-        document.getElementById("dnp-menu-logout").addEventListener("click", function () {
-          localStorage.removeItem("dnp_active_user");
-          localStorage.removeItem("dnp_auth_token");
-          window.renderAuthHeader();
-          if (window.openScreen) window.openScreen("ustav-01");
-          location.reload();
-        });
-        return;
-      } catch (e) {}
-    }
-
-    slot.innerHTML = '<a href="auth.html" class="dnp-auth-btn" id="dnp-auth-link">ЛИЧНЫЙ КАБИНЕТ</a>';
+  app.setNetStatus = function(isOnline) {
+    var status = document.getElementById("dnp-net-status");
+    if (!status) return;
+    status.textContent = isOnline ? "STABLE" : "ERROR";
+    status.classList.toggle("is-error", !isOnline);
   };
 
-  function pollServerData() {
-    var token = localStorage.getItem("dnp_auth_token");
+  function createActionButton(label, action, className) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.dataset.action = action;
+    button.textContent = label;
+    return button;
+  }
 
-    if (!navigator.onLine) {
-      setNetStatus(false, 'OFFLINE');
+  app.renderAuthHeader = function() {
+    var slot = document.getElementById("dnp-auth-header-slot");
+    if (!slot) return;
+    slot.replaceChildren();
+
+    var user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("dnp_active_user") || "null");
+    } catch (error) {
+      localStorage.removeItem("dnp_active_user");
+    }
+
+    if (!user) {
+      var authLink = document.createElement("a");
+      authLink.href = "auth.html";
+      authLink.className = "dnp-auth-btn";
+      authLink.textContent = "ЛИЧНЫЙ КАБИНЕТ";
+      slot.appendChild(authLink);
       return;
     }
 
-    if (token) {
-      fetch(SERVER_URL + "/api/auth/me", {
-        headers: { "Authorization": "Bearer " + token }
-      })
-        .then(function (res) {
-          if (!res.ok) {
-            setNetStatus(false, "HTTP_" + res.status);
-            throw new Error("HTTP " + res.status);
-          }
-          return res.json();
-        })
-        .then(function (authRes) {
-          setNetStatus(true);
-          if (authRes && authRes.authenticated) {
-            localStorage.setItem("dnp_active_user", JSON.stringify(authRes.user));
-            window.renderAuthHeader();
-          } else if (authRes && authRes.authenticated === false) {
-            localStorage.removeItem("dnp_active_user");
-            localStorage.removeItem("dnp_auth_token");
-            window.renderAuthHeader();
-          }
-        })
-        .catch(function (err) {
-          if (err.message && err.message.indexOf("HTTP") === 0) return;
-          setNetStatus(false, "CONN_LOST");
-        });
+    var wrapper = document.createElement("div");
+    wrapper.className = "dnp-profile-menu";
+    var pill = createActionButton(
+      user.displayName || user.username || "OPERATOR",
+      "toggleUserMenu",
+      "dnp-user-pill"
+    );
+    pill.setAttribute("aria-expanded", "false");
+    var avatar = document.createElement("span");
+    avatar.className = "dnp-user-avatar";
+    var avatarUrl = typeof user.avatar === "string" ? user.avatar : "";
+    if (/^https:\/\//i.test(avatarUrl)) {
+      var image = document.createElement("img");
+      image.src = avatarUrl;
+      image.alt = "";
+      image.referrerPolicy = "no-referrer";
+      avatar.appendChild(image);
     } else {
-      window.renderAuthHeader();
+      avatar.textContent = String(user.displayName || user.username || "U").charAt(0).toUpperCase();
+    }
+    var name = document.createElement("span");
+    name.className = "dnp-user-name";
+    name.textContent = user.displayName || user.username || "OPERATOR";
+    pill.replaceChildren(avatar, name);
+
+    var dropdown = document.createElement("div");
+    dropdown.className = "dnp-user-dropdown";
+    dropdown.hidden = true;
+    dropdown.append(
+      createActionButton("Профиль", "openScreen", "dnp-dropdown-item"),
+      createActionButton("Обращения", "openScreen", "dnp-dropdown-item"),
+      createActionButton("Уведомления", "openScreen", "dnp-dropdown-item"),
+      createActionButton("Выйти из аккаунта", "logout", "dnp-dropdown-item is-logout")
+    );
+    dropdown.children[0].dataset.screenName = "profile";
+    dropdown.children[1].dataset.screenName = "tickets";
+    dropdown.children[2].dataset.screenName = "notifications";
+    wrapper.append(pill, dropdown);
+    slot.appendChild(wrapper);
+    var adminNav = document.getElementById("dnp-nav-admin");
+    if (adminNav && adminNav.style.display !== "none") {
+      var adminStatus = adminNav.querySelector("em");
+      if (adminStatus) adminStatus.textContent = "ACTIVE";
+    }
+  };
+
+  async function pollServerData() {
+    if (pollInFlight) return;
+    if (!navigator.onLine) {
+      failureCount++;
+      app.setNetStatus(false);
+      schedulePoll();
+      return;
     }
 
-    fetch(SERVER_URL + "/api/users/data")
-      .then(function (res) {
-        if (!res.ok) {
-          setNetStatus(false, "HTTP_" + res.status);
-          throw new Error("HTTP " + res.status);
+    pollInFlight = true;
+    var synchronizationError = null;
+    try {
+      var token = localStorage.getItem("dnp_auth_token");
+      if (token) {
+        try {
+        var auth = await window.DnpApi.requestJson("/api/auth/me");
+        if (auth && auth.authenticated) {
+          localStorage.setItem("dnp_active_user", JSON.stringify(auth.user));
+          app.renderAuthHeader();
+        } else if (auth && auth.authenticated === false) {
+          localStorage.removeItem("dnp_active_user");
+          localStorage.removeItem("dnp_auth_token");
+          app.renderAuthHeader();
         }
-        return res.json();
-      })
-      .then(function (data) {
-        setNetStatus(true);
-        var currentHash = JSON.stringify(data);
-        if (lastDataHash && lastDataHash !== currentHash) {
-          window.employeeDb = data;
+        } catch (error) {
+        if (error.status === 401) {
+          localStorage.removeItem("dnp_active_user");
+          localStorage.removeItem("dnp_auth_token");
+          app.renderAuthHeader();
+        } else {
+          synchronizationError = error;
         }
+        }
+      } else {
+        app.renderAuthHeader();
+      }
+
+      var employees = await window.DnpApi.requestJson("/api/users/data");
+      var currentHash = JSON.stringify(employees);
+      if (currentHash !== lastDataHash) {
+        app.state.employeeDb = employees && typeof employees === "object" ? employees : {};
         lastDataHash = currentHash;
-        window.employeeDb = data;
-      })
-      .catch(function (err) {
-        if (!navigator.onLine) {
-          setNetStatus(false, "OFFLINE");
-        } else if (err.message && err.message.indexOf("HTTP") !== 0) {
-          setNetStatus(false, "CONN_TIMEOUT");
-        }
-      });
+      }
+      if (synchronizationError) throw synchronizationError;
+      app.setNetStatus(true);
+      failureCount = 0;
+    } catch (error) {
+      failureCount++;
+      app.setNetStatus(false);
+      console.error("Live data synchronization failed:", error.message);
+    } finally {
+      pollInFlight = false;
+      schedulePoll();
+    }
   }
 
-  setInterval(pollServerData, 12000);
-  window.addEventListener('DOMContentLoaded', pollServerData);
+  function schedulePoll() {
+    if (pollTimer) window.clearTimeout(pollTimer);
+    var delay = failureCount === 0
+      ? baseDelay
+      : Math.min(baseDelay * Math.pow(2, failureCount - 1), maxDelay);
+    pollTimer = window.setTimeout(pollServerData, delay);
+  }
+
+  document.addEventListener("click", function(event) {
+    var action = event.target.closest("[data-action]");
+    var wrapper = document.querySelector(".dnp-profile-menu");
+    if (wrapper && !wrapper.contains(event.target)) {
+      var dropdown = wrapper.querySelector(".dnp-user-dropdown");
+      var pill = wrapper.querySelector(".dnp-user-pill");
+      dropdown.hidden = true;
+      pill.setAttribute("aria-expanded", "false");
+    }
+    if (!action) return;
+
+    if (action.dataset.action === "toggleUserMenu") {
+      event.stopPropagation();
+      var menu = action.nextElementSibling;
+      menu.hidden = !menu.hidden;
+      action.setAttribute("aria-expanded", String(!menu.hidden));
+    } else if (action.dataset.action === "logout") {
+      localStorage.removeItem("dnp_active_user");
+      localStorage.removeItem("dnp_auth_token");
+      var adminNavigation = document.getElementById("dnp-nav-admin");
+      if (adminNavigation) adminNavigation.hidden = true;
+      if (typeof app.toggleUstavEditorMode === "function") app.toggleUstavEditorMode(false);
+      app.renderAuthHeader();
+      if (typeof app.openScreen === "function") app.openScreen("ustav-01");
+    }
+  });
+
+  window.addEventListener("online", function() {
+    failureCount = 0;
+    pollServerData();
+  });
+
+  app.renderAuthHeader();
+  pollServerData();
 })();
