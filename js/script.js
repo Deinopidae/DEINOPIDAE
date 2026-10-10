@@ -1121,22 +1121,62 @@
 
   var isEditorModeActive = false;
   var currentEditedElement = null;
+  var _ustavSnapshot = {};
 
-  window.toggleUstavEditorMode = function(forceState) {
+  function takeUstavSnapshot() {
+    _ustavSnapshot = {};
+    document.querySelectorAll('[data-screen-panel^="ustav-"]').forEach(function(sec) {
+      var id = sec.getAttribute("data-screen-panel");
+      var content = sec.querySelector(".dnp-screen-content");
+      if (content) _ustavSnapshot[id] = content.innerHTML;
+    });
+  }
+
+  function restoreUstavSnapshot() {
+    Object.keys(_ustavSnapshot).forEach(function(id) {
+      var sec = document.querySelector('[data-screen-panel="' + id + '"] .dnp-screen-content');
+      if (sec && _ustavSnapshot[id]) sec.innerHTML = _ustavSnapshot[id];
+    });
+  }
+
+  window.toggleUstavEditorMode = async function(forceState) {
     var pda = document.getElementById("dnp-pda");
     var brand = document.getElementById("dnp-top-brand");
     var dock = document.getElementById("dnp-editor-dock");
     if (!pda || !brand || !dock) return;
 
-    isEditorModeActive = typeof forceState === "boolean" ? forceState : !isEditorModeActive;
+    var targetState = typeof forceState === "boolean" ? forceState : !isEditorModeActive;
 
-    if (isEditorModeActive) {
+    if (targetState) {
+      var token = localStorage.getItem("dnp_auth_token");
+      if (!token) {
+        alert("Доступ ограничен. Войдите в Личный кабинет под учетной записью офицера.");
+        return;
+      }
+      try {
+        var chk = await fetch(API_BASE + "/api/admin/check", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        var chkData = await chk.json();
+        if (!chkData || !chkData.isOfficer) {
+          alert("Отказ доступа: ваш аккаунт не обладает правами офицера.");
+          return;
+        }
+      } catch (err) {
+        alert("Сбой проверки авторизации на сервере.");
+        return;
+      }
+
+      takeUstavSnapshot();
+      isEditorModeActive = true;
       pda.classList.add("dnp-editor-mode");
       brand.innerHTML = '<strong>DEINOPIDAE INDUSTRIES</strong> <span class="dnp-editor-tag">[РЕЖИМ РЕДАКТОРА]</span> <span>Департамент S.E. · Kurodzakura</span>';
       dock.style.display = "flex";
       openScreen("ustav-01");
       enableInlineEditing();
     } else {
+      restoreUstavSnapshot();
+      isEditorModeActive = false;
       pda.classList.remove("dnp-editor-mode");
       brand.innerHTML = '<strong>DEINOPIDAE / ДЕИНОПИДЫ</strong> <span>Департамент S.E. · Kurodzakura</span>';
       dock.style.display = "none";
@@ -1158,13 +1198,16 @@
   }
 
   function disableInlineEditing() {
-    var editables = document.querySelectorAll('[contenteditable="true"]');
-    editables.forEach(function(el) {
+    document.querySelectorAll('[contenteditable="true"]').forEach(function(el) {
       el.removeAttribute("contenteditable");
     });
   }
 
   window.docFormat = function(cmd, value) {
+    if (cmd === 'insertUnorderedList') {
+      window.docInsertItem('list');
+      return;
+    }
     document.execCommand(cmd, false, value || null);
   };
 
@@ -1201,8 +1244,9 @@
       el.className = "dnp-module";
       el.innerHTML = '<div class="dnp-module-title"><span contenteditable="true">X.X</span><b contenteditable="true">НОВЫЙ ПУНКТ</b><em contenteditable="true">ACTIVE</em></div><p contenteditable="true">Содержание нового пункта устава...</p>';
     } else if (type === "list") {
+      el = document.createElement("ul");
       el.className = "dnp-list";
-      el.innerHTML = '<li contenteditable="true">Новый пункт перечисления...</li><li contenteditable="true">Второй пункт перечисления...</li>';
+      el.innerHTML = '<li contenteditable="true">Первый пункт списка...</li><li contenteditable="true">Второй пункт списка...</li>';
     }
 
     var note = activePanel.querySelector(".dnp-brud-note");
@@ -1266,7 +1310,10 @@
       });
 
       if (res.ok) {
-        alert("Изменения успешно сохранены в базе данных!");
+        // Обновляем базовый снимок, чтобы выход теперь сохранял этот вид
+        takeUstavSnapshot();
+        alert("Изменения раздела " + secId + " сохранены в базе!");
+        loadUstavHistory();
       } else {
         alert("Ошибка при сохранении на сервере.");
       }
@@ -1274,6 +1321,140 @@
       alert("Сбой соединения с сервером.");
     }
   };
+
+  window.loadUstavHistory = async function() {
+    var cont = document.getElementById("adm-ustav-history-list");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!cont || !token) return;
+
+    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка истории ревизий...</div>';
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/history", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var list = await res.json();
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">История правок пуста. Все разделы в исходном состоянии.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(rev) {
+        var dateStr = new Date(rev.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+        return [
+          '<div style="background:var(--panel-2); border:1px solid var(--line-soft); border-left:3px solid #00f0ff; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">',
+          '  <div>',
+          '    <b style="color:#fff; font-size:12px;">[' + rev.sectionId + ']</b>',
+          '    <span style="color:var(--line); font-size:11px; margin-left:8px;">Офицер: ' + rev.author + '</span>',
+          '    <span style="color:var(--muted); font-size:10.5px; margin-left:8px;">(' + dateStr + ')</span>',
+          '  </div>',
+          '  <div style="display:flex; gap:6px;">',
+          '    <button type="button" class="dnp-action is-secondary" style="margin:0; padding:3px 8px; font-size:10.5px;" onclick="revertUstavRevision(\'' + rev._id + '\')">ОТКАТИТЬ</button>',
+          '    <button type="button" class="dnp-action is-danger" style="margin:0; padding:3px 8px; font-size:10.5px;" onclick="deleteUstavRevisionRecord(\'' + rev._id + '\')">✕</button>',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка загрузки истории правок.</div>';
+    }
+  };
+
+  window.revertUstavRevision = async function(revId) {
+    if (!confirm("Откатить состояние раздела к этой ревизии?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/revert/" + revId, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        alert("Раздел успешно откачен!");
+        loadDynamicUstav();
+        loadUstavHistory();
+      }
+    } catch (e) {
+      alert("Ошибка сети");
+    }
+  };
+
+  window.deleteUstavRevisionRecord = async function(revId) {
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/ustav/history/" + revId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadUstavHistory();
+    } catch (e) {}
+  };
+
+  window.resetAllUstavFactory = async function() {
+    if (!confirm("ВНИМАНИЕ! Вы действительно хотите удалить ВСЕ правки устава и сбросить его до начального заводского состояния?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/reset-all", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        alert("Устав успешно сброшен к исходному заводскому состоянию!");
+        location.reload();
+      }
+    } catch (e) {
+      alert("Сбой сброса");
+    }
+  };
+
+  window.adminCreateSection = async function() {
+    var id = (document.getElementById("adm-new-sec-id")?.value || "").trim().toLowerCase();
+    var title = (document.getElementById("adm-new-sec-title")?.value || "").trim();
+    var order = parseInt(document.getElementById("adm-new-sec-order")?.value, 10);
+    if (!id || !title) return alert("Заполните ID и название раздела");
+
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: id, title: title, order: isNaN(order) ? 99 : order })
+      });
+      if (res.ok) {
+        alert("Раздел создан!");
+        document.getElementById("adm-new-sec-id").value = "";
+        document.getElementById("adm-new-sec-title").value = "";
+        loadUstavSections();
+      }
+    } catch (e) {}
+  };
+
+  window.adminDeleteSection = async function(secId) {
+    if (!confirm("Удалить раздел " + secId + "?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/" + secId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        loadUstavSections();
+      } else {
+        alert("Нельзя удалить базовый раздел.");
+      }
+    } catch (e) {}
+  };
+
+  function renderAdminSectionsList() {
+    var box = document.getElementById("adm-sections-list-box");
+    if (!box) return;
+    box.innerHTML = allUstavSections.map(function(s) {
+      return [
+        '<div style="background:#050a0d; border:1px solid var(--line-soft); padding:6px 10px; display:flex; justify-content:space-between; align-items:center;">',
+        '  <span style="font-size:12px; color:#fff;"><b>' + s.title + '</b> <em style="font-size:10px; color:var(--muted);">[' + s.sectionId + ']</em></span>',
+        s.isCustom ? '  <button type="button" class="dnp-action is-danger" style="margin:0; padding:2px 6px; font-size:10px;" onclick="adminDeleteSection(\'' + s.sectionId + '\')">УДАЛИТЬ</button>' : '<span style="font-size:10px; color:var(--muted);">[БАЗОВЫЙ]</span>',
+        '</div>'
+      ].join('');
+    }).join('');
+  }
 
   var DEFAULT_SECTIONS = [
     { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
@@ -1297,6 +1478,7 @@
       }
     } catch (e) {}
     renderUstavNavigation();
+    renderAdminSectionsList();
   }
 
   function renderUstavNavigation() {
