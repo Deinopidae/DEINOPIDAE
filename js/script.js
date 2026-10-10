@@ -11,94 +11,36 @@
   var loaderWipe = document.getElementById("loader-wipe");
   var loaderContent = document.getElementById("loader-content");
 
-  if (loader && loaderBar && loaderPercent && loaderPin && loaderBg && loaderWipe) {
-    var targetProgress = 15;
+  if (loader && loaderBar && loaderPercent) {
     var currentProgress = 0;
-    var isFullyLoaded = false;
-    var isFinished = false;
+    var startTime = performance.now();
+    var duration = 1000; // Ровно 1 секунда на анимацию
+    var isDone = false;
 
-    if (document.readyState === "interactive" || document.readyState === "complete") {
-      targetProgress = Math.max(targetProgress, 40);
-    } else {
-      document.addEventListener("DOMContentLoaded", function () {
-        targetProgress = Math.max(targetProgress, 40);
-      });
-    }
+    function renderLoader(now) {
+      if (isDone) return;
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () {
-        targetProgress = Math.max(targetProgress, 60);
-      });
-    }
-
-    var assets = [].concat(
-      Array.from(document.images || []),
-      Array.from(document.querySelectorAll("iframe") || [])
-    );
-
-    var totalAssets = assets.length;
-    var loadedAssets = 0;
-
-    function onAssetDone() {
-      loadedAssets++;
-      if (totalAssets > 0) {
-        var mediaPortion = (loadedAssets / totalAssets) * 30;
-        targetProgress = Math.max(targetProgress, Math.round(60 + mediaPortion));
-      }
-    }
-
-    if (totalAssets > 0) {
-      assets.forEach(function (el) {
-        if (el.complete || el.readyState === "complete") {
-          onAssetDone();
-        } else {
-          el.addEventListener("load", onAssetDone, { once: true });
-          el.addEventListener("error", onAssetDone, { once: true });
-        }
-      });
-    } else {
-      targetProgress = Math.max(targetProgress, 85);
-    }
-
-    if (document.readyState === "complete") {
-      targetProgress = 100;
-      isFullyLoaded = true;
-    } else {
-      window.addEventListener("load", function () {
-        targetProgress = 100;
-        isFullyLoaded = true;
-      });
-    }
-
-    setTimeout(function () {
-      targetProgress = 100;
-      isFullyLoaded = true;
-    }, 5000);
-
-    function renderLoader() {
-      if (currentProgress < targetProgress) {
-        var step = (targetProgress - currentProgress) * 0.12;
-        currentProgress += Math.max(0.35, step);
-        if (currentProgress >= 100) currentProgress = 100;
-      }
+      var elapsed = now - startTime;
+      currentProgress = Math.min(100, (elapsed / duration) * 100);
 
       var progFloor = Math.floor(currentProgress);
       loaderPercent.textContent = progFloor;
       loaderBar.style.height = currentProgress + "%";
 
-      var trackHeight = loader.clientHeight || window.innerHeight;
-      var currentY = (trackHeight * currentProgress) / 100;
-      var clampedY = Math.min(Math.max(currentY, 28), trackHeight - 48);
-      loaderPin.style.top = clampedY + "px";
+      if (loaderPin) {
+        var trackHeight = loader.clientHeight || window.innerHeight;
+        var currentY = (trackHeight * currentProgress) / 100;
+        loaderPin.style.top = Math.min(Math.max(currentY, 28), trackHeight - 48) + "px";
+      }
 
-      var currentBlur = (20 * (1 - currentProgress / 100)).toFixed(1);
-      loaderBg.style.filter = "blur(" + currentBlur + "px)";
+      if (loaderBg) {
+        var currentBlur = (20 * (1 - currentProgress / 100)).toFixed(1);
+        loaderBg.style.filter = "blur(" + currentBlur + "px)";
+      }
 
-      if (currentProgress >= 100 && (isFullyLoaded || targetProgress === 100)) {
-        if (!isFinished) {
-          isFinished = true;
-          completeLoadingSequence();
-        }
+      if (currentProgress >= 100) {
+        isDone = true;
+        completeLoadingSequence();
         return;
       }
 
@@ -108,29 +50,46 @@
     function completeLoadingSequence() {
       loaderPercent.textContent = "100";
       loaderBar.style.height = "100%";
-      loaderBg.style.filter = "blur(0px)";
+      if (loaderBg) loaderBg.style.filter = "blur(0px)";
 
       setTimeout(function () {
-        loaderWipe.classList.add("wipe-in");
+        if (loaderWipe) loaderWipe.classList.add("wipe-in");
 
         setTimeout(function () {
           if (loaderContent) loaderContent.style.opacity = "0";
           if (loaderBg) loaderBg.style.opacity = "0";
 
-          loaderWipe.classList.remove("wipe-in");
-          loaderWipe.classList.add("wipe-out");
+          if (loaderWipe) {
+            loaderWipe.classList.remove("wipe-in");
+            loaderWipe.classList.add("wipe-out");
+          }
 
           setTimeout(function () {
             loader.style.opacity = "0";
+            loader.style.pointerEvents = "none";
             setTimeout(function () {
               loader.style.display = "none";
-            }, 300);
-          }, 480);
-        }, 500);
-      }, 250);
+            }, 250);
+          }, 350);
+        }, 300);
+      }, 100);
     }
 
     requestAnimationFrame(renderLoader);
+
+    setTimeout(function () {
+      if (loader && loader.style.display !== "none") {
+        loader.style.opacity = "0";
+        loader.style.pointerEvents = "none";
+        setTimeout(function () { loader.style.display = "none"; }, 200);
+      }
+    }, 1800);
+
+    // Клик по экрану пропускает загрузку мгновенно
+    loader.addEventListener("click", function () {
+      loader.style.display = "none";
+      loader.style.pointerEvents = "none";
+    });
   }
 
   var root = document.getElementById("dnp-pda");

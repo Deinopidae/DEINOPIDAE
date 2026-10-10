@@ -42,6 +42,20 @@
     <div class="dnp-loader-wipe" id="loader-wipe"></div>
   </div>
 
+  <script>
+    setTimeout(function() {
+      var l = document.getElementById("dnp-loader");
+      if (l && l.style.display !== "none") {
+        l.style.opacity = "0";
+        l.style.pointerEvents = "none";
+        setTimeout(function() { l.style.display = "none"; }, 300);
+      }
+    }, 1500);
+  </script>
+
+    <div class="dnp-loader-wipe" id="loader-wipe"></div>
+  </div>
+
   <div class="dnp-pda" id="dnp-pda">
     <div class="dnp-scan"></div>
 
