@@ -1102,11 +1102,12 @@
                 </div>
 
                 <div class="dnp-admin-panel-view is-active" id="adm-view-tickets">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <b style="color: #fff; font-size: 13px;">Входящие тикеты состава:</b>
-                    <button type="button" class="dnp-action" style="margin: 0;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
+                  <div class="dnp-tickets-subtabs">
+                    <button type="button" class="dnp-admin-tab-btn is-active" id="btn-tickets-active" onclick="switchAdminTicketTab('active')">ВХОДЯЩИЕ (<span id="adm-t-active-count">0</span>)</button>
+                    <button type="button" class="dnp-admin-tab-btn" id="btn-tickets-archive" onclick="switchAdminTicketTab('archive')">АРХИВ ТИКЕТОВ (<span id="adm-t-archive-count">0</span>)</button>
+                    <button type="button" class="dnp-action is-secondary" style="margin-left: auto; padding: 4px 10px;" onclick="loadAdminTickets()">ОБНОВИТЬ ⟳</button>
                   </div>
-                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                  <div id="adm-tickets-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;"></div>
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
@@ -1207,9 +1208,10 @@
       </div>
 
       <div class="dnp-doc-group">
-        <button type="button" class="dnp-doc-btn" onclick="docFormat('insertUnorderedList')" title="Список точками">• Список</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('list')" title="Список точками">• Список</button>
         <button type="button" class="dnp-doc-btn" onclick="docInsertItem('module')" title="Добавить статью">+ Статья</button>
         <button type="button" class="dnp-doc-btn" onclick="docInsertItem('card')" title="Добавить карточку звания">+ Карточка</button>
+        <button type="button" class="dnp-doc-btn is-danger-btn" onclick="docDeleteCurrentItem()" title="Удалить выбранный блок">🗑 Удалить блок</button>
       </div>
 
       <div class="dnp-doc-group">

@@ -1853,3 +1853,85 @@ body.is-hud-editing .dnp-rank-block:hover {
   cursor: pointer;
   padding: 0;
 }
+
+/* --- КНОПКИ УДАЛЕНИЯ И ДОБАВЛЕНИЯ РАЗДЕЛОВ В РЕЖИМЕ РЕДАКТОРА --- */
+.dnp-subnav-item-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+.dnp-subnav-item-wrap button[data-screen] {
+  flex: 1;
+}
+
+.dnp-sec-del-btn {
+  display: none;
+  background: rgba(169, 100, 104, 0.25);
+  border: 1px solid var(--danger);
+  color: #ff8e92;
+  width: 26px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 11px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.dnp-sec-del-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.dnp-pda.dnp-editor-mode .dnp-sec-del-btn {
+  display: flex !important;
+}
+
+.dnp-nav-add-sec-btn {
+  display: none;
+  width: 100%;
+  padding: 8px;
+  background: rgba(0, 119, 255, 0.15);
+  border: 1px dashed #0077ff;
+  color: #00f0ff;
+  font: 700 11px "Roboto Mono", monospace;
+  cursor: pointer;
+  margin-top: 6px;
+  text-align: center;
+}
+.dnp-nav-add-sec-btn:hover {
+  background: #0077ff;
+  color: #fff;
+}
+
+.dnp-pda.dnp-editor-mode .dnp-nav-add-sec-btn {
+  display: block !important;
+}
+
+/* Стилизация всех динамических текстов и карточек */
+.dnp-module p,
+.dnp-module [contenteditable="true"],
+.dnp-dyn-module p {
+  color: #d9e1e4 !important;
+  font-family: "Roboto Mono", monospace !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+.dnp-doc-btn.is-danger-btn {
+  border-color: rgba(169, 100, 104, 0.5);
+  color: #ff8e92;
+}
+.dnp-doc-btn.is-danger-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.dnp-tickets-subtabs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 8px;
+}

@@ -3,6 +3,7 @@
     ? ""
     : "https://deinopidae-api.onrender.com";
 
+  // 5. РЕАЛЬНЫЙ ЗАГРУЗЧИК (ПО АССЕТАМ + СКИП РОВНО ЧЕРЕЗ 6 СЕКУНД)
   var loader = document.getElementById("dnp-loader");
   var loaderBar = document.getElementById("loader-bar");
   var loaderPercent = document.getElementById("loader-percent");
@@ -13,14 +14,47 @@
 
   if (loader && loaderBar && loaderPercent) {
     var currentProgress = 0;
-    var startTime = performance.now();
-    var duration = 2200; 
+    var targetProgress = 10;
     var isDone = false;
 
-    function renderLoader(now) {
+    // Сбор реальных ассетов
+    var images = Array.from(document.images || []);
+    var totalItems = images.length + 2; // +1 DOM, +1 load
+    var loadedItems = 0;
+
+    function onItemLoaded() {
+      loadedItems++;
+      var pct = Math.round((loadedItems / totalItems) * 90);
+      targetProgress = Math.max(targetProgress, pct);
+    }
+
+    images.forEach(function(img) {
+      if (img.complete) onItemLoaded();
+      else {
+        img.addEventListener("load", onItemLoaded, { once: true });
+        img.addEventListener("error", onItemLoaded, { once: true });
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      onItemLoaded();
+      targetProgress = Math.max(targetProgress, 50);
+    });
+
+    window.addEventListener("load", function() {
+      onItemLoaded();
+      targetProgress = 100;
+    });
+
+    function renderLoaderLoop() {
       if (isDone) return;
-      var elapsed = now - startTime;
-      currentProgress = Math.min(100, (elapsed / duration) * 100);
+
+      if (currentProgress < targetProgress) {
+        var diff = targetProgress - currentProgress;
+        currentProgress += Math.max(0.4, diff * 0.08);
+      }
+      if (currentProgress >= 100) currentProgress = 100;
+
       var progFloor = Math.floor(currentProgress);
       loaderPercent.textContent = progFloor;
       loaderBar.style.height = currentProgress + "%";
@@ -32,19 +66,19 @@
       }
 
       if (loaderBg) {
-        var currentBlur = (20 * (1 - currentProgress / 100)).toFixed(1);
-        loaderBg.style.filter = "blur(" + currentBlur + "px)";
+        var blurVal = (20 * (1 - currentProgress / 100)).toFixed(1);
+        loaderBg.style.filter = "blur(" + blurVal + "px)";
       }
 
       if (currentProgress >= 100) {
-        finishLoaderSequence();
+        finishLoader();
         return;
       }
 
-      requestAnimationFrame(renderLoader);
+      requestAnimationFrame(renderLoaderLoop);
     }
 
-    function finishLoaderSequence() {
+    function finishLoader() {
       if (isDone) return;
       isDone = true;
       loaderPercent.textContent = "100";
@@ -53,36 +87,561 @@
 
       setTimeout(function () {
         if (loaderWipe) loaderWipe.classList.add("wipe-in");
-
         setTimeout(function () {
           if (loaderContent) loaderContent.style.opacity = "0";
           if (loaderBg) loaderBg.style.opacity = "0";
-
           if (loaderWipe) {
             loaderWipe.classList.remove("wipe-in");
             loaderWipe.classList.add("wipe-out");
           }
-
           setTimeout(function () {
             loader.style.opacity = "0";
             loader.style.pointerEvents = "none";
-            setTimeout(function () {
-              loader.style.display = "none";
-            }, 250);
+            setTimeout(function () { loader.style.display = "none"; }, 250);
           }, 350);
         }, 300);
       }, 100);
     }
 
-    requestAnimationFrame(renderLoader);
+    requestAnimationFrame(renderLoaderLoop);
 
-    setTimeout(function () {
-      finishLoaderSequence();
-    }, 5000);
+    // Скип ровно через 6 секунд при любых зависаниях
+    setTimeout(function() {
+      targetProgress = 100;
+      finishLoader();
+    }, 6000);
 
-    loader.addEventListener("click", function () {
-      finishLoaderSequence();
+    loader.addEventListener("click", function() {
+      finishLoader();
     });
+  }
+
+  // --- РЕЖИМ РЕДАКТИРОВАНИЯ УСТАВА ---
+  var isEditorModeActive = false;
+  var currentEditedElement = null;
+  var _ustavSnapshot = {};
+
+  function takeUstavSnapshot() {
+    _ustavSnapshot = {};
+    document.querySelectorAll('[data-screen-panel^="ustav-"]').forEach(function(sec) {
+      var id = sec.getAttribute("data-screen-panel");
+      var content = sec.querySelector(".dnp-screen-content");
+      if (content) _ustavSnapshot[id] = content.innerHTML;
+    });
+  }
+
+  function restoreUstavSnapshot() {
+    Object.keys(_ustavSnapshot).forEach(function(id) {
+      var sec = document.querySelector('[data-screen-panel="' + id + '"] .dnp-screen-content');
+      if (sec && _ustavSnapshot[id]) sec.innerHTML = _ustavSnapshot[id];
+    });
+  }
+
+  window.toggleUstavEditorMode = async function(forceState) {
+    var pda = document.getElementById("dnp-pda");
+    var brand = document.getElementById("dnp-top-brand");
+    var dock = document.getElementById("dnp-editor-dock");
+    if (!pda || !brand || !dock) return;
+
+    var targetState = typeof forceState === "boolean" ? forceState : !isEditorModeActive;
+
+    if (targetState) {
+      // 1 & 5. Проверка прав офицера перед включением
+      var token = localStorage.getItem("dnp_auth_token");
+      if (!token) {
+        alert("Доступ ограничен. Авторизуйтесь под аккаунтом офицера.");
+        return;
+      }
+      try {
+        var chk = await fetch(API_BASE + "/api/admin/check", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        var chkData = await chk.json();
+        if (!chkData || !chkData.isOfficer) {
+          alert("Отказ доступа: требуются права офицера.");
+          return;
+        }
+      } catch (err) {
+        alert("Сбой проверки прав на сервере.");
+        return;
+      }
+
+      takeUstavSnapshot();
+      isEditorModeActive = true;
+      pda.classList.add("dnp-editor-mode");
+      brand.innerHTML = '<strong>DEINOPIDAE INDUSTRIES</strong> <span class="dnp-editor-tag">[РЕЖИМ РЕДАКТОРА]</span> <span>Департамент S.E. · Kurodzakura</span>';
+      dock.style.display = "flex";
+      openScreen("ustav-01");
+      enableInlineEditing();
+      renderUstavNavigation();
+    } else {
+      // 2. Сброс несохраненных изменений при выходе
+      restoreUstavSnapshot();
+      isEditorModeActive = false;
+      pda.classList.remove("dnp-editor-mode");
+      brand.innerHTML = '<strong>DEINOPIDAE / ДЕИНОПИДЫ</strong> <span>Департамент S.E. · Kurodzakura</span>';
+      dock.style.display = "none";
+      disableInlineEditing();
+      renderUstavNavigation();
+    }
+  };
+
+  function enableInlineEditing() {
+    var ustavScreens = document.querySelectorAll('[data-screen-panel^="ustav-"]');
+    ustavScreens.forEach(function(screen) {
+      var editables = screen.querySelectorAll(".dnp-module-title b, .dnp-module-title span, .dnp-module-title em, .dnp-module p, .dnp-list li, .dnp-rank-info b, .dnp-rank-info span");
+      editables.forEach(function(el) {
+        el.setAttribute("contenteditable", "true");
+        el.addEventListener("focus", function() {
+          currentEditedElement = el.closest(".dnp-module, .dnp-rank-block, li") || el;
+        });
+      });
+    });
+  }
+
+  function disableInlineEditing() {
+    document.querySelectorAll('[contenteditable="true"]').forEach(function(el) {
+      el.removeAttribute("contenteditable");
+    });
+  }
+
+  // 2. Удаление выбранного блока или пункта
+  window.docDeleteCurrentItem = function() {
+    if (!currentEditedElement) {
+      alert("Сначала кликните по блоку, который хотите удалить.");
+      return;
+    }
+    if (confirm("Удалить этот блок из раздела?")) {
+      currentEditedElement.remove();
+      currentEditedElement = null;
+    }
+  };
+
+  // 1. Форматирование текста и вставка списков
+  window.docFormat = function(cmd, value) {
+    document.execCommand(cmd, false, value || null);
+  };
+
+  window.docSetFont = function(fontName) {
+    document.execCommand("fontName", false, fontName);
+  };
+
+  window.docApplyTextColor = function(color) {
+    document.execCommand("foreColor", false, color);
+  };
+
+  window.docApplyBorderColor = function(color) {
+    if (currentEditedElement) {
+      currentEditedElement.style.borderLeftColor = color;
+    }
+  };
+
+  window.docApplyBgColor = function(color) {
+    if (currentEditedElement) {
+      currentEditedElement.style.backgroundColor = color;
+    }
+  };
+
+  window.docInsertItem = function(type) {
+    var activePanel = document.querySelector(".dnp-screen.is-visible .dnp-screen-content");
+    if (!activePanel) return;
+
+    var el = document.createElement("div");
+    if (type === "card") {
+      el.className = "dnp-rank-block lr";
+      el.style.marginBottom = "10px";
+      el.innerHTML = '<div class="dnp-rank-info"><b contenteditable="true">НОВОЕ ЗВАНИЕ / КАРТОЧКА</b><span contenteditable="true">Описание требований и нормативов...</span></div>';
+    } else if (type === "module") {
+      el.className = "dnp-module";
+      el.innerHTML = '<div class="dnp-module-title"><span contenteditable="true">X.X</span><b contenteditable="true">НОВЫЙ ПУНКТ</b><em contenteditable="true">ACTIVE</em></div><p contenteditable="true">Содержание нового пункта устава...</p>';
+    } else if (type === "list") {
+      el = document.createElement("ul");
+      el.className = "dnp-list";
+      el.innerHTML = '<li contenteditable="true">Первый пункт списка...</li><li contenteditable="true">Второй пункт списка...</li>';
+    }
+
+    var note = activePanel.querySelector(".dnp-brud-note");
+    if (note) activePanel.insertBefore(el, note);
+    else activePanel.appendChild(el);
+
+    enableInlineEditing();
+  };
+
+  window.moveActiveSection = async function(direction) {
+    var activeBtn = document.querySelector(".dnp-subnav-item-wrap.is-active, .dnp-subnav button.is-active");
+    if (!activeBtn) return;
+    var wrap = activeBtn.closest(".dnp-subnav-item-wrap") || activeBtn;
+
+    var subnav = document.querySelector(".dnp-subnav");
+    var items = Array.from(subnav.querySelectorAll(".dnp-subnav-item-wrap"));
+    var index = items.indexOf(wrap);
+
+    if (direction === -1 && index > 0) {
+      subnav.insertBefore(wrap, items[index - 1]);
+    } else if (direction === 1 && index < items.length - 1) {
+      subnav.insertBefore(items[index + 1], wrap);
+    }
+
+    await saveSectionsOrder();
+  };
+
+  async function saveSectionsOrder() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+
+    var buttons = Array.from(document.querySelectorAll(".dnp-subnav button[data-screen]"));
+    for (var i = 0; i < buttons.length; i++) {
+      var sId = buttons[i].getAttribute("data-screen");
+      var sTitle = buttons[i].textContent.trim();
+      await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: sId, title: sTitle, order: i + 1 })
+      });
+    }
+  }
+
+  // 1 & 2. Сохранение без contenteditable
+  window.saveUstavChanges = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) {
+      alert("Требуется авторизация офицера.");
+      return;
+    }
+
+    var activePanel = document.querySelector(".dnp-screen.is-visible");
+    if (!activePanel) return;
+
+    var secId = activePanel.getAttribute("data-screen-panel");
+    
+    // Очищаем contenteditable перед сохранением, чтобы другие не могли редактировать
+    var clone = activePanel.querySelector(".dnp-screen-content").cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(function(el) {
+      el.removeAttribute('contenteditable');
+    });
+    var cleanHtml = clone.innerHTML;
+
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/section-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: secId, html: cleanHtml })
+      });
+
+      if (res.ok) {
+        takeUstavSnapshot();
+        alert("Изменения раздела " + secId + " успешно сохранены!");
+        loadUstavHistory();
+      } else {
+        alert("Ошибка при сохранении на сервере.");
+      }
+    } catch (e) {
+      alert("Сбой соединения с сервером.");
+    }
+  };
+
+  // 4. ЖУРНАЛ ИЗМЕНЕНИЙ И ОТКАТ
+  window.loadUstavHistory = async function() {
+    var cont = document.getElementById("adm-ustav-history-list");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!cont || !token) return;
+
+    cont.innerHTML = '<div style="color:var(--muted); font-size:11.5px;">Загрузка истории ревизий...</div>';
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/history", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.status === 404) {
+        cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Эндпоинт истории не найден на Render. Выполните Deploy latest commit в панели Render.</div>';
+        return;
+      }
+      var list = await res.json();
+      if (!list || list.length === 0) {
+        cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">История правок пуста.</div>';
+        return;
+      }
+
+      cont.innerHTML = list.map(function(rev) {
+        var dateStr = new Date(rev.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+        return [
+          '<div style="background:var(--panel-2); border:1px solid var(--line-soft); border-left:3px solid #00f0ff; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">',
+          '  <div>',
+          '    <b style="color:#fff; font-size:12px;">[' + rev.sectionId + ']</b>',
+          '    <span style="color:var(--line); font-size:11px; margin-left:8px;">Офицер: ' + rev.author + '</span>',
+          '    <span style="color:var(--muted); font-size:10.5px; margin-left:8px;">(' + dateStr + ')</span>',
+          '  </div>',
+          '  <div style="display:flex; gap:6px;">',
+          '    <button type="button" class="dnp-action is-secondary" style="margin:0; padding:3px 8px; font-size:10.5px;" onclick="revertUstavRevision(\'' + rev._id + '\')">ОТКАТИТЬ</button>',
+          '    <button type="button" class="dnp-action is-danger" style="margin:0; padding:3px 8px; font-size:10.5px;" onclick="deleteUstavRevisionRecord(\'' + rev._id + '\')">✕</button>',
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:11.5px;">Ошибка сети при загрузке истории.</div>';
+    }
+  };
+
+  window.revertUstavRevision = async function(revId) {
+    if (!confirm("Откатить состояние раздела к этой ревизии?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/revert/" + revId, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        alert("Раздел успешно откачен!");
+        loadDynamicUstav();
+        loadUstavHistory();
+      }
+    } catch (e) {
+      alert("Ошибка сети");
+    }
+  };
+
+  window.deleteUstavRevisionRecord = async function(revId) {
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      await fetch(API_BASE + "/api/admin/ustav/history/" + revId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      loadUstavHistory();
+    } catch (e) {}
+  };
+
+  window.resetAllUstavFactory = async function() {
+    if (!confirm("ВНИМАНИЕ! Сбросить ВСЕ разделы устава к исходному заводскому состоянию?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/reset-all", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        alert("Устав успешно сброшен!");
+        location.reload();
+      }
+    } catch (e) {}
+  };
+
+  // 3. ДОБАВЛЕНИЕ И УДАЛЕНИЕ РАЗДЕЛОВ ПРЯМО В НАВИГАЦИИ
+  window.navPromptAddSection = async function() {
+    var id = prompt("Введите идентификатор раздела (например: ustav-10):");
+    if (!id) return;
+    var title = prompt("Введите название раздела в меню (например: Раздел 10 Дополнительно):");
+    if (!title) return;
+
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: id.trim().toLowerCase(), title: title.trim(), order: allUstavSections.length + 1 })
+      });
+      if (res.ok) {
+        alert("Раздел добавлен!");
+        loadUstavSections();
+      }
+    } catch (e) {}
+  };
+
+  window.navDeleteSection = async function(secId) {
+    if (!confirm("Удалить раздел " + secId + "?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/sections/" + secId, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (res.ok) {
+        loadUstavSections();
+      } else {
+        alert("Нельзя удалить базовый раздел.");
+      }
+    } catch (e) {}
+  };
+
+  // 3. РЕНДЕР НАВИГАЦИИ С КРЕСТИКАМИ В РЕЖИМЕ РЕДАКТОРА
+  function renderUstavNavigation() {
+    var subnav = document.querySelector(".dnp-subnav");
+    if (!subnav || allUstavSections.length === 0) return;
+
+    subnav.innerHTML = "";
+
+    allUstavSections.sort(function(a, b) { return (a.order || 0) - (b.order || 0); }).forEach(function(sec) {
+      var wrap = document.createElement("div");
+      wrap.className = "dnp-subnav-item-wrap";
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("data-screen", sec.sectionId);
+      btn.textContent = sec.title;
+      btn.addEventListener("click", function() { openScreen(sec.sectionId); });
+
+      var delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "dnp-sec-del-btn";
+      delBtn.textContent = "✕";
+      delBtn.title = "Удалить этот раздел";
+      delBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        navDeleteSection(sec.sectionId);
+      });
+
+      wrap.appendChild(btn);
+      wrap.appendChild(delBtn);
+      subnav.appendChild(wrap);
+
+      var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"]');
+      if (panel) {
+        var headH1 = panel.querySelector(".dnp-screen-head h1");
+        if (headH1) headH1.textContent = sec.headTitle || sec.title;
+      } else {
+        var main = document.querySelector("main.dnp-main");
+        if (main) {
+          var newSec = document.createElement("section");
+          newSec.className = "dnp-screen";
+          newSec.setAttribute("data-screen-panel", sec.sectionId);
+          newSec.innerHTML = [
+            '<div class="dnp-screen-head"><h1>' + (sec.headTitle || sec.title) + '</h1></div>',
+            '<div class="dnp-screen-content">',
+            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span></div>',
+            '</div>'
+          ].join('');
+          main.insertBefore(newSec, document.querySelector('[data-screen-panel="forms-gui"]') || null);
+        }
+      }
+    });
+
+    // Кнопка добавления раздела в навигации
+    var addBtn = document.createElement("button");
+    addBtn.type = "button";
+    addBtn.className = "dnp-nav-add-sec-btn";
+    addBtn.textContent = "+ ДОБАВИТЬ РАЗДЕЛ";
+    addBtn.addEventListener("click", navPromptAddSection);
+    subnav.appendChild(addBtn);
+  }
+
+  // 1. ДИНАМИЧЕСКИЙ РЕНДЕР БЕЗ СЛУЧАЙНОГО CONTENTEDITABLE
+  async function loadDynamicUstav() {
+    try {
+      var res = await fetch(API_BASE + "/api/ustav/all-content");
+      if (!res.ok) return;
+      var sections = await res.json();
+      if (!Array.isArray(sections)) return;
+
+      sections.forEach(function(sec) {
+        var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"] .dnp-screen-content');
+        if (panel && sec.html) {
+          panel.innerHTML = sec.html;
+          // Гарантируем, что без режима редактирования текст никто не может редактировать
+          if (!isEditorModeActive) {
+            panel.querySelectorAll('[contenteditable]').forEach(function(el) {
+              el.removeAttribute('contenteditable');
+            });
+          }
+        }
+      });
+      if (isEditorModeActive) enableInlineEditing();
+    } catch (e) {}
+  }
+
+  // 7. ВХОДЯЩИЕ И АРХИВ ТИКЕТОВ В ПАНЕЛИ ОФИЦЕРА
+  var adminTicketTab = 'active';
+  var allAdminTickets = [];
+
+  window.switchAdminTicketTab = function(tab) {
+    adminTicketTab = tab;
+    var bAct = document.getElementById("btn-tickets-active");
+    var bArc = document.getElementById("btn-tickets-archive");
+    if (bAct && bArc) {
+      bAct.classList.toggle("is-active", tab === 'active');
+      bArc.classList.toggle("is-active", tab === 'archive');
+    }
+    renderAdminTicketsList();
+  };
+
+  window.loadAdminTickets = async function() {
+    var cont = document.getElementById("adm-tickets-list");
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!cont || !token) return;
+
+    cont.innerHTML = '<div style="color:var(--muted); font-size:12px;">Загрузка тикетов...</div>';
+    try {
+      var res = await fetch(API_BASE + "/api/admin/tickets", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      allAdminTickets = await res.json();
+      renderAdminTicketsList();
+    } catch (e) {
+      cont.innerHTML = '<div style="color:var(--danger); font-size:12px;">Ошибка загрузки тикетов.</div>';
+    }
+  };
+
+  function renderAdminTicketsList() {
+    var cont = document.getElementById("adm-tickets-list");
+    if (!cont) return;
+
+    var activeList = allAdminTickets.filter(function(t) { return t.status === 'НА ПРОВЕРКЕ' || t.status === 'В РАБОТЕ'; });
+    var archiveList = allAdminTickets.filter(function(t) { return t.status === 'ОДОБРЕНО' || t.status === 'ОТКЛОНЕНО' || t.status === 'УДАЛЕНО'; });
+
+    var cntAct = document.getElementById("adm-t-active-count");
+    var cntArc = document.getElementById("adm-t-archive-count");
+    if (cntAct) cntAct.textContent = activeList.length;
+    if (cntArc) cntArc.textContent = archiveList.length;
+
+    var list = adminTicketTab === 'active' ? activeList : archiveList;
+
+    if (list.length === 0) {
+      cont.innerHTML = '<div style="color:var(--muted); font-size:12.5px; padding:10px 0;">Тикетов в этой категории нет.</div>';
+      return;
+    }
+
+    cont.innerHTML = list.map(function(t) {
+      var isClosed = (t.status === 'ОДОБРЕНО' || t.status === 'ОТКЛОНЕНО' || t.status === 'УДАЛЕНО');
+      var stClass = 'st-pending';
+      if (t.status === 'В РАБОТЕ') stClass = 'st-work';
+      if (t.status === 'ОДОБРЕНО') stClass = 'st-ok';
+      if (t.status === 'ОТКЛОНЕНО') stClass = 'st-reject';
+
+      var actionsHtml = '';
+      if (isClosed) {
+        actionsHtml = [
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">',
+          '  <div class="dnp-ticket-verdict-box" style="flex:1; margin-right:12px;">',
+          '    <span style="color:var(--line);">Решение (' + (t.officer || 'Офицер') + '):</span> <b style="color:#fff;">' + (t.officerComment || 'Без комментария') + '</b>',
+          '  </div>',
+          '  <button type="button" class="dnp-action is-danger" style="margin:0;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
+          '</div>'
+        ].join('');
+      } else {
+        actionsHtml = [
+          '<div style="display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;">',
+          '  <input type="text" id="adm-comment-' + t.reportId + '" placeholder="Комментарий / вердикт офицера" value="' + (t.officerComment || '') + '" class="dnp-admin-input" style="flex:1; min-width:200px;">',
+          '  <button type="button" class="dnp-action" style="margin:0; border-color:var(--ok); color:var(--ok);" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОДОБРЕНО\')">ОДОБРИТЬ</button>',
+          '  <button type="button" class="dnp-action is-danger" style="margin:0;" onclick="respondAdminTicket(\'' + t.reportId + '\', \'ОТКЛОНЕНО\')">ОТКЛОНИТЬ</button>',
+          '  <button type="button" class="dnp-action is-secondary" style="margin:0;" onclick="deleteAdminTicket(\'' + t.reportId + '\')">УДАЛИТЬ</button>',
+          '</div>'
+        ].join('');
+      }
+
+      return [
+        '<div style="background:var(--panel-2); border:1px solid var(--line-soft); padding:12px; display:flex; flex-direction:column; gap:6px;">',
+        '  <div style="display:flex; justify-content:space-between; align-items:center;">',
+        '    <div>',
+        '      <b style="color:#fff; font-size:13px;">' + t.type + ' <span style="color:var(--muted); font-size:11px;">(#' + t.reportId + ')</span></b>',
+        '      <span style="color:var(--line); font-size:11.5px; margin-left:8px;">' + t.username + ' (' + t.roblox + ')</span>',
+        '    </div>',
+        '    <span class="dnp-badge ' + stClass + '">' + t.status + '</span>',
+        '  </div>',
+        '  <div style="font-size:12.5px; color:var(--text); line-height:1.5;">' + t.description + '</div>',
+        t.links && t.links !== 'Отсутствуют' ? '<div style="font-size:11.5px;"><a href="' + t.links + '" target="_blank" class="dnp-brud-link">Материалы ↗</a></div>' : '',
+        actionsHtml,
+        '</div>'
+      ].join('');
+    }).join('');
   }
 
   var root = document.getElementById("dnp-pda");
