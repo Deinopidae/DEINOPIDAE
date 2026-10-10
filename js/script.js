@@ -232,6 +232,47 @@
 
   var buttons = root.querySelectorAll("[data-screen]");
   var panels = root.querySelectorAll("[data-screen-panel]");
+  var activeScreenBeforeRouting = "ustav-01";
+  var screenTransitionStates = new WeakMap();
+
+  function clearScreenTransition(content) {
+    var previous = screenTransitionStates.get(content);
+    if (previous) {
+      window.clearTimeout(previous.timeout);
+      content.removeEventListener("animationend", previous.onAnimationEnd);
+      screenTransitionStates.delete(content);
+    }
+    content.classList.remove("dnp-flicker-1", "dnp-flicker-2", "dnp-flicker-3", "dnp-no-flicker");
+    content.style.removeProperty("animation-duration");
+    content.style.removeProperty("animation-iteration-count");
+  }
+
+  function playScreenTransition(panel) {
+    var content = panel.querySelector(".dnp-screen-content");
+    if (!content) return;
+
+    clearScreenTransition(content);
+    var shouldFlicker = Math.random() < 0.68;
+    var duration = 0.15;
+    var iterations = 1;
+    if (!shouldFlicker) {
+      content.classList.add("dnp-no-flicker");
+    } else {
+      var flickerVariant = 1 + Math.floor(Math.random() * 3);
+      duration = 0.24 + Math.random() * 0.56;
+      iterations = 1 + Math.floor(Math.random() * 3);
+      content.style.animationDuration = duration.toFixed(2) + "s";
+      content.style.animationIterationCount = String(iterations);
+      content.classList.add("dnp-flicker-" + flickerVariant);
+    }
+
+    var onAnimationEnd = function(event) {
+      if (event.target === content) clearScreenTransition(content);
+    };
+    var timeout = window.setTimeout(clearScreenTransition.bind(null, content), duration * iterations * 1000 + 100);
+    screenTransitionStates.set(content, { onAnimationEnd: onAnimationEnd, timeout: timeout });
+    content.addEventListener("animationend", onAnimationEnd);
+  }
 
   buttons.forEach(function (button) {
     var screenName = button.getAttribute("data-screen");
@@ -247,7 +288,7 @@
     var panelName = panel.getAttribute("data-screen-panel");
     panel.id = "panel-" + panelName;
     panel.setAttribute("role", "tabpanel");
-    panel.setAttribute("aria-labelledby", "tab-" + panelName);
+    panel.setAttribute("aria-labelledby", panelName === "profile" ? "dnp-profile-name" : "tab-" + panelName);
   });
 
   app.openScreen = function(name) {
@@ -255,6 +296,9 @@
       return panel.getAttribute("data-screen-panel") === name;
     });
     if (!targetPanel) return;
+    var isScreenChange = name !== activeScreenBeforeRouting;
+    if (isScreenChange) playScreenTransition(targetPanel);
+    activeScreenBeforeRouting = name;
     app.state.activeScreen = name;
     var layoutElement = document.getElementById("dnp-layout");
     if (layoutElement) {
@@ -1177,12 +1221,11 @@
       tbody.innerHTML = users.map(function(u) {
         var onlineClass = u.isOnline ? 'st-ok' : 'st-deleted';
         var onlineLabel = u.isOnline ? 'В СЕТИ' : 'НЕ В СЕТИ';
-        var activityClass = u.activityStatus === 'В активе' ? 'st-ok' : 'st-pending';
         return [
           '<tr>',
           '  <td><b>' + escapeHtml(u.displayName || u.username) + '</b></td>',
           '  <td>' + escapeHtml(u.roblox) + '</td>',
-          '  <td><span class="dnp-badge ' + onlineClass + '">' + onlineLabel + '</span> <span class="dnp-badge ' + activityClass + '">' + escapeHtml(u.activityStatus || 'В активе') + '</span></td>',
+          '  <td><span class="dnp-badge ' + onlineClass + '">' + onlineLabel + '</span></td>',
           '  <td>' + new Date(u.registeredAt).toLocaleDateString() + '</td>',
           '  <td><button type="button" class="dnp-action is-danger" data-action="deleteAdminUser" data-id="' + escapeHtml(u._id) + '" style="margin:0; padding:4px 8px; font-size:10.5px;">УДАЛИТЬ</button></td>',
           '</tr>'
@@ -2077,6 +2120,13 @@
     { sectionId: "ustav-09", title: "Раздел 9 Конец", headTitle: "Раздел 9 — Конец", order: 9 }
   ];
   var allUstavSections = DEFAULT_SECTIONS.slice();
+  var baseUstavContent = {};
+
+  document.querySelectorAll('[data-screen-panel^="ustav-"]').forEach(function(panel) {
+    var sectionId = panel.getAttribute("data-screen-panel");
+    var content = panel.querySelector(".dnp-screen-content");
+    if (content) baseUstavContent[sectionId] = content.innerHTML;
+  });
 
   async function loadUstavSections() {
     try {
@@ -2168,6 +2218,14 @@
       var sections = await res.json();
       if (!Array.isArray(sections)) throw new Error("Invalid section content response.");
 
+      document.querySelectorAll('[data-screen-panel^="ustav-"]').forEach(function(panel) {
+        var sectionId = panel.getAttribute("data-screen-panel");
+        var content = panel.querySelector(".dnp-screen-content");
+        if (content && Object.prototype.hasOwnProperty.call(baseUstavContent, sectionId)) {
+          content.innerHTML = baseUstavContent[sectionId];
+        }
+      });
+
       sections.forEach(function(sec) {
         var panel = findUstavContent(sec.sectionId);
         if (panel && typeof sec.html === "string") {
@@ -2183,6 +2241,31 @@
       console.error("Не удалось загрузить содержимое устава:", e);
     }
   }
+
+  app.restoreUstavBaseline = async function() {
+    if (!confirm("Удалить пользовательские разделы и вернуть исходное содержимое раздела 1?")) return;
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) {
+      alert("Требуется авторизация офицера.");
+      return;
+    }
+
+    try {
+      var response = await window.DnpApi.request(API_BASE + "/api/admin/ustav/restore-baseline", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      var result = await response.json().catch(function() { return {}; });
+      if (!response.ok) throw new Error(result.error || "Не удалось восстановить базовый устав.");
+      await loadUstavSections();
+      await loadDynamicUstav(true);
+      app.openScreen("ustav-01");
+      alert("Базовый устав восстановлен. Удалено дополнительных разделов: " + (result.removedSections || 0) + ".");
+    } catch (error) {
+      alert(error.message || "Не удалось восстановить базовый устав.");
+      console.error("Ошибка восстановления базового устава:", error);
+    }
+  };
 
   document.addEventListener("click", function(event) {
     var control = event.target.closest("[data-action]");

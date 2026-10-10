@@ -1732,6 +1732,15 @@ a {
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  gap: 16px;
+}
+
+.dnp-screen-content > .dnp-module {
+  margin-bottom: 0;
+}
+
+.dnp-screen-content > .dnp-brud-note {
+  margin: 0;
 }
 
 .dnp-terminal-screen {
@@ -1934,6 +1943,93 @@ a {
   border-left: 3px solid var(--cyan);
   background: rgba(10, 16, 20, .9);
   font-size: 12px;
+}
+
+.dnp-notif-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid transparent;
+  background: var(--panel-2);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.dnp-notif-box:hover {
+  border-color: rgba(138, 160, 168, .42);
+}
+
+.dnp-notif-box.is-unread {
+  border-left-color: var(--line);
+  background: rgba(14, 21, 25, .96);
+}
+
+.dnp-notif-box.is-unread:hover {
+  border-left-color: var(--line);
+}
+
+.dnp-notif-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(138, 160, 168, .15);
+}
+
+.dnp-notif-top > b {
+  color: var(--text);
+  font: 800 13px "Exo 2", sans-serif;
+}
+
+.dnp-notif-top > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dnp-notif-time {
+  color: var(--muted);
+  font: 10px "Roboto Mono", monospace;
+  white-space: nowrap;
+}
+
+.dnp-notif-del-btn {
+  min-height: 28px;
+  padding: 5px 8px;
+  border: 1px solid rgba(138, 160, 168, .28);
+  background: rgba(8, 13, 16, .9);
+  color: var(--text);
+  font: 700 10px "Roboto Mono", monospace;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+
+.dnp-notif-del-btn:hover {
+  border-color: var(--danger);
+  color: #d49a9d;
+}
+
+.dnp-notif-msg {
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 520px) {
+  .dnp-notif-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dnp-notif-top > div {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .dnp-badge {
@@ -2303,6 +2399,13 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dnp-screen-content.dnp-flicker-1,
+  .dnp-screen-content.dnp-flicker-2,
+  .dnp-screen-content.dnp-flicker-3,
+  .dnp-screen-content.dnp-no-flicker {
+    animation: none !important;
+  }
+
   [data-screen-panel="roots"].is-visible .dnp-screen-content,
   [data-screen-panel="roots"].is-visible .dnp-corrupt-body p,
   [data-screen-panel="roots"].is-visible .dnp-corrupt-log,

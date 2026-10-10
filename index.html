@@ -101,19 +101,14 @@
             <b>Корни Deinopidae</b>
           </button>
 
-          <button class="dnp-nav-root-btn" type="button" data-screen="profile">
-            <span class="dnp-num">04</span>
-            <b>Профиль</b>
-          </button>
-
           <button class="dnp-locked-main" type="button" disabled>
-            <span class="dnp-num">05</span>
+            <span class="dnp-num">04</span>
             <b>Вербовка</b>
             <em>LOCK</em>
           </button>
 
           <button class="dnp-nav-root-btn" id="dnp-nav-admin" type="button" data-screen="admin-panel" style="display: none;">
-            <span class="dnp-num">06</span>
+            <span class="dnp-num">05</span>
             <b>Бюрократия</b>
             <em class="dnp-menu-tag">OFFICER</em>
           </button>
@@ -1149,6 +1144,13 @@
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
+                  <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;">
+                    <div>
+                      <b style="color: #fff; font-size: 13px; font-family: 'Exo 2', sans-serif;">ВОССТАНОВЛЕНИЕ БАЗОВОГО УСТАВА</b>
+                      <span style="display: block; margin-top: 4px; color: var(--muted); font-size: 11px;">Удалить пользовательские разделы и вернуть исходное содержимое раздела 1.</span>
+                    </div>
+                    <button type="button" class="dnp-action is-danger" data-action="restoreUstavBaseline" style="margin: 0;">ВОССТАНОВИТЬ БАЗОВЫЙ</button>
+                  </div>
                   <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
                     <div>
                       <b style="color: #fff; font-size: 14px; font-family: 'Exo 2', sans-serif;">ИНТЕРАКТИВНЫЙ РЕДАКТОР УСТАВА</b>
