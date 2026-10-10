@@ -159,7 +159,7 @@
 
   var isTransitioning = false;
 
-  // Открытие экранов (Устав больше не закрывается при переходе в Бюрократию)
+  // Открытие экранов (Устав больше не захлопывается при переходе в другие вкладки)
   window.openScreen = function(name) {
     if (isTransitioning) return;
 
@@ -258,13 +258,41 @@
     openScreen(firstButton.getAttribute("data-screen"));
   }
 
-  // --- ЛОГИКА ТЕРМИНАЛА И БАЗЫ ДАННЫХ ---
-  var termLoaded = false;
-  var termBooting = false;
-  var termStep = 0;
-  var termTimer = null;
-  var cmdHistory = [];
-  var cmdHistoryIndex = -1;
+  // --- 3D ПАРАЛЛАКС И ГЛИТЧ-ЭФФЕКТ (КОРНИ DEINOPIDAE) ---
+  var corruptModule = document.getElementById("corrupt-module");
+  var corruptImg = document.getElementById("corrupt-img");
+  var ghostTitle = document.getElementById("ghost-title");
+  var slice1 = document.querySelector(".dnp-slice-1");
+  var slice2 = document.querySelector(".dnp-slice-2");
+  var sliceLog = document.querySelector(".dnp-slice-log");
+  var slice3 = document.querySelector(".dnp-slice-3");
+
+  if (corruptModule) {
+    corruptModule.addEventListener("mousemove", function (e) {
+      var rect = corruptModule.getBoundingClientRect();
+      var xNorm = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      var yNorm = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+
+      if (corruptImg) corruptImg.style.transform = "translate(" + (xNorm * 10).toFixed(1) + "px, " + (yNorm * 6).toFixed(1) + "px)";
+      if (ghostTitle) ghostTitle.style.transform = "translate(" + (-xNorm * 14 - 10).toFixed(1) + "px, " + (-yNorm * 8 - 4).toFixed(1) + "px)";
+      if (slice1) slice1.style.transform = "translate(" + (xNorm * 6).toFixed(1) + "px, " + (yNorm * 3).toFixed(1) + "px)";
+      if (slice2) slice2.style.transform = "translate(" + (-xNorm * 8 + 4).toFixed(1) + "px, " + (-yNorm * 4).toFixed(1) + "px) skewX(" + (-xNorm * 1.5).toFixed(1) + "deg)";
+      if (sliceLog) sliceLog.style.transform = "translateX(" + (xNorm * 5).toFixed(1) + "px)";
+      if (slice3) slice3.style.transform = "translate(" + (-xNorm * 4).toFixed(1) + "px, " + (yNorm * 2).toFixed(1) + "px)";
+    });
+
+    corruptModule.addEventListener("mouseleave", function () {
+      if (corruptImg) corruptImg.style.transform = "translate(0, 0)";
+      if (ghostTitle) ghostTitle.style.transform = "translate(-10px, -4px)";
+      if (slice1) slice1.style.transform = "translate(0, 0)";
+      if (slice2) slice2.style.transform = "translate(5px, 0) skewX(-1deg)";
+      if (sliceLog) sliceLog.style.transform = "translate(0, 0)";
+      if (slice3) slice3.style.transform = "translate(0, 0)";
+    });
+  }
+
+  // --- ПОЛНЫЙ ТЕРМИНАЛ И БАЗА СОТРУДНИКОВ ---
+  var sheetsUrl = "https://docs.google.com/spreadsheets/d/1IHAdgvHB27iW4s9aJe4L0GIpYrhS_R2EonUwugZIJww/edit?gid=601978163#gid=601978163";
 
   var asciiLogo = [
     "    @@                                                        @@    ",
@@ -301,9 +329,11 @@
   ].join("\n");
 
   window.employeeDb = {
-    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" },
-    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" },
-    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание" }
+    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
+    "zzmalf4": { name: "zzmalf4", title: "Главный инженер", rank: "A RANK", mp: "0/1", hours: "0:00", equipment: "0", coins: "46", activity: "0", quota_status: "НЕ ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "Кэнсэки 1", promotion: "ПРИОСТАНОВЛЕНО (Действуют активные дисциплинарные взыскания)", lectures: { po: "НЕ ПРОЙДЕНА", so: "НЕ ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "НЕ СДАНА", b: "НЕ СДАНА", a: "НЕ СДАНА" } },
+    "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
   };
 
   function getCurrentUser() {
@@ -323,6 +353,13 @@
     return 'D:\\"' + getCurrentUser() + '">';
   }
 
+  var termLoaded = false;
+  var termBooting = false;
+  var termStep = 0;
+  var termTimer = null;
+  var cmdHistory = [];
+  var cmdHistoryIndex = -1;
+
   function initTerminalBoot() {
     var termTopTitle = document.getElementById("term-top-title");
     var termProgressLine = document.getElementById("term-progress-line");
@@ -331,7 +368,10 @@
     var termPromptLabel = document.getElementById("term-prompt-label");
     var termInput = document.getElementById("term-input");
 
-    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
+    if (termPromptLabel) {
+      termPromptLabel.textContent = getPromptStr();
+    }
+
     if (termLoaded || termBooting) {
       if (termInput) termInput.focus({ preventScroll: true });
       return;
@@ -356,11 +396,15 @@
     for (var j = filled; j < totalDots; j++) str += "• ";
     str += "]";
 
-    if (termProgressLine) termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+    if (termProgressLine) {
+      termProgressLine.textContent = "▶ CURRENT PROGRESS . . . " + str;
+    }
+
     if (termStep >= 10) {
       finishTerminalBoot();
       return;
     }
+
     termStep++;
     termTimer = setTimeout(runBootStep, 140);
   }
@@ -379,21 +423,40 @@
 
     if (termTopTitle) termTopTitle.textContent = "WELCOME TO DEINOPIDAE INDUSTRIES";
     if (termProgressLine) termProgressLine.textContent = '▶ LOAD COMPLETE, TYPE "HELP" FOR SEE HELP';
-    if (termAscii) { termAscii.textContent = asciiLogo; termAscii.style.display = "block"; }
-    if (termPromptLabel) termPromptLabel.textContent = getPromptStr();
-    if (termPromptLine) termPromptLine.style.display = "flex";
-    if (termInput) termInput.focus({ preventScroll: true });
+
+    if (termAscii) {
+      termAscii.textContent = asciiLogo;
+      termAscii.style.display = "block";
+    }
+
+    if (termPromptLabel) {
+      termPromptLabel.textContent = getPromptStr();
+    }
+
+    if (termPromptLine) {
+      termPromptLine.style.display = "flex";
+    }
+    if (termInput) {
+      termInput.focus({ preventScroll: true });
+    }
   }
 
   var termBody = document.getElementById("term-body");
   if (termBody) {
     termBody.addEventListener("click", function () {
-      if (termBooting) finishTerminalBoot();
-      else {
+      if (termBooting) {
+        finishTerminalBoot();
+      } else {
+        if (window.getSelection && window.getSelection().toString().length > 0) return;
         var input = document.getElementById("term-input");
         if (input) input.focus({ preventScroll: true });
       }
     });
+  }
+
+  function scrollTerm() {
+    var b = document.getElementById("term-body");
+    if (b) b.scrollTop = b.scrollHeight;
   }
 
   function printLine(text) {
@@ -403,12 +466,113 @@
     div.className = "dnp-term-resp-line";
     div.innerHTML = text;
     termOutput.appendChild(div);
-    if (termBody) termBody.scrollTop = termBody.scrollHeight;
+    scrollTerm();
+  }
+
+  function executeFind(queryRaw) {
+    var q = queryRaw.trim().toLowerCase();
+    if (!q) {
+      printLine('Синтаксис: FIND "фраза" или FIND <слово>');
+      return;
+    }
+
+    var terms = q.split(/\s+/).filter(Boolean);
+    var matches = [];
+
+    var screens = document.querySelectorAll("[data-screen-panel]");
+    screens.forEach(function (panel) {
+      var panelId = panel.getAttribute("data-screen-panel");
+      if (panelId === "database" || panelId === "forms-gui" || panelId === "tickets" || panelId === "notifications" || panelId === "admin-panel") return;
+
+      var head = panel.querySelector(".dnp-screen-head h1");
+      var headText = head ? head.textContent.trim() : panelId;
+
+      var modules = panel.querySelectorAll(".dnp-module, .dnp-rank-block");
+      if (modules.length > 0) {
+        modules.forEach(function (m) {
+          var text = m.innerText || m.textContent;
+          var lower = text.toLowerCase();
+          var matched = terms.every(function (t) { return lower.indexOf(t) !== -1; });
+
+          if (matched) {
+            var snippet = text.replace(/\s+/g, " ").trim();
+            if (snippet.length > 120) snippet = snippet.substring(0, 120) + "...";
+            matches.push({
+              source: "УСТАВ",
+              title: headText,
+              snippet: snippet,
+              panelId: panelId
+            });
+          }
+        });
+      }
+    });
+
+    var db = window.employeeDb || {};
+    Object.keys(db).forEach(function (k) {
+      var emp = db[k];
+      var rawStr = (emp.name + " " + emp.rank + " " + (emp.title || "") + " " + (emp.penalties || "")).toLowerCase();
+      var matched = terms.every(function (t) { return rawStr.indexOf(t) !== -1; });
+      if (matched) {
+        matches.push({
+          source: "СОСТАВ",
+          title: emp.name + " // " + emp.title + " [" + emp.rank + "]",
+          snippet: "Норма: " + emp.quota_status + " | Часы: " + emp.hours,
+          nick: emp.name
+        });
+      }
+    });
+
+    if (matches.length > 0) {
+      printLine("=== [НАЙДЕНО СОВПАДЕНИЙ: " + matches.length + '] ===');
+      matches.slice(0, 10).forEach(function (m) {
+        if (m.source === "УСТАВ") {
+          printLine('  • <span style="color:#00f0ff;">[' + m.source + ']</span> <b>' + m.title + '</b>: <span style="color:#8ba0ad;">' + m.snippet + '</span>');
+        } else {
+          printLine('  • <span style="color:#4af626;">[' + m.source + ']</span> <b>' + m.title + '</b> — <span style="color:#8ba0ad;">' + m.snippet + '</span>');
+        }
+      });
+    } else {
+      printLine('По запросу "' + q + '" данных не обнаружено.');
+    }
+  }
+
+  async function submitFormConsole(typeNum, desc, links) {
+    var typeMap = { "1": "Внеурочка", "2": "Изменение устава", "3": "Обращение к руководству" };
+    var type = typeMap[typeNum.toLowerCase()] || typeNum;
+    var token = localStorage.getItem("dnp_auth_token");
+
+    if (!token) {
+      printLine('<span style="color:#ff5252;">[ОТКАЗ] Необходима авторизация в Личном кабинете.</span>');
+      return;
+    }
+    if (!desc) {
+      printLine('<span style="color:#ff5252;">[ОШИБКА] Текст описания не может быть пустым.</span>');
+      return;
+    }
+
+    printLine('[SYS] Передача рапорта в базу данных комплекса...');
+    try {
+      var res = await fetch(API_BASE + "/api/forms/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ type: type, description: desc, links: links || "Отсутствуют" })
+      });
+      var data = await res.json();
+      if (res.ok && data.success) {
+        printLine('<span style="color:#4af626;">[УСПЕХ] Обращение #' + data.reportId + ' зарегистрировано!</span>');
+      } else {
+        printLine('<span style="color:#ff5252;">[ОТКАЗ] ' + (data.error || "Ошибка сохранения") + '</span>');
+      }
+    } catch (e) {
+      printLine('<span style="color:#ff5252;">[СБОЙ СЕТИ] Не удалось связаться с сервером.</span>');
+    }
   }
 
   function executeCommand(raw) {
     var cmd = raw.trim();
     if (!cmd) return;
+
     cmdHistory.push(cmd);
     cmdHistoryIndex = cmdHistory.length;
     printLine(getPromptStr() + " " + cmd);
@@ -416,53 +580,151 @@
     var parts = cmd.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     var first = (parts[0] || "").toUpperCase();
 
-    if (first === "HELP") {
-      printLine("HELP - Список команд");
-      printLine("CLS / CLEAR - Очистить экран");
-      printLine("STAFF <ник> - Личное дело сотрудника");
-      printLine("GOTO <1-9> - Переход в раздел устава");
+    if (first === "D" && parts.length > 1) {
+      parts.shift();
+      first = (parts[0] || "").toUpperCase();
+    }
+
+    if (first === "FORMS") {
+      var isGui = parts.some(function(p) { return p.toLowerCase() === "-gui"; });
+      if (isGui) {
+        openScreen("forms-gui");
+        printLine('[SYS] Переход в форму подачи обращений.');
+        return;
+      }
+      if (parts.length >= 3) {
+        var catNum = parts[1].replace(/^"|"$/g, "");
+        var desc = parts[2].replace(/^"|"$/g, "");
+        var links = (parts[3] || "").replace(/^"|"$/g, "");
+        submitFormConsole(catNum, desc, links);
+        return;
+      }
+      printLine("=== [СИСТЕМА ПОДАЧИ ОТЧЁТОВ И ФОРМ] ===");
+      printLine("  [1] Внеурочка (Починка / Создание оборудования)");
+      printLine("  [2] Изменение устава (Предложение поправки)");
+      printLine("  [3] Обращение к руководству (Запрос / Жалоба / Вопрос)");
+      printLine('Отправка через консоль: FORMS <1-3> "<текст>" "<ссылка>"');
+      printLine('Графический интерфейс: FORMS -gui');
       return;
     }
+
+    if (first === "STAFF") {
+      var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
+      if (!nick) {
+        printLine("Синтаксис: STAFF <никнейм>");
+        return;
+      }
+      var p = window.employeeDb[nick];
+      if (p) {
+        printLine("=== [ЛИЧНОЕ ДЕЛО СОТРУДНИКА // COMPLEX DEINOPIDAE] ===");
+        printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
+        printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
+        printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+        printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
+        printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
+        printLine("======================================================");
+      } else {
+        printLine("Позывной '" + nick + "' не найден в локальном реестре.");
+        printLine("Ведомость: <span class='dnp-term-link' onclick='window.open(\"" + sheetsUrl + "\",\"_blank\")'>ОТКРЫТЬ ТАБЛИЦУ DEINOPIDAE ↗</span>");
+      }
+      return;
+    }
+
+    if (first === "FIND") {
+      var query = parts.slice(1).join(" ").replace(/^"|"$/g, "");
+      executeFind(query);
+      return;
+    }
+
+    if (first === "GOTO") {
+      var target = (parts[1] || "").toLowerCase();
+      var secMap = {
+        "1": "ustav-01", "2": "ustav-02", "3": "ustav-03", "4": "ustav-04",
+        "5": "ustav-05", "6": "ustav-06", "7": "ustav-07", "8": "ustav-08", "9": "ustav-09",
+        "roots": "roots", "корни": "roots"
+      };
+      var targetId = secMap[target] || target;
+      if (targetId) {
+        openScreen(targetId);
+        printLine('[SYS] Переход в раздел: ' + targetId);
+      } else {
+        printLine('Использование: GOTO <номер раздела 1-9>');
+      }
+      return;
+    }
+
+    if (first === "HELP") {
+      printLine("HELP                  - Вызов списка доступных команд");
+      printLine("FIND <фраза>          - Глобальный поиск по уставу и сотрудникам");
+      printLine("STAFF <ник>           - Личное дело сотрудника");
+      printLine('FORMS <1-3> "..." ".." - Отправка рапорта из консоли');
+      printLine("FORMS -gui            - Графический интерфейс подачи форм");
+      printLine("GOTO <1-9>            - Быстрый переход в раздел устава");
+      printLine("CLS / CLEAR           - Очистить экран консоли");
+      return;
+    }
+
     if (first === "CLS" || first === "CLEAR") {
       var termOutput = document.getElementById("term-output");
       if (termOutput) termOutput.innerHTML = "";
       return;
     }
-    if (first === "STAFF") {
-      var nick = (parts[1] || "").replace(/^"|"$/g, "").toLowerCase();
-      var p = window.employeeDb[nick];
-      if (p) {
-        printLine("ПОЗЫВНОЙ: " + p.name + " | РАНГ: " + p.title + " [" + p.rank + "] | НОРМА: " + p.quota_status);
-      } else {
-        printLine("Сотрудник не найден в локальном реестре.");
-      }
+
+    if (first === "WHOAMI") {
+      printLine('D:\\"' + getCurrentUser() + '"');
       return;
     }
-    if (first === "GOTO") {
-      var target = (parts[1] || "").toLowerCase();
-      openScreen("ustav-0" + target);
-      return;
-    }
+
     printLine('Команда "' + cmd + '" не распознана. Введите "HELP".');
   }
 
   var termInput = document.getElementById("term-input");
   var termTyped = document.getElementById("term-typed");
+
   if (termInput) {
     termInput.addEventListener("input", function() {
       if (termTyped) termTyped.textContent = termInput.value;
     });
+
     termInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         var val = termInput.value;
         termInput.value = "";
         if (termTyped) termTyped.textContent = "";
         executeCommand(val);
+      } else if (e.key === "ArrowUp") {
+        if (cmdHistory.length > 0 && cmdHistoryIndex > 0) {
+          cmdHistoryIndex--;
+          termInput.value = cmdHistory[cmdHistoryIndex];
+          if (termTyped) termTyped.textContent = termInput.value;
+        }
+      } else if (e.key === "ArrowDown") {
+        if (cmdHistoryIndex < cmdHistory.length - 1) {
+          cmdHistoryIndex++;
+          termInput.value = cmdHistory[cmdHistoryIndex];
+          if (termTyped) termTyped.textContent = termInput.value;
+        } else {
+          cmdHistoryIndex = cmdHistory.length;
+          termInput.value = "";
+          if (termTyped) termTyped.textContent = "";
+        }
       }
     });
   }
 
-  // --- ОЧИСТКА И ОТПРАВКА ОБРАЩЕНИЙ ---
+  // Интерактивные поля графической формы
+  var formCategory = document.getElementById("gui-form-category");
+  var targetBox = document.getElementById("gui-form-target-box");
+  var rulesBox = document.getElementById("gui-form-rules-box");
+
+  if (formCategory) {
+    formCategory.addEventListener("change", function() {
+      var val = formCategory.value;
+      if (targetBox) targetBox.style.display = val === "Обращение к руководству" ? "block" : "none";
+      if (rulesBox) rulesBox.style.display = val === "Изменение устава" ? "block" : "none";
+    });
+  }
+
   window.clearGuiForm = function() {
     var desc = document.getElementById("gui-form-desc");
     var links = document.getElementById("gui-form-links");
@@ -506,10 +768,7 @@
     try {
       var res = await fetch(API_BASE + "/api/forms/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({
           type: category,
           description: desc,
@@ -540,7 +799,7 @@
     submitBtn.addEventListener("click", window.submitFormFromGui);
   }
 
-  // --- ТИКЕТЫ ПОЛЬЗОВАТЕЛЯ ---
+  // --- ОБРАЩЕНИЯ ПОЛЬЗОВАТЕЛЯ ---
   window.loadMyTickets = async function() {
     var cont = document.getElementById("tickets-list-container");
     if (!cont) return;
@@ -949,7 +1208,6 @@
           '    <div style="font-size:12px; color:' + textColor + '; margin-top:4px; line-height:1.5;">' + item.text + '</div>',
           '  </div>',
           '  <div style="display:flex; gap:6px; margin-left:12px; flex-shrink:0;">',
-          '    <button type="button" class="dnp-action is-secondary" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick=\'openFloatingUstavEditorWithItem(' + JSON.stringify(item) + ')\'>ИЗМЕНИТЬ</button>',
           '    <button type="button" class="dnp-action is-danger" style="margin:0; padding:4px 8px; font-size:10.5px;" onclick="deleteAdminUstav(\'' + item._id + '\')">УДАЛИТЬ</button>',
           '  </div>',
           '</div>'
@@ -973,6 +1231,7 @@
     } catch (e) {}
   };
 
+  // --- ВСТРОЕННЫЙ РЕДАКТОР УСТАВА (GOOGLE DOCS STYLE + СИНИЙ РЕЖИМ) ---
   var isEditorModeActive = false;
   var currentEditedElement = null;
 
@@ -1047,7 +1306,6 @@
     if (!activePanel) return;
 
     var el = document.createElement("div");
-
     if (type === "card") {
       el.className = "dnp-rank-block lr";
       el.style.marginBottom = "10px";
@@ -1071,7 +1329,6 @@
     var activeBtn = document.querySelector(".dnp-subnav button.is-active");
     if (!activeBtn) return;
 
-    var secId = activeBtn.getAttribute("data-screen");
     var subnav = document.querySelector(".dnp-subnav");
     var buttons = Array.from(subnav.querySelectorAll("button"));
     var index = buttons.indexOf(activeBtn);
@@ -1131,6 +1388,70 @@
     }
   };
 
+  // --- ДИНАМИЧЕСКИЙ РЕНДЕР СТАТЕЙ И РАЗДЕЛОВ ---
+  var DEFAULT_SECTIONS = [
+    { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
+    { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
+    { sectionId: "ustav-03", title: "Раздел 3 Иерархия и повышения", headTitle: "Раздел 3 — Иерархия и повышения", order: 3 },
+    { sectionId: "ustav-04", title: "Раздел 4 Норма", headTitle: "Раздел 4 — Норма", order: 4 },
+    { sectionId: "ustav-05", title: "Раздел 5 Задания", headTitle: "Раздел 5 — Задания", order: 5 },
+    { sectionId: "ustav-06", title: "Раздел 6 Проверки и лекции", headTitle: "Раздел 6 — Проверки и лекции", order: 6 },
+    { sectionId: "ustav-07", title: "Раздел 7 Активности", headTitle: "Раздел 7 — Активности", order: 7 },
+    { sectionId: "ustav-08", title: "Раздел 8 Прочее", headTitle: "Раздел 8 — Прочее", order: 8 },
+    { sectionId: "ustav-09", title: "Раздел 9 Конец", headTitle: "Раздел 9 — Конец", order: 9 }
+  ];
+  var allUstavSections = DEFAULT_SECTIONS.slice();
+
+  async function loadUstavSections() {
+    try {
+      var res = await fetch(API_BASE + "/api/ustav/sections");
+      if (res.ok) {
+        var list = await res.json();
+        if (Array.isArray(list) && list.length > 0) allUstavSections = list;
+      }
+    } catch (e) {}
+    renderUstavNavigation();
+  }
+
+  function renderUstavNavigation() {
+    var subnav = document.querySelector(".dnp-subnav");
+    if (!subnav || allUstavSections.length === 0) return;
+
+    allUstavSections.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(function(sec) {
+      var btn = subnav.querySelector('[data-screen="' + sec.sectionId + '"]');
+      if (btn) {
+        btn.textContent = sec.title;
+      } else {
+        var newBtn = document.createElement("button");
+        newBtn.type = "button";
+        newBtn.setAttribute("data-screen", sec.sectionId);
+        newBtn.textContent = sec.title;
+        newBtn.addEventListener("click", function() { openScreen(sec.sectionId); });
+        subnav.appendChild(newBtn);
+      }
+
+      var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"]');
+      if (panel) {
+        var headH1 = panel.querySelector(".dnp-screen-head h1");
+        if (headH1) headH1.textContent = sec.headTitle || sec.title;
+      } else {
+        var main = document.querySelector("main.dnp-main");
+        if (main) {
+          var newSec = document.createElement("section");
+          newSec.className = "dnp-screen";
+          newSec.setAttribute("data-screen-panel", sec.sectionId);
+          newSec.innerHTML = [
+            '<div class="dnp-screen-head"><h1>' + (sec.headTitle || sec.title) + '</h1></div>',
+            '<div class="dnp-screen-content">',
+            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span></div>',
+            '</div>'
+          ].join('');
+          main.insertBefore(newSec, document.querySelector('[data-screen-panel="forms-gui"]') || null);
+        }
+      }
+    });
+  }
+
   async function loadDynamicUstav() {
     try {
       var res = await fetch(API_BASE + "/api/ustav/all-content");
@@ -1148,5 +1469,10 @@
     } catch (e) {}
   }
 
+  loadUstavSections();
   loadDynamicUstav();
+  setInterval(function() {
+    loadUstavSections();
+    loadDynamicUstav();
+  }, 25000);
 })();
