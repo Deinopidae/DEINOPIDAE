@@ -46,7 +46,7 @@
     <div class="dnp-scan"></div>
 
     <header class="dnp-topbar">
-      <div class="dnp-brand">
+      <div class="dnp-brand" id="dnp-top-brand">
         <strong>DEINOPIDAE / ДЕИНОПИДЫ</strong>
         <span>Департамент S.E. · Kurodzakura</span>
       </div>
@@ -1110,13 +1110,14 @@
                 </div>
 
                 <div class="dnp-admin-panel-view" id="adm-view-ustav">
-                  <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+                  <div class="dnp-admin-box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                     <div>
-                      <b style="color: #fff; font-size: 13.5px; display: block; font-family: 'Exo 2', sans-serif;">ИНТЕРАКТИВНЫЙ РЕДАКТОР УСТАВА</b>
-                      <span style="font-size: 11px; color: var(--muted);">Визуальное редактирование разделов, статей, перемещение порядка и настройка цветов.</span>
+                      <b style="color: #fff; font-size: 14px; font-family: 'Exo 2', sans-serif;">ИНТЕРАКТИВНЫЙ РЕДАКТОР УСТАВА</b>
+                      <span style="display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px;">Переход в режим редактирования с синей оконтовкой и нижней панелью форматирования.</span>
                     </div>
-                    <button type="button" class="dnp-action" style="margin: 0; padding: 10px 16px; font-size: 12px; letter-spacing: 1px;" onclick="openFloatingUstavEditor()">⛭ ЗАПУСТИТЬ РЕДАКТОР УСТАВА // FLOAT HUD</button>
+                    <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff;" onclick="toggleUstavEditorMode(true)">✏ ВКЛЮЧИТЬ РЕЖИМ РЕДАКТОРА</button>
                   </div>
+                </div>
 
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <b style="color: #fff; font-size: 12.5px;">Все активные статьи и правки устава:</b>
@@ -1171,95 +1172,42 @@
     </footer>
   </div>
 
-  <div id="dnp-floating-editor" class="dnp-float-hud" style="display: none;">
-    <div class="dnp-float-hud-header" id="dnp-float-hud-header">
-      <div class="dnp-float-hud-title">
-        <span class="dnp-float-drag-icon">⠿</span>
-        <b>РЕДАКТОР УСТАВА // FLOAT HUD</b>
-      </div>
-      <div class="dnp-float-hud-ctrls">
-        <button type="button" class="dnp-float-btn" id="dnp-float-min-btn" title="Свернуть">−</button>
-        <button type="button" class="dnp-float-btn is-close" id="dnp-float-close-btn" title="Закрыть">✕</button>
-      </div>
-    </div>
-    
-    <div class="dnp-float-hud-body" id="dnp-float-hud-body">
-      <div class="dnp-float-mode-tabs">
-        <button type="button" class="dnp-float-mode-btn is-active" id="hud-tab-art" onclick="switchHudMode('art')">СТАТЬЯ УСТАВА</button>
-        <button type="button" class="dnp-float-mode-btn" id="hud-tab-sec" onclick="switchHudMode('sec')">РАЗДЕЛЫ УСТАВА</button>
+  <div id="dnp-editor-dock" class="dnp-editor-dock" style="display: none;">
+    <div class="dnp-doc-toolbar">
+      
+      <div class="dnp-doc-group">
+        <select class="dnp-doc-select" onchange="docSetFont(this.value)">
+          <option value="'Roboto Mono', monospace">Roboto Mono</option>
+          <option value="'Exo 2', sans-serif">Exo 2</option>
+          <option value="'Chakra Petch', monospace">Chakra Petch</option>
+        </select>
+        <button type="button" class="dnp-doc-btn" onclick="docFormat('bold')" title="Жирный"><b>B</b></button>
+        <button type="button" class="dnp-doc-btn" onclick="docFormat('italic')" title="Курсив"><i>I</i></button>
+        <button type="button" class="dnp-doc-btn" onclick="docFormat('underline')" title="Подчеркивание"><u>U</u></button>
       </div>
 
-      <div class="dnp-float-view is-active" id="hud-view-art">
-        <div style="background: rgba(0,240,255,0.06); border: 1px solid rgba(0,240,255,0.3); padding: 8px 10px; font-size: 11px; color: #00f0ff;">
-          💡 <b>Кликните по любой статье прямо в уставе</b>, чтобы загрузить её сюда, или заполните форму вручную.
-        </div>
-
-        <input type="hidden" id="float-art-id">
-
-        <div style="display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 6px;">
-          <div>
-            <label class="dnp-admin-label">Раздел:</label>
-            <select id="float-art-section" class="dnp-admin-input"></select>
-          </div>
-          <div>
-            <label class="dnp-admin-label">Номер:</label>
-            <input type="text" id="float-art-num" class="dnp-admin-input" placeholder="1.3">
-          </div>
-          <div>
-            <label class="dnp-admin-label">Тег:</label>
-            <input type="text" id="float-art-tag" class="dnp-admin-input" placeholder="PROFILE">
-          </div>
-        </div>
-
-        <div>
-          <label class="dnp-admin-label">Заголовок статьи:</label>
-          <input type="text" id="float-art-title" class="dnp-admin-input" placeholder="Название статьи">
-        </div>
-
-        <div>
-          <label class="dnp-admin-label">Текст статьи:</label>
-          <textarea id="float-art-text" rows="4" class="dnp-admin-input" placeholder="Содержание..."></textarea>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; background: #030608; border: 1px solid var(--line-soft); padding: 8px;">
-          <div>
-            <label class="dnp-admin-label">Линия слева:</label>
-            <input type="color" id="float-color-border" value="#8aa0a8" style="width:100%; height:26px; border:none; background:transparent; cursor:pointer;">
-          </div>
-          <div>
-            <label class="dnp-admin-label">Цвет текста:</label>
-            <input type="color" id="float-color-text" value="#d9e1e4" style="width:100%; height:26px; border:none; background:transparent; cursor:pointer;">
-          </div>
-          <div>
-            <label class="dnp-admin-label">Фон статьи:</label>
-            <input type="color" id="float-color-bg" value="#080d10" style="width:100%; height:26px; border:none; background:transparent; cursor:pointer;">
-          </div>
-        </div>
+      <div class="dnp-doc-group">
+        <label title="Цвет текста">Текст <input type="color" value="#d9e1e4" onchange="docApplyTextColor(this.value)"></label>
+        <label title="Линия слева">Полоса <input type="color" value="#8aa0a8" onchange="docApplyBorderColor(this.value)"></label>
+        <label title="Фон блока">Фон <input type="color" value="#0e1519" onchange="docApplyBgColor(this.value)"></label>
       </div>
 
-      <div class="dnp-float-view" id="hud-view-sec">
-        <div>
-          <label class="dnp-admin-label">Порядок и названия разделов (▲ / ▼ для перемещения):</label>
-          <div id="float-sections-list" style="display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto;"></div>
-        </div>
-
-        <div style="border-top: 1px dashed var(--line-soft); padding-top: 8px;">
-          <label class="dnp-admin-label">Редактировать выбранный раздел:</label>
-          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 6px;">
-            <input type="text" id="float-sec-edit-id" class="dnp-admin-input" placeholder="ID (ustav-10)">
-            <input type="text" id="float-sec-edit-title" class="dnp-admin-input" placeholder="Название раздела">
-            <input type="number" id="float-sec-edit-order" class="dnp-admin-input" placeholder="№">
-          </div>
-        </div>
+      <div class="dnp-doc-group">
+        <button type="button" class="dnp-doc-btn" onclick="docFormat('insertUnorderedList')" title="Список точками">• Список</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('module')" title="Добавить статью">+ Статья</button>
+        <button type="button" class="dnp-doc-btn" onclick="docInsertItem('card')" title="Добавить карточку звания">+ Карточка</button>
       </div>
 
-      <button type="button" class="dnp-action dnp-hud-apply-btn" id="float-apply-all-btn" onclick="applyFloatHudChanges()">ПРИМЕНИТЬ ИЗМЕНЕНИЯ ↗</button>
+      <div class="dnp-doc-group">
+        <span style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Раздел:</span>
+        <button type="button" class="dnp-doc-btn" onclick="moveActiveSection(-1)" title="Переместить раздел выше">▲</button>
+        <button type="button" class="dnp-doc-btn" onclick="moveActiveSection(1)" title="Переместить раздел ниже">▼</button>
+      </div>
+
+      <div class="dnp-doc-group" style="margin-left: auto;">
+        <button type="button" class="dnp-action" style="margin: 0; background: #0077ff; border-color: #0077ff; color: #fff; padding: 5px 12px;" onclick="saveUstavChanges()">💾 ПРИМЕНИТЬ ИЗМЕНЕНИЯ</button>
+        <button type="button" class="dnp-action is-secondary" style="margin: 0; padding: 5px 10px;" onclick="toggleUstavEditorMode(false)">✕ ВЫХОД</button>
+      </div>
+
     </div>
   </div>
-
-  <script src="js/cookie_manager.js"></script>
-  <script src="js/live_polling.js"></script>
-  <script src="js/form_handler.js"></script>
-  <script src="js/script.js"></script>
-</body>
-</html>

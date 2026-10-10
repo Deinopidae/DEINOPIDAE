@@ -278,7 +278,26 @@
     "             @   @@@% @@ @@@@@ @@@@@        @@@@@@@@@@ @%@@ @ @                 ",
     "              %   %@@@@@@@ @@@@%@@@@@       @@@@@@  %@@@%@@@@@                  ",
     "                    @@@@ @@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@                   ",
-    "                      @ %@%@% %@@   @%      @@ %@%%%%%%   @                     "
+    "                      @ %@%@% %@@   @%      @@ %@%%%%%%   @                     ",
+    "                                                                                ",
+    "        @@@@@@@ @@@@@@ @@ @@@  @@ @@@@@@@@ @@@@@@@@@ @@@@@@%  @@@   @@@@@@       ",
+    "        @@   @@@@@@@@  @@ @@@@%@@ @@    @@ @@@@@@@@@ @@   @@ @@ @@  @@@@@       ",
+    "        @@   @@ @@     @@ @@ @@@@ @@@  @@@ @@@@  @@@ @@  @@@@@@@@@@ @@           ",
+    "        @@@@@@  @@@@@@ @@ @@   @@  @@@@@@  @@    @@@ @@@@@@ @@   @@@@@@@@@       ",
+    "                                                                                ",
+    "              @    @%     @     @@    @     @    @@    @    @     @             ",
+    "                          @   @@@@@@@@@@  @@@@ @@@                              ",
+    "                           @   @%@@@@      @@@@@@   @                           ",
+    "                            @   @ @@@@ @  @@@@@@                                ",
+    "                             %   @ @@@    @@ @@                                 ",
+    "                                  %@@@@   @@@                                   ",
+    "                                   @@@@ @@                                      ",
+    "                                 %   @ @@@@                                     ",
+    "                                 @   @@@@                                       ",
+    "                                  @   @@   @                                    ",
+    "                                   %                                            ",
+    "                                                                                ",
+    "                                       @@                                       "
   ].join("\n");
 
   window.employeeDb = {
@@ -954,333 +973,180 @@
     } catch (e) {}
   };
 
-  // --- ИНТЕРАКТИВНЫЙ FLOAT HUD РЕДАКТОР УСТАВА ---
-  var floatEditor = document.getElementById("dnp-floating-editor");
-  var floatHeader = document.getElementById("dnp-float-hud-header");
-  var floatMinBtn = document.getElementById("dnp-float-min-btn");
-  var floatCloseBtn = document.getElementById("dnp-float-close-btn");
+  var isEditorModeActive = false;
+  var currentEditedElement = null;
 
-  var allUstavSections = [];
-  var currentHudMode = 'art';
-  var isDragging = false;
-  var dragOffsetX = 0;
-  var dragOffsetY = 0;
+  window.toggleUstavEditorMode = function(forceState) {
+    var pda = document.getElementById("dnp-pda");
+    var brand = document.getElementById("dnp-top-brand");
+    var dock = document.getElementById("dnp-editor-dock");
+    if (!pda || !brand || !dock) return;
 
-  if (floatHeader && floatEditor) {
-    floatHeader.addEventListener("mousedown", function(e) {
-      if (e.target.closest("button")) return;
-      isDragging = true;
-      var rect = floatEditor.getBoundingClientRect();
-      dragOffsetX = e.clientX - rect.left;
-      dragOffsetY = e.clientY - rect.top;
-      document.body.style.userSelect = "none";
-    });
+    isEditorModeActive = typeof forceState === "boolean" ? forceState : !isEditorModeActive;
 
-    document.addEventListener("mousemove", function(e) {
-      if (!isDragging) return;
-      var newLeft = e.clientX - dragOffsetX;
-      var newTop = e.clientY - dragOffsetY;
-
-      newLeft = Math.max(10, Math.min(window.innerWidth - floatEditor.offsetWidth - 10, newLeft));
-      newTop = Math.max(10, Math.min(window.innerHeight - floatEditor.offsetHeight - 10, newTop));
-
-      floatEditor.style.left = newLeft + "px";
-      floatEditor.style.top = newTop + "px";
-      floatEditor.style.right = "auto";
-    });
-
-    document.addEventListener("mouseup", function() {
-      if (isDragging) {
-        isDragging = false;
-        document.body.style.userSelect = "";
-      }
-    });
-
-    if (floatMinBtn) {
-      floatMinBtn.addEventListener("click", function() {
-        floatEditor.classList.toggle("is-minimized");
-        floatMinBtn.textContent = floatEditor.classList.contains("is-minimized") ? "+" : "−";
-      });
-    }
-
-    if (floatCloseBtn) {
-      floatCloseBtn.addEventListener("click", function() {
-        floatEditor.style.display = "none";
-        document.body.classList.remove("is-hud-editing");
-      });
-    }
-  }
-
-  window.switchHudMode = function(mode) {
-    currentHudMode = mode;
-    document.querySelectorAll(".dnp-float-mode-btn").forEach(b => b.classList.remove("is-active"));
-    document.querySelectorAll(".dnp-float-view").forEach(v => v.classList.remove("is-active"));
-    var tab = document.getElementById("hud-tab-" + mode);
-    var view = document.getElementById("hud-view-" + mode);
-    if (tab) tab.classList.add("is-active");
-    if (view) view.classList.add("is-active");
-  };
-
-  window.openFloatingUstavEditor = function() {
-    if (!floatEditor) return;
-    floatEditor.style.display = "flex";
-    floatEditor.classList.remove("is-minimized");
-    document.body.classList.add("is-hud-editing");
-    if (floatMinBtn) floatMinBtn.textContent = "−";
-    loadFloatSectionsData();
-  };
-
-  window.openFloatingUstavEditorWithItem = function(item) {
-    openFloatingUstavEditor();
-    switchHudMode('art');
-    document.getElementById("float-art-id").value = item._id || "";
-    document.getElementById("float-art-section").value = item.sectionId;
-    document.getElementById("float-art-num").value = item.num;
-    document.getElementById("float-art-title").value = item.title;
-    document.getElementById("float-art-tag").value = item.tag;
-    document.getElementById("float-art-text").value = item.text;
-    document.getElementById("float-color-border").value = item.borderColor || "#8aa0a8";
-    document.getElementById("float-color-text").value = item.textColor || "#d9e1e4";
-    document.getElementById("float-color-bg").value = item.highlightColor || "#080d10";
-  };
-
-  // Клик прямо по статье в уставе при открытом HUD
-  document.addEventListener("click", function(e) {
-    if (!document.body.classList.contains("is-hud-editing")) return;
-    var art = e.target.closest(".dnp-module");
-    if (art && !art.closest("#dnp-floating-editor")) {
-      e.preventDefault();
-      var num = art.querySelector(".dnp-module-title span")?.textContent.trim() || "";
-      var title = art.querySelector(".dnp-module-title b")?.textContent.trim() || "";
-      var tag = art.querySelector(".dnp-module-title em")?.textContent.trim() || "";
-      var text = art.querySelector("p")?.textContent.trim() || "";
-      var secPanel = art.closest("[data-screen-panel]");
-      var secId = secPanel ? secPanel.getAttribute("data-screen-panel") : "ustav-01";
-
-      switchHudMode('art');
-      document.getElementById("float-art-id").value = art.dataset.itemId || "";
-      document.getElementById("float-art-section").value = secId;
-      document.getElementById("float-art-num").value = num;
-      document.getElementById("float-art-title").value = title;
-      document.getElementById("float-art-tag").value = tag;
-      document.getElementById("float-art-text").value = text;
-    }
-  });
-
-  // Главная кнопка "ПРИМЕНИТЬ ИЗМЕНЕНИЯ"
-  window.applyFloatHudChanges = async function() {
-    var token = localStorage.getItem("dnp_auth_token");
-    if (!token) return alert("Необходима авторизация офицера");
-
-    if (currentHudMode === 'art') {
-      var id = document.getElementById("float-art-id").value;
-      var sectionId = document.getElementById("float-art-section").value;
-      var num = document.getElementById("float-art-num").value.trim();
-      var tag = document.getElementById("float-art-tag").value.trim() || 'ACTIVE';
-      var title = document.getElementById("float-art-title").value.trim();
-      var text = document.getElementById("float-art-text").value.trim();
-      var borderColor = document.getElementById("float-color-border").value;
-      var textColor = document.getElementById("float-color-text").value;
-      var highlightColor = document.getElementById("float-color-bg").value;
-
-      if (!num || !title || !text) return alert("Заполните номер, заголовок и текст статьи");
-
-      try {
-        var res = await fetch(API_BASE + "/api/admin/ustav/save", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify({
-            id: id, sectionId: sectionId, num: num, tag: tag, title: title, text: text,
-            borderColor: borderColor, textColor: textColor, highlightColor: highlightColor
-          })
-        });
-        if (res.ok) {
-          alert("Изменения статьи успешно применены!");
-          loadDynamicUstav();
-          loadAdminUstav();
-        } else {
-          alert("Ошибка сохранения статьи");
-        }
-      } catch (e) { alert("Ошибка соединения"); }
+    if (isEditorModeActive) {
+      pda.classList.add("dnp-editor-mode");
+      brand.innerHTML = '<strong>DEINOPIDAE INDUSTRIES</strong> <span class="dnp-editor-tag">[РЕЖИМ РЕДАКТОРА]</span> <span>Департамент S.E. · Kurodzakura</span>';
+      dock.style.display = "flex";
+      openScreen("ustav-01");
+      enableInlineEditing();
     } else {
-      var editId = document.getElementById("float-sec-edit-id").value.trim().toLowerCase();
-      var editTitle = document.getElementById("float-sec-edit-title").value.trim();
-      var editOrder = parseInt(document.getElementById("float-sec-edit-order").value, 10);
+      pda.classList.remove("dnp-editor-mode");
+      brand.innerHTML = '<strong>DEINOPIDAE / ДЕИНОПИДЫ</strong> <span>Департамент S.E. · Kurodzakura</span>';
+      dock.style.display = "none";
+      disableInlineEditing();
+    }
+  };
 
-      if (editId && editTitle) {
-        await fetch(API_BASE + "/api/admin/ustav/sections/save", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify({ sectionId: editId, title: editTitle, headTitle: editTitle, order: isNaN(editOrder) ? 99 : editOrder })
+  function enableInlineEditing() {
+    var ustavScreens = document.querySelectorAll('[data-screen-panel^="ustav-"]');
+    ustavScreens.forEach(function(screen) {
+      var editables = screen.querySelectorAll(".dnp-module-title b, .dnp-module-title span, .dnp-module-title em, .dnp-module p, .dnp-list li, .dnp-rank-info b, .dnp-rank-info span");
+      editables.forEach(function(el) {
+        el.setAttribute("contenteditable", "true");
+        el.addEventListener("focus", function() {
+          currentEditedElement = el.closest(".dnp-module, .dnp-rank-block, li") || el;
         });
-      }
-
-      for (var i = 0; i < allUstavSections.length; i++) {
-        allUstavSections[i].order = i + 1;
-        await fetch(API_BASE + "/api/admin/ustav/sections/save", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify(allUstavSections[i])
-        });
-      }
-      alert("Порядок и названия разделов применены!");
-      loadUstavSections();
-      loadFloatSectionsData();
-    }
-  };
-
-  async function loadFloatSectionsData() {
-    try {
-      var res = await fetch(API_BASE + "/api/ustav/sections");
-      if (res.ok) allUstavSections = await res.json();
-    } catch (e) {}
-
-    var sel = document.getElementById("float-art-section");
-    if (sel) {
-      sel.innerHTML = allUstavSections.map(s => '<option value="' + s.sectionId + '">' + s.title + '</option>').join('');
-    }
-
-    var list = document.getElementById("float-sections-list");
-    if (list) {
-      list.innerHTML = allUstavSections.map(function(s, idx) {
-        return [
-          '<div class="dnp-float-sec-row" onclick="selectSectionToEdit(\'' + s.sectionId + '\')">',
-          '  <b>' + (idx + 1) + '. ' + s.title + '</b>',
-          '  <div class="dnp-float-order-ctrls" onclick="event.stopPropagation()">',
-          idx > 0 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveSectionOrder(' + idx + ', -1)">▲</button>' : '',
-          idx < allUstavSections.length - 1 ? '    <button type="button" class="dnp-float-arrow-btn" onclick="moveSectionOrder(' + idx + ', 1)">▼</button>' : '',
-          '  </div>',
-          '</div>'
-        ].join('');
-      }).join('');
-    }
-  }
-
-  window.moveSectionOrder = function(idx, dir) {
-    var target = idx + dir;
-    if (target < 0 || target >= allUstavSections.length) return;
-    var temp = allUstavSections[idx];
-    allUstavSections[idx] = allUstavSections[target];
-    allUstavSections[target] = temp;
-    loadFloatSectionsData();
-  };
-
-  window.selectSectionToEdit = function(id) {
-    var found = allUstavSections.find(s => s.sectionId === id);
-    if (!found) return;
-    document.getElementById("float-sec-edit-id").value = found.sectionId;
-    document.getElementById("float-sec-edit-title").value = found.title;
-    document.getElementById("float-sec-edit-order").value = found.order || 1;
-  };
-
-  // --- ДИНАМИЧЕСКИЙ РЕНДЕР СТАТЕЙ И РАЗДЕЛОВ ---
-  var DEFAULT_SECTIONS = [
-    { sectionId: "ustav-01", title: "Раздел 1 Основа", headTitle: "Раздел 1 — Основа", order: 1 },
-    { sectionId: "ustav-02", title: "Раздел 2 Правила", headTitle: "Раздел 2 — Правила", order: 2 },
-    { sectionId: "ustav-03", title: "Раздел 3 Иерархия и повышения", headTitle: "Раздел 3 — Иерархия и повышения", order: 3 },
-    { sectionId: "ustav-04", title: "Раздел 4 Норма", headTitle: "Раздел 4 — Норма", order: 4 },
-    { sectionId: "ustav-05", title: "Раздел 5 Задания", headTitle: "Раздел 5 — Задания", order: 5 },
-    { sectionId: "ustav-06", title: "Раздел 6 Проверки и лекции", headTitle: "Раздел 6 — Проверки и лекции", order: 6 },
-    { sectionId: "ustav-07", title: "Раздел 7 Активности", headTitle: "Раздел 7 — Активности", order: 7 },
-    { sectionId: "ustav-08", title: "Раздел 8 Прочее", headTitle: "Раздел 8 — Прочее", order: 8 },
-    { sectionId: "ustav-09", title: "Раздел 9 Конец", headTitle: "Раздел 9 — Конец", order: 9 }
-  ];
-  allUstavSections = DEFAULT_SECTIONS.slice();
-
-  async function loadUstavSections() {
-    try {
-      var res = await fetch(API_BASE + "/api/ustav/sections");
-      if (res.ok) {
-        var list = await res.json();
-        if (Array.isArray(list) && list.length > 0) allUstavSections = list;
-      }
-    } catch (e) {}
-    renderUstavNavigation();
-  }
-
-  function renderUstavNavigation() {
-    var subnav = document.querySelector(".dnp-subnav");
-    if (!subnav || allUstavSections.length === 0) return;
-
-    allUstavSections.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(function(sec) {
-      var btn = subnav.querySelector('[data-screen="' + sec.sectionId + '"]');
-      if (btn) {
-        btn.textContent = sec.title;
-      } else {
-        var newBtn = document.createElement("button");
-        newBtn.type = "button";
-        newBtn.setAttribute("data-screen", sec.sectionId);
-        newBtn.textContent = sec.title;
-        newBtn.addEventListener("click", function() { openScreen(sec.sectionId); });
-        subnav.appendChild(newBtn);
-      }
-
-      var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"]');
-      if (panel) {
-        var headH1 = panel.querySelector(".dnp-screen-head h1");
-        if (headH1) headH1.textContent = sec.headTitle || sec.title;
-      } else {
-        var main = document.querySelector("main.dnp-main");
-        if (main) {
-          var newSec = document.createElement("section");
-          newSec.className = "dnp-screen";
-          newSec.setAttribute("data-screen-panel", sec.sectionId);
-          newSec.innerHTML = [
-            '<div class="dnp-screen-head"><h1>' + (sec.headTitle || sec.title) + '</h1></div>',
-            '<div class="dnp-screen-content">',
-            '  <div class="dnp-brud-note"><span class="dnp-brud-tag">ИНФОРМАЦИЯ</span><span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span></div>',
-            '</div>'
-          ].join('');
-          main.insertBefore(newSec, document.querySelector('[data-screen-panel="forms-gui"]') || null);
-        }
-      }
+      });
     });
   }
+
+  function disableInlineEditing() {
+    var editables = document.querySelectorAll('[contenteditable="true"]');
+    editables.forEach(function(el) {
+      el.removeAttribute("contenteditable");
+    });
+  }
+
+  window.docFormat = function(cmd, value) {
+    document.execCommand(cmd, false, value || null);
+  };
+
+  window.docSetFont = function(fontName) {
+    document.execCommand("fontName", false, fontName);
+  };
+
+  window.docApplyTextColor = function(color) {
+    document.execCommand("foreColor", false, color);
+  };
+
+  window.docApplyBorderColor = function(color) {
+    if (currentEditedElement) {
+      currentEditedElement.style.borderLeftColor = color;
+    }
+  };
+
+  window.docApplyBgColor = function(color) {
+    if (currentEditedElement) {
+      currentEditedElement.style.backgroundColor = color;
+    }
+  };
+
+  window.docInsertItem = function(type) {
+    var activePanel = document.querySelector(".dnp-screen.is-visible .dnp-screen-content");
+    if (!activePanel) return;
+
+    var el = document.createElement("div");
+
+    if (type === "card") {
+      el.className = "dnp-rank-block lr";
+      el.style.marginBottom = "10px";
+      el.innerHTML = '<div class="dnp-rank-info"><b contenteditable="true">НОВОЕ ЗВАНИЕ / КАРТОЧКА</b><span contenteditable="true">Описание требований и нормативов...</span></div>';
+    } else if (type === "module") {
+      el.className = "dnp-module";
+      el.innerHTML = '<div class="dnp-module-title"><span contenteditable="true">X.X</span><b contenteditable="true">НОВЫЙ ПУНКТ</b><em contenteditable="true">ACTIVE</em></div><p contenteditable="true">Содержание нового пункта устава...</p>';
+    } else if (type === "list") {
+      el.className = "dnp-list";
+      el.innerHTML = '<li contenteditable="true">Новый пункт перечисления...</li><li contenteditable="true">Второй пункт перечисления...</li>';
+    }
+
+    var note = activePanel.querySelector(".dnp-brud-note");
+    if (note) activePanel.insertBefore(el, note);
+    else activePanel.appendChild(el);
+
+    enableInlineEditing();
+  };
+
+  window.moveActiveSection = async function(direction) {
+    var activeBtn = document.querySelector(".dnp-subnav button.is-active");
+    if (!activeBtn) return;
+
+    var secId = activeBtn.getAttribute("data-screen");
+    var subnav = document.querySelector(".dnp-subnav");
+    var buttons = Array.from(subnav.querySelectorAll("button"));
+    var index = buttons.indexOf(activeBtn);
+
+    if (direction === -1 && index > 0) {
+      subnav.insertBefore(activeBtn, buttons[index - 1]);
+    } else if (direction === 1 && index < buttons.length - 1) {
+      subnav.insertBefore(buttons[index + 1], activeBtn);
+    }
+
+    await saveSectionsOrder();
+  };
+
+  async function saveSectionsOrder() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) return;
+
+    var buttons = Array.from(document.querySelectorAll(".dnp-subnav button"));
+    for (var i = 0; i < buttons.length; i++) {
+      var sId = buttons[i].getAttribute("data-screen");
+      var sTitle = buttons[i].textContent.trim();
+      await fetch(API_BASE + "/api/admin/ustav/sections/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: sId, title: sTitle, order: i + 1 })
+      });
+    }
+  }
+
+  window.saveUstavChanges = async function() {
+    var token = localStorage.getItem("dnp_auth_token");
+    if (!token) {
+      alert("Требуется авторизация офицера.");
+      return;
+    }
+
+    var activePanel = document.querySelector(".dnp-screen.is-visible");
+    if (!activePanel) return;
+
+    var secId = activePanel.getAttribute("data-screen-panel");
+    var contentHtml = activePanel.querySelector(".dnp-screen-content").innerHTML;
+
+    try {
+      var res = await fetch(API_BASE + "/api/admin/ustav/section-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ sectionId: secId, html: contentHtml })
+      });
+
+      if (res.ok) {
+        alert("Изменения успешно сохранены в базе данных!");
+      } else {
+        alert("Ошибка при сохранении на сервере.");
+      }
+    } catch (e) {
+      alert("Сбой соединения с сервером.");
+    }
+  };
 
   async function loadDynamicUstav() {
     try {
-      var res = await fetch(API_BASE + "/api/ustav");
-      var list = await res.json();
-      if (!list || !Array.isArray(list)) return;
-      document.querySelectorAll(".dnp-dyn-module").forEach(function(el) { el.remove(); });
-      
-      list.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(function(item) {
-        var panel = document.querySelector('[data-screen-panel="' + item.sectionId + '"] .dnp-screen-content');
-        if (!panel) return;
-        var art = document.createElement("article");
-        art.className = "dnp-module dnp-dyn-module";
-        art.dataset.itemId = item._id || "";
-        
-        var customStyles = [];
-        if (item.borderColor) customStyles.push('border-left-color: ' + item.borderColor);
-        if (item.highlightColor) customStyles.push('background: ' + item.highlightColor);
-        if (customStyles.length > 0) art.setAttribute('style', customStyles.join('; '));
+      var res = await fetch(API_BASE + "/api/ustav/all-content");
+      if (!res.ok) return;
+      var sections = await res.json();
+      if (!Array.isArray(sections)) return;
 
-        var textStyle = item.textColor ? 'style="color:' + item.textColor + ';"' : '';
-
-        art.innerHTML = [
-          '<div class="dnp-module-title">',
-          '  <span>' + item.num + '</span>',
-          '  <b>' + item.title + '</b>',
-          '  <em>' + item.tag + '</em>',
-          '</div>',
-          '<p ' + textStyle + '>' + item.text + '</p>'
-        ].join('');
-
-        var note = panel.querySelector(".dnp-brud-note");
-        if (note) {
-          panel.insertBefore(art, note);
-        } else {
-          panel.appendChild(art);
+      sections.forEach(function(sec) {
+        var panel = document.querySelector('[data-screen-panel="' + sec.sectionId + '"] .dnp-screen-content');
+        if (panel && sec.html) {
+          panel.innerHTML = sec.html;
         }
       });
+      if (isEditorModeActive) enableInlineEditing();
     } catch (e) {}
   }
 
-  loadUstavSections();
   loadDynamicUstav();
-  setInterval(function() {
-    loadUstavSections();
-    loadDynamicUstav();
-  }, 25000);
 })();
