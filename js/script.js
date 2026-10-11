@@ -511,14 +511,6 @@
     "                                       @@                                       "
   ].join("\n");
 
-  app.state.employeeDb = {
-    "xxartemrtxxx": { name: "xxartemrtxxx", title: "Лидер инженеров", rank: "Офицер", mp: "0/0", hours: "18:00", equipment: "42", coins: "42", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "egorik0130": { name: "EGORIK0130", title: "Аналитик инженеров", rank: "Офицер", mp: "0/0", hours: "24:00", equipment: "126", coins: "126", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "ceretow2222": { name: "ceretow2222", title: "Профессор инженеров", rank: "A RANK", mp: "0/0", hours: "14:00", equipment: "0", coins: "0", activity: "0", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } },
-    "zzmalf4": { name: "zzmalf4", title: "Главный инженер", rank: "A RANK", mp: "0/1", hours: "0:00", equipment: "0", coins: "46", activity: "0", quota_status: "НЕ ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "Кэнсэки 1", promotion: "ПРИОСТАНОВЛЕНО (Действуют активные дисциплинарные взыскания)", lectures: { po: "НЕ ПРОЙДЕНА", so: "НЕ ПРОЙДЕНА", mp: "НЕ ПРОЙДЕНА" }, exams: { c: "НЕ СДАНА", b: "НЕ СДАНА", a: "НЕ СДАНА" } },
-    "wewewewestrelok": { name: "Wewewewestrelok", title: "Первоиздатель", rank: "Офицер", mp: "—", hours: "—", equipment: "—", coins: "—", activity: "—", quota_status: "ВЫПОЛНЕНА", vacation: "НЕТ", penalties: "N/A", promotion: "Максимальное звание", lectures: { po: "ПРОЙДЕНА", so: "ПРОЙДЕНА", mp: "ПРОЙДЕНА" }, exams: { c: "СДАНА", b: "СДАНА", a: "СДАНА" } }
-  };
-
   function getCurrentUser() {
     var user = localStorage.getItem("dnp_active_user");
     if (user) {
@@ -745,9 +737,9 @@
       var p = app.state.employeeDb[nick];
       if (p) {
         printLine("===ЛИЧНОЕ ДЕЛО СОТРУДНИКА===");
-        printLine("  ПОЗЫВНОЙ / НИК    : " + p.name);
+        printLine("  НИК    : " + p.name);
         printLine("  ЗВАНИЕ / РАНГ     : " + p.title + " [" + p.rank + "]");
-        printLine("  НОРМАТИВ          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
+        printLine("  НОРМА          : МП: " + p.mp + " | Часы: " + p.hours + " | Оборудование: " + p.equipment);
         printLine("  СТАТУС НОРМЫ      : " + p.quota_status);
         printLine("  ПОВЫШЕНИЕ         : " + p.promotion);
         printLine("======================================================");
@@ -772,7 +764,7 @@
 
     if (first === "HELP") {
       printLine("HELP                  - Вызов списка доступных команд");
-      printLine("FIND <фраза>          - Глобальный поиск по уставу и сотрудникам");
+      printLine("FIND <фраза>          - Глобальный поиск по уставу и документам");
       printLine("STAFF <ник>           - Личное дело сотрудника");
       printLine("FORMS                 - Открыть вкладку обращений");
       printLine("CLS / CLEAR           - Очистить экран консоли");
