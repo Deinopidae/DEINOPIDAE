@@ -84,26 +84,39 @@
               <button type="button" data-screen="ustav-04">Раздел 4 Норма</button>
               <button type="button" data-screen="ustav-05">Раздел 5 Задания</button>
               <button type="button" data-screen="ustav-06">Раздел 6 Проверки и лекции</button>
-              <button type="button" data-screen="ustav-07">Раздел 7 Активности</button>
-              <button type="button" data-screen="ustav-08">Раздел 8 Прочее</button>
-              <button type="button" data-screen="ustav-09">Раздел 9 Конец</button>
+              <button type="button" data-screen="ustav-08">Раздел 7 Прочее</button>
+              <button type="button" data-screen="ustav-09">Раздел 8 Конец</button>
             </div>
           </details>
 
+          <div class="dnp-sidebar-body" id="dnp-sidebar-body">
+        <details class="dnp-nav-group" id="dnp-nav-ustav" open>
+            <summary>
+              <span class="dnp-num">02</span>
+              <b>Руководство</b>
+              <button type="button" class="dnp-nav-plus-btn" id="dnp-nav-plus-sec" data-action="navPromptAddSection" title="Добавить новый раздел">+</button>
+              <em id="dnp-ustav-status">OPEN</em>
+            </summary>
+            <div class="dnp-subnav">
+              <button class="is-active" type="button" data-screen="The current management">Действующее руководство</button>
+              <button type="button" data-screen="Former management">Бывшее руководство</button>
+            </div>
+          </details>
+          
           <button class="dnp-nav-root-btn" type="button" data-screen="database">
-            <span class="dnp-num">02</span>
+            <span class="dnp-num">03</span>
             <b>База данных</b>
             <em class="dnp-menu-tag">SYNC</em>
           </button>
 
           <button class="dnp-nav-root-btn" type="button" data-screen="roots">
-            <span class="dnp-num">03</span>
+            <span class="dnp-num">04</span>
             <b>Корни Deinopidae</b>
             <em class="dnp-menu-tag">ERORR</em>
           </button>
 
           <button class="dnp-locked-main" type="button" disabled>
-            <span class="dnp-num">04</span>
+            <span class="dnp-num">05</span>
             <b>Вербовка</b>
             <em>LOCK</em>
           </button>
@@ -769,6 +782,43 @@
           </div>
         </section>
 
+        <section class="dnp-screen is-visible" data-screen-panel="The current management">
+          <div class="dnp-screen-head">
+            <h1>Действующее руководство</h1>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.1</span>
+                <b>О предприятии</b>
+                <em>PROFILE</em>
+              </div>
+              <p>Deinopidae Industries(Предприятие Дейнопидае) - Одно из трёх направлений научно-исследовательского крыла Арахна. Цель предприятия - оказывать помощь в поставках, разработке, и починки технологий для департамента S.E. - Kurodzakura. Второстепенными целями являются проведение геологоразведочных работ, оказание связи между комплексами, помощь партнерам из Aurum Corporation, и прочее.</p>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.2</span>
+                <b>Приближенные задачи работы в комплексе</b>
+                <em>TASKS</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Налаживание поставок, работа мерчендайзером.</li>
+                <li>Обслуживание любой техники в пределах комплекса.</li>
+                <li>Создание отчетности о показателях в комплексе.</li>
+                <li>Выполнение заказов.</li>
+                <li>Создание технологий и их массового производства.</li>
+              </ul>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span>
+            </div>
+          </div>
+        </section>
+        
         <section class="dnp-screen dnp-terminal-screen" data-screen-panel="database">
           <div class="dnp-term-window" id="term-window">
             
@@ -798,6 +848,43 @@
           </div>
         </section>
 
+        <section class="dnp-screen is-visible" data-screen-panel="Former management">
+          <div class="dnp-screen-head">
+            <h1>Действующее руководство</h1>
+          </div>
+
+          <div class="dnp-screen-content">
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.1</span>
+                <b>О предприятии</b>
+                <em>PROFILE</em>
+              </div>
+              <p>Deinopidae Industries(Предприятие Дейнопидае) - Одно из трёх направлений научно-исследовательского крыла Арахна. Цель предприятия - оказывать помощь в поставках, разработке, и починки технологий для департамента S.E. - Kurodzakura. Второстепенными целями являются проведение геологоразведочных работ, оказание связи между комплексами, помощь партнерам из Aurum Corporation, и прочее.</p>
+            </article>
+
+            <article class="dnp-module">
+              <div class="dnp-module-title">
+                <span>1.2</span>
+                <b>Приближенные задачи работы в комплексе</b>
+                <em>TASKS</em>
+              </div>
+              <ul class="dnp-list">
+                <li>Налаживание поставок, работа мерчендайзером.</li>
+                <li>Обслуживание любой техники в пределах комплекса.</li>
+                <li>Создание отчетности о показателях в комплексе.</li>
+                <li>Выполнение заказов.</li>
+                <li>Создание технологий и их массового производства.</li>
+              </ul>
+            </article>
+
+            <div class="dnp-brud-note">
+              <span class="dnp-brud-tag">ИНФОРМАЦИЯ</span>
+              <span>Более подробно о каждом пункте можете узнать в <a href="https://docs.google.com/document/d/1E0ettcqE--eQjUvUlX4ZIv9UmGBjjXD7QLfmqlYDgAE/edit?tab=t.3eryletig9pf" target="_blank" class="dnp-brud-link"><strong>БРУД</strong></a>.</span>
+            </div>
+          </div>
+        </section>
+        
         <section class="dnp-screen" data-screen-panel="roots">
           <div class="dnp-screen-head dnp-corrupt-head">
             <h1 class="dnp-glitch-head" data-text="К̷О̶Р̸Н̷И̶ DEINOPIDAE">К̷О̶Р̸Н̷И̶ DEINOPIDAE</h1>
